@@ -5,7 +5,7 @@ Owner decisions that block or shape later phases. Answer by ID (e.g. "MT-4: acce
 **Priority key:** **P1** blocks the next phase · **P2** needed by Phases 3–5 · **P3** needed later (phase named).
 "Suggested default" values are **PROPOSED - APPROVAL REQUIRED** until accepted.
 
-Last updated: 2026-10-14 (Phase 2 approved).
+Last updated: 2026-10-14 (Phase 3 in review).
 
 ---
 
@@ -13,6 +13,9 @@ Last updated: 2026-10-14 (Phase 2 approved).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
+| DS-2 | **P1** | Choose the visual direction: **A** Ink & Sun, **B** Tokyo Transit (recommended), **C** Washi Layers, or a named combination. Preview: https://claude.ai/artifact/XNZRmr4e8HoxCs76bUZy9b | Phase 3 approval → Phase 4+ | B | |
+| DS-3 | **P1** | Tagline: keep "Practice Smart. Pass JLPT." or pick an alternative from `docs/DESIGN_SYSTEM.md` §1. | Phase 3 | Keep | |
+| DS-4 | **P1** | Approve deriving logo variants without changing the design: outlined wordmark, reversed (white-text) logo for dark backgrounds, monochrome small icon. | Phase 3/8 | Approve | |
 | OPS-2b | P3 | Is MFA (authenticator-app code) **required** for admin accounts at launch, or optional? | Phase 7 | Required for Super Admin, optional for other roles. | |
 | PA-6 | P3 | Who reviews the Japanese translations of UI text and the drafted page/legal copy before launch? | Phase 18 | Owner or a nominated Japanese speaker; drafts stay marked DRAFT until reviewed. | |
 | PAY-3b | P3 | Merchant onboarding status: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts, and has onboarding started? | Phase 20 | Owner starts onboarding now (D-019). | |

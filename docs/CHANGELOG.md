@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Phase 2 approved, Phase 3 proposal
+
+- Recorded the stack approval D-033..D-045 (Payload CMS embedded, Drizzle via Payload, next-intl, Tailwind v4, GSAP + Motion, R2, Resend, Vitest/Playwright, Docker) and the rejected/parked alternatives.
+- Added `docs/UI_SCREEN_INVENTORY.md` (public, auth, student, checkout, admin, email screens with states).
+- Added `docs/DESIGN_SYSTEM.md` (shared foundations, motion system, calm exam runner rules, three directions, tagline options, logo variant gaps).
+- Added the live preview `docs/design/visual-directions.html`, published as a private artifact.
+- Moved planning work to branch `docs/planning`.
+
 ## 2026-10-14 — Phase 1 addendum + Phase 2 proposal
 
 - Recorded the second-round answers: D-027 (no pause, one active attempt), D-028 (English default + JA toggle), D-031 (keep tagline), D-032 (500 concurrent as the working assumption). Recorded the owner directives D-029 (showcase motion/parallax UI) and D-030 (maximal CMS coverage).

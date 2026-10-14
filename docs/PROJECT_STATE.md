@@ -1,29 +1,27 @@
 # Project State
 
-Current phase / milestone: **Phase 2 — Technology alternatives: IN REVIEW.** `docs/TECH_STACK_OPTIONS.md` is written; waiting for owner approval (STACK-1..3). Phases 0 and 1 are complete.
-Overall status: **NOT STARTED** (no application code; planning documents only)
-Last verified commit: `9228235` "first commit" (origin/main). All planning documents and the brand assets are uncommitted.
+Current phase / milestone: **Phase 3 — Visual direction: IN REVIEW.** The owner is choosing a direction (DS-2..4). Phases 0–2 are complete.
+Overall status: **NOT STARTED** (no application code; planning and design documents only)
+Last verified commit: see `git log` on branch `docs/planning` (PR to `main`).
 
 ## Work status
 
 - **Verified complete (with evidence):**
-  - Phase 0 discovery (2026-10-14).
-  - Phase 1 product rules: D-003..D-032 recorded in `docs/DECISIONS.md`, owner answers verbatim in `docs/OPEN_QUESTIONS.md`; all P1/P2 product questions closed.
-  - Phase 2 comparison document written. Facts checked online on 2026-10-14: Payload 3.90.2 is the current stable and v4 is in beta; Payload joined Figma in June 2025 and remains open source; Next.js 16.x is current; Prisma 7 drops the Rust engine; Better Auth now maintains Auth.js and was acquired by Vercel in July 2026; GSAP and all its plugins are free, including commercial use.
-- **Partial / unverified:** D-018 and D-020 are agent interpretations; the owner may amend them.
-- **In progress:** Phase 2 approval (owner).
-- **Remaining:** Phases 3–28.
+  - Phase 0 discovery; Phase 1 product rules (D-001..D-032); Phase 2 stack approval (D-033..D-045). All recorded in `docs/DECISIONS.md`.
+  - Phase 3 deliverables written: `docs/UI_SCREEN_INVENTORY.md`, `docs/DESIGN_SYSTEM.md`, live preview `docs/design/visual-directions.html` (published privately: https://claude.ai/artifact/XNZRmr4e8HoxCs76bUZy9b). Preview script syntax-checked; all EN strings have JA translations.
+  - Development tools present on the owner's machine (checked 2026-10-14): Node v24.15.0, pnpm 12.8.1, Docker 29.8.1, gh CLI logged in as Prashant2525.
+- **Partial / unverified:** the preview was not visually checked in a browser by the agent (no preview tool in this session); the owner reviews it live. D-018 and D-020 remain interpretations the owner may amend.
+- **In progress:** Phase 3 approval (owner).
+- **Remaining:** Phases 4–28.
 
 ## Changes
 
-- **Files changed (this session):** `CLAUDE.md`, `docs/DECISIONS.md`, `docs/OPEN_QUESTIONS.md`, `docs/REQUIREMENTS_REGISTER.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/KNOWN_ISSUES.md`, `docs/CHANGELOG.md`, `docs/PROJECT_STATE.md`, `docs/SESSION_HANDOFF.md`; new `docs/TECH_STACK_OPTIONS.md`.
-- **Database / migrations / API / UI:** none.
+- Docs and design preview only. No application code, dependencies or schema.
 
 ## Verification and blockers
 
-- **Tests run and actual results:** none (no code).
-- **Blockers:** STACK-1..3 owner approval.
-- **Owner decisions still open (later phases):** OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Owner action outside the code:** start eSewa / Khalti / connectIPS merchant onboarding.
-- **Environment variable names still needed:** finalized after the stack approval (Phase 6).
-- **Exact next task:** after approval, record the stack decisions in `docs/DECISIONS.md` and start Phase 3 (playbook §11.4): screen inventory, 2–3 visual directions built on the Nihongo Mock brand with motion/parallax concepts, and the design-system plan.
+- **Tests run:** none (no application code).
+- **Blockers:** DS-2 (direction), DS-3 (tagline), DS-4 (logo variants).
+- **Owner decisions still open (later):** OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
+- **Owner action outside the code:** start eSewa / Khalti / connectIPS merchant onboarding; merge the planning PR.
+- **Exact next task:** record the chosen direction in `docs/DECISIONS.md` and `docs/DESIGN_SYSTEM.md` (final tokens), then run Phase 4 (playbook §11.5): architecture, module boundaries, API style, auth flows, `docs/ARCHITECTURE.md` and `docs/API_DOCUMENTATION.md`.
