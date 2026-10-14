@@ -111,7 +111,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | CMS-R11 | Results/attempt administration (view; no free-text editing of results). | PB §5.9; D-020 | CONFIRMED | Corrections/invalidation are out of scope until rules are approved. |
 | CMS-R12 | Public pages and copy managed in the CMS (bilingual), including navigation, footer, FAQ, CTAs, legal pages, SEO metadata. | D-006 | CONFIRMED | Editing home-page copy in the CMS updates the live page without deployment. |
 | CMS-R13 | Products, bundles, prices, validity, free flags, payment-method enable/display order; orders and transactions view. | D-019, D-020 | CONFIRMED | Price change applies to new orders only; existing orders keep their price. |
-| CMS-R14 | Roles: Super Admin, Content Editor, Support (read-only) at launch; granular permissions editable by Super Admin. | D-022, D-053 | CONFIRMED · **implemented (Phase 7)**; MFA open (OPS-2b) | Every admin endpoint has permission tests. |
+| CMS-R14 | Roles: Super Admin, Content Editor, Support (read-only) at launch; granular permissions editable by Super Admin. | D-022, D-053, D-058 | CONFIRMED · **implemented (Phase 7)**, including admin MFA | Every admin endpoint has permission tests. |
 | CMS-R15 | Support contact form + support email; contact details CMS-managed. | D-023 | CONFIRMED | Form submission is stored and/or emailed; spam rate-limited. |
 | CMS-R16 | Settings, audit log, operational view (no secret values). | PB §5.15 | CONFIRMED | Audit entries for all sensitive actions. |
 | CMS-R17 | Maximal CMS coverage: UI labels/messages (override layer), sections and order, images/parallax layers, animation preset per section, navigation, footer, SEO, logo/favicon/tagline, contact/social links, email copy, theme colours with contrast validation, all in EN/JA. | D-030, D-031 | CONFIRMED | A release-audit scan finds no hard-coded user-facing strings; editing each item type in the CMS updates the site without deployment; a theme colour failing WCAG AA contrast is rejected. |
@@ -122,7 +122,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 |---|---|---|---|---|
 | AUTH-R01 | Email + password registration with email verification; login, logout, forgot/reset password. No social/SMS login. | D-021, D-054 | CONFIRMED · **API implemented and tested (Phase 7)**; pages in Phase 8 | Unverified accounts cannot start determination (or a defined restricted state); reset tokens are single-use and expiring. |
 | AUTH-R02 | Password hashing, secure sessions, CSRF protection, rate limits, non-enumerating responses, expiry/revocation. | PB §4.1, D-055, D-056 | TECHNICAL SAFETY RULE · **implemented and tested (Phase 7)** | `tests/int/student-auth.int.spec.ts`, `tests/int/rbac.int.spec.ts`, `tests/e2e/auth.e2e.spec.ts` |
-| AUTH-R03 | Admin MFA. | D-022 | CONFIRMED – DETAIL OPEN (OPS-2b) | — |
+| AUTH-R03 | Admin MFA: authenticator code required for every admin, every session. | D-022, D-058 | CONFIRMED · **implemented and tested (Phase 7b)** | `tests/int/admin-mfa.int.spec.ts`, `tests/e2e/admin-mfa.e2e.spec.ts` |
 
 ## 9. Public website and commerce (PUB / COM)
 

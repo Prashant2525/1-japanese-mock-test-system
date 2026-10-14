@@ -50,11 +50,24 @@ export async function createAdmin(
   return { admin, password }
 }
 
-/** The admin as Payload sees it on a request (roles populated, collection set). */
-export async function asUser(admin: Admin): Promise<Admin & { collection: 'admins' }> {
+type RequestAdmin = Admin & { collection: 'admins'; _strategy?: string }
+
+/**
+ * The admin as Payload sees it on a request (roles populated, collection set).
+ * By default the session counts as two-factor verified (`_strategy: 'totp'`), which is how a fully
+ * logged-in admin looks to access rules (D-058). Pass `verified: false` for a password-only session.
+ */
+export async function asUser(
+  admin: Admin,
+  opts: { verified?: boolean } = {},
+): Promise<RequestAdmin> {
   const payload = await client()
   const full = await payload.findByID({ collection: 'admins', id: admin.id, depth: 1 })
-  return { ...full, collection: 'admins' }
+  return {
+    ...full,
+    collection: 'admins',
+    ...(opts.verified === false ? { _strategy: 'local-jwt' } : { _strategy: 'totp' }),
+  }
 }
 
 export async function createStudent(

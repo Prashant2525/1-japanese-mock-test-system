@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 
 import 'dotenv/config'
 
-const PORT = 3000
+// A dedicated port so E2E never reuses a developer's `pnpm dev` server on 3000.
+const PORT = 3100
 
 /**
  * E2E runs against the production build by default (`pnpm build` first).
@@ -23,9 +24,11 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: process.env.E2E_DEV ? 'pnpm dev' : 'pnpm start',
+    command: process.env.E2E_DEV ? `pnpm dev -p ${PORT}` : `pnpm start -p ${PORT}`,
     url: `http://localhost:${PORT}/healthz`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    // The server must know its own URL (CSRF origin checks, Payload serverURL).
+    env: { APP_URL: `http://localhost:${PORT}` },
   },
 })

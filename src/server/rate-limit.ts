@@ -53,6 +53,17 @@ export async function enforce(
   }
 }
 
+/** Clears the counters for specific keys (e.g. test fixtures, or an admin lifting a limit). */
+export async function clearRateLimits(payload: Payload, keys: string[]): Promise<void> {
+  if (keys.length === 0) return
+  const hashes = keys.map(hashKey)
+  const list = sql.join(
+    hashes.map((h) => sql`${h}`),
+    sql`, `,
+  )
+  await payload.db.drizzle.execute(sql`delete from rate_limits where key in (${list})`)
+}
+
 /** Deletes counters from finished windows (run by a scheduled job). */
 export async function pruneRateLimits(payload: Payload): Promise<void> {
   await payload.db.drizzle.execute(

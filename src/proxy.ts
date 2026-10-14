@@ -21,7 +21,14 @@ const BLOCKED_STUDENT_ACTIONS = new Set([
 ])
 
 export function proxy(request: NextRequest) {
-  const segments = request.nextUrl.pathname.split('/').filter(Boolean) // api, cms, students, ...
+  const pathname = request.nextUrl.pathname
+  // The admin two-factor plugin needs the current path in server components (payload-totp README).
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    const response = NextResponse.next()
+    response.headers.append('x-pathname', pathname)
+    return response
+  }
+  const segments = pathname.split('/').filter(Boolean) // api, cms, students, ...
   const action = segments[3]
   const isCreate = segments.length === 3 && request.method === 'POST'
   if (isCreate || (action && BLOCKED_STUDENT_ACTIONS.has(action))) {
@@ -34,5 +41,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/cms/students', '/api/cms/students/:path*'],
+  matcher: ['/admin', '/admin/:path*', '/api/cms/students', '/api/cms/students/:path*'],
 }
