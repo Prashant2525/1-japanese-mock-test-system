@@ -19,7 +19,7 @@ Permanent instructions for Claude Code (and any coding agent) working in this re
 
 ## Current status
 
-- **Phase:** Phase 2 complete (stack D-033..D-045). Phase 3 in review: the owner is choosing a visual direction (DS-2..4; preview in `docs/design/visual-directions.html`). Do not build frontend pages before the direction is approved.
+- **Phase:** Phases 0–4 complete. Phase 5 (database design) is in review: **do not create migrations or tables until DB-1 is approved**. Design direction B "Tokyo Transit" is approved (`docs/DESIGN_SYSTEM.md` is binding). Architecture rules: `docs/ARCHITECTURE.md` §2 (pure domain module, services own state changes).
 - **Owner priorities:** showcase-quality animated UI with parallax (D-029) and **everything manageable from the Admin CMS** (D-030); hard-coded user-facing content is a defect.
 - **Product:** brand **Nihongo Mock**; Nepal market, NPR; UI in **English + Japanese** with a navbar toggle (D-003..D-005). Brand assets: `nihongo-mock-logo-assets/nihongo_mock_logo/`.
 - **Stack:** approved top level — **Next.js + PostgreSQL, TypeScript**, one integrated app with a server-side service layer (D-025). Approved sub-choices: Payload CMS embedded, Payload/Drizzle on Postgres, Payload auth, next-intl, Tailwind v4, GSAP + Motion, R2, Resend, Vitest/Playwright, Docker (D-033..D-045). Hosting still open (TECH-5).
@@ -73,7 +73,10 @@ Work-item status: `COMPLETE` / `PARTIAL` / `MISSING` / `BROKEN` / `BLOCKED` / `U
 | `docs/CHANGELOG.md` | Material changes |
 | `docs/TECH_STACK_OPTIONS.md` | Phase 2 stack comparison (approved) |
 | `docs/UI_SCREEN_INVENTORY.md` | Every screen, its states and data |
-| `docs/DESIGN_SYSTEM.md` | Design foundations, motion system, directions |
-| `docs/design/visual-directions.html` | Live preview of the three directions |
+| `docs/DESIGN_SYSTEM.md` | Approved design system (Direction B) |
+| `docs/ARCHITECTURE.md` | System architecture, layers, flows, repo structure |
+| `docs/API_DOCUMENTATION.md` | API conventions, error model, endpoint catalogue |
+| `docs/DATABASE_ARCHITECTURE.md` | Data model, constraints, snapshots, migrations |
+| `docs/design/visual-directions.html` | Preview used to choose Direction B |
 
-Later phases add: `ARCHITECTURE.md` and `API_DOCUMENTATION.md` (Phase 4), `DATABASE_ARCHITECTURE.md` (Phase 5), `PAYMENT_INTEGRATION_RUNBOOK.md` (Phase 20), `PRODUCTION_READINESS_AUDIT.md` and `RELEASE_READINESS.md` (Phase 28).
+Later phases add: `PAYMENT_INTEGRATION_RUNBOOK.md` (Phase 20), `PRODUCTION_READINESS_AUDIT.md` and `RELEASE_READINESS.md` (Phase 28).
