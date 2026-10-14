@@ -1,0 +1,140 @@
+{
+  "meta": {
+    "siteName": "Nihongo Mock",
+    "tagline": "賢く練習して、自信を持って合格へ。",
+    "description": "JLPT・NAT・JFTの模擬試験。まずはN5からの無料レベルチェックから。"
+  },
+  "a11y": {
+    "skipToContent": "本文へスキップ",
+    "mainNavigation": "メインナビゲーション",
+    "languageSwitcher": "言語",
+    "loading": "読み込み中…",
+    "showPassword": "パスワードを表示",
+    "hidePassword": "パスワードを隠す",
+    "close": "閉じる",
+    "notifications": "お知らせ"
+  },
+  "nav": {
+    "home": "ホーム",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "myPage": "マイページ",
+    "logout": "ログアウト"
+  },
+  "footer": {
+    "rights": "© {year} Nihongo Mock",
+    "notAffiliated": "Nihongo Mockは独立した学習サービスです。JLPT、NAT-TEST、JFT-Basicの実施団体とは関係ありません。"
+  },
+  "home": {
+    "eyebrow": "JLPT・NAT・JFT",
+    "title": "日本への道は",
+    "titleStation": "N5",
+    "underConstruction": "サイトは現在準備中です。アカウントはすでに作成できます。",
+    "ctaSignup": "無料でアカウントを作成",
+    "ctaLogin": "ログイン"
+  },
+  "authPanel": {
+    "title": "日本への道は、N5から始まる。",
+    "body": "まずは無料のレベルチェック。その後、本番と同じ条件の模擬試験で練習しましょう。",
+    "stations": "レベルチェックの順路：N5、N4、N3"
+  },
+  "auth": {
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "newPassword": "新しいパスワード",
+    "confirmPassword": "新しいパスワード（確認）",
+    "name": "お名前",
+    "passwordHint": "10文字以上で入力してください。",
+    "signup": {
+      "title": "アカウントを作成",
+      "subtitle": "無料です。N5からのレベルチェックで始めましょう。",
+      "submit": "アカウントを作成",
+      "haveAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン"
+    },
+    "checkEmail": {
+      "title": "メールを確認してください",
+      "body": "{email} が利用できる場合、確認用のリンクを送信しました。メールを開き、ボタンを押して登録を完了してください。",
+      "bodyNoEmail": "メールアドレス確認用のリンクを送信しました。メールを開き、ボタンを押して登録を完了してください。",
+      "resendPrompt": "届かない場合は、迷惑メールフォルダを確認するか、もう一度送信してください。",
+      "resend": "リンクを再送信",
+      "resent": "確認が必要なアドレスであれば、新しいリンクを送信しました。",
+      "backToLogin": "ログインに戻る"
+    },
+    "verify": {
+      "title": "メールアドレスを確認しています",
+      "working": "リンクを確認しています…",
+      "successTitle": "メールアドレスを確認しました",
+      "successBody": "アカウントの準備ができました。ログインしてレベルチェックを始めましょう。",
+      "errorTitle": "このリンクは使用できません",
+      "errorBody": "すでに使用されたか、新しいリンクに置き換えられた可能性があります。メールアドレスを入力すると、新しいリンクを送信します。",
+      "missingToken": "このページを開くには、メールに記載されたリンクが必要です。",
+      "goToLogin": "ログイン"
+    },
+    "login": {
+      "title": "ログイン",
+      "subtitle": "おかえりなさい。",
+      "submit": "ログイン",
+      "forgot": "パスワードをお忘れですか？",
+      "noAccount": "Nihongo Mockは初めてですか？",
+      "signupLink": "アカウントを作成",
+      "notVerified": "先にメールアドレスを確認してください。確認リンクを再送信できます。",
+      "resendVerification": "確認リンクを再送信"
+    },
+    "forgot": {
+      "title": "パスワードの再設定",
+      "subtitle": "メールアドレスを入力すると、新しいパスワードを設定するためのリンクをお送りします。",
+      "submit": "再設定リンクを送信",
+      "sent": "{email} のアカウントがある場合、再設定リンクを送信しました。リンクの有効期限は60分です。",
+      "backToLogin": "ログインに戻る"
+    },
+    "reset": {
+      "title": "新しいパスワードを設定",
+      "submit": "新しいパスワードを保存",
+      "success": "パスワードを変更し、すべての端末からログアウトしました。新しいパスワードでログインしてください。",
+      "missingToken": "このページを開くには、パスワード再設定メールのリンクが必要です。",
+      "requestNew": "新しいリンクをリクエスト",
+      "goToLogin": "ログイン"
+    }
+  },
+  "app": {
+    "welcome": "{name} さん、ようこそ",
+    "levelCheckTitle": "レベルチェック",
+    "levelCheck": {
+      "not_started": "まだ受けていません。レベルチェックは今後のアップデートで公開されます。",
+      "in_progress": "実施中です。",
+      "completed": "完了しました。"
+    },
+    "accountTitle": "アカウント",
+    "language": "メールの言語",
+    "loggedOut": "ログアウトしました。",
+    "email": "メールアドレス"
+  },
+  "validation": {
+    "required": "入力してください。",
+    "email": "正しいメールアドレスを入力してください。",
+    "passwordMin": "10文字以上で入力してください。",
+    "passwordMax": "128文字以内で入力してください。",
+    "passwordsMatch": "パスワードが一致しません。",
+    "nameMax": "120文字以内で入力してください。"
+  },
+  "errors": {
+    "VALIDATION_FAILED": "入力内容を確認して、もう一度お試しください。",
+    "INVALID_TOKEN": "このリンクは無効か、有効期限が切れています。新しいリンクをリクエストしてください。",
+    "UNAUTHENTICATED": "続けるにはログインしてください。",
+    "SESSION_EXPIRED": "セッションの有効期限が切れました。もう一度ログインしてください。",
+    "INVALID_CREDENTIALS": "メールアドレスまたはパスワードが正しくありません。",
+    "FORBIDDEN": "この操作は実行できません。",
+    "ACCOUNT_DISABLED": "このアカウントは停止されています。サポートにお問い合わせください。",
+    "EMAIL_NOT_VERIFIED": "先にメールアドレスを確認してください。",
+    "RATE_LIMITED": "試行回数が多すぎます。数分待ってからもう一度お試しください。",
+    "RATE_LIMITED_SECONDS": "試行回数が多すぎます。{seconds}秒後にもう一度お試しください。",
+    "NETWORK_ERROR": "サーバーに接続できませんでした。通信環境を確認して、もう一度お試しください。",
+    "INTERNAL": "問題が発生しました。しばらくしてからもう一度お試しください。"
+  },
+  "notFound": {
+    "title": "このページは路線図にありません",
+    "body": "お探しのページは存在しないか、移動した可能性があります。",
+    "home": "ホームへ戻る"
+  }
+}

@@ -24,7 +24,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
-| I18N-R01 | UI available in English and Japanese, with a navbar toggle on public, student and admin surfaces; English for first-time visitors; JA falls back to EN. | D-004, D-028 | CONFIRMED | Toggling switches all UI strings; the choice persists across navigation and sessions; no hard-coded single-language strings in components. |
+| I18N-R01 | UI available in English and Japanese, with a navbar toggle on public, student and admin surfaces; English for first-time visitors; JA falls back to EN. | D-004, D-028, D-061 | CONFIRMED · **implemented (Phase 8)** on public and student pages; the admin panel has Payload's own EN/JA switch | Toggling switches all UI strings; the choice persists across navigation and sessions; no hard-coded single-language strings in components. |
 | I18N-R02 | Every CMS-managed user-facing text field stores EN and JA values. | D-004 | CONFIRMED | Admin forms show both locales; the student API returns the requested locale, falling back to EN (D-028). |
 | I18N-R03 | The locale model allows adding further languages later without schema redesign. | D-004 | CONFIRMED | Adding a locale needs no table-per-language change. |
 | I18N-R04 | Japanese learning content renders correctly regardless of UI language, including optional furigana. | D-024; PB §6.3 | CONFIRMED | Kanji/kana render with proper font fallback and wrapping; ruby text displays when present. |
@@ -114,7 +114,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | CMS-R14 | Roles: Super Admin, Content Editor, Support (read-only) at launch; granular permissions editable by Super Admin. | D-022, D-053, D-058 | CONFIRMED · **implemented (Phase 7)**, including admin MFA | Every admin endpoint has permission tests. |
 | CMS-R15 | Support contact form + support email; contact details CMS-managed. | D-023 | CONFIRMED | Form submission is stored and/or emailed; spam rate-limited. |
 | CMS-R16 | Settings, audit log, operational view (no secret values). | PB §5.15 | CONFIRMED | Audit entries for all sensitive actions. |
-| CMS-R17 | Maximal CMS coverage: UI labels/messages (override layer), sections and order, images/parallax layers, animation preset per section, navigation, footer, SEO, logo/favicon/tagline, contact/social links, email copy, theme colours with contrast validation, all in EN/JA. | D-030, D-031 | CONFIRMED | A release-audit scan finds no hard-coded user-facing strings; editing each item type in the CMS updates the site without deployment; a theme colour failing WCAG AA contrast is rejected. |
+| CMS-R17 | Maximal CMS coverage (UI labels done in Phase 8 via three label globals; sections, images, theme, logo and SEO follow in Phase 18): UI labels/messages (override layer), sections and order, images/parallax layers, animation preset per section, navigation, footer, SEO, logo/favicon/tagline, contact/social links, email copy, theme colours with contrast validation, all in EN/JA. | D-030, D-031 | CONFIRMED | A release-audit scan finds no hard-coded user-facing strings; editing each item type in the CMS updates the site without deployment; a theme colour failing WCAG AA contrast is rejected. |
 
 ## 8. Authentication (AUTH)
 

@@ -1,19 +1,21 @@
 import { randomBytes } from 'node:crypto'
 
 import {
-  APIError,
-  AuthenticationError,
   createLocalReq,
   generateExpiredPayloadCookie,
   generatePayloadCookie,
-  LockedAuth,
   logoutOperation,
-  UnverifiedEmail,
   type Payload,
 } from 'payload'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 import type { Student } from '@/payload-types'
+import type {
+  loginSchema,
+  preferencesSchema,
+  registerSchema,
+  resetSchema,
+} from '@/shared/auth-schemas'
 
 import { recordAudit } from '../audit/record'
 import { payloadClient, requireStudent, type SessionStudent } from '../auth/session'
@@ -26,24 +28,14 @@ import { enforce, RATE_LIMITS } from '../rate-limit'
 /** Request facts passed from route handlers (never trusted for identity). */
 export type RequestMeta = { ip: string | null; userAgent: string | null; requestId: string }
 
-const email = z
-  .email()
-  .max(254)
-  .transform((v) => v.trim().toLowerCase())
-const password = z.string().min(10, 'must be at least 10 characters').max(128)
-const locale = z.enum(['en', 'ja'])
-
-export const registerSchema = z.strictObject({
-  name: z.string().trim().min(1).max(120),
-  email,
-  password,
-  preferredLocale: locale.default('en'),
-})
-export const loginSchema = z.strictObject({ email, password: z.string().min(1).max(128) })
-export const emailOnlySchema = z.strictObject({ email })
-export const tokenSchema = z.strictObject({ token: z.string().min(10).max(200) })
-export const resetSchema = z.strictObject({ token: z.string().min(10).max(200), password })
-export const preferencesSchema = z.strictObject({ preferredLocale: locale })
+export {
+  emailOnlySchema,
+  loginSchema,
+  preferencesSchema,
+  registerSchema,
+  resetSchema,
+  tokenSchema,
+} from '@/shared/auth-schemas'
 
 export type PublicStudent = {
   id: number
@@ -192,6 +184,37 @@ export async function resendVerification(address: string, meta: RequestMeta): Pr
   }
 }
 
+/**
+ * Maps a Payload login failure to our error codes using the HTTP status, because the production
+ * build may throw Payload error classes from a different bundle copy (instanceof is unreliable).
+ * 403 = unverified email or our own suspension check. 401 = wrong credentials, or an account that
+ * was ALREADY locked before this attempt (`lockedBefore`, read before calling Payload so the answer
+ * never depends on when Payload writes the new lock).
+ */
+export function classifyLoginError(err: unknown, lockedBefore: boolean): AppError | null {
+  const status =
+    typeof err === 'object' && err !== null ? (err as { status?: unknown }).status : undefined
+  const message = err instanceof Error ? err.message : ''
+  if (status === 403) {
+    return new AppError(message === 'ACCOUNT_DISABLED' ? 'ACCOUNT_DISABLED' : 'EMAIL_NOT_VERIFIED')
+  }
+  if (status === 401) return new AppError(lockedBefore ? 'RATE_LIMITED' : 'INVALID_CREDENTIALS')
+  return null
+}
+
+async function isLocked(payload: Payload, email: string): Promise<boolean> {
+  const found = await payload.find({
+    collection: 'students',
+    where: { email: { equals: email } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+    showHiddenFields: true,
+  })
+  const lockUntil = (found.docs[0] as { lockUntil?: string | null } | undefined)?.lockUntil
+  return lockUntil ? new Date(lockUntil).getTime() > Date.now() : false
+}
+
 export async function login(
   input: z.infer<typeof loginSchema>,
   meta: RequestMeta,
@@ -201,6 +224,7 @@ export async function login(
     { key: meta.ip && `login:ip:${meta.ip}`, rule: RATE_LIMITS.loginPerIp },
     { key: `login:acct:${input.email}`, rule: RATE_LIMITS.loginPerAccount },
   ])
+  const lockedBefore = await isLocked(payload, input.email)
   let result: Awaited<ReturnType<typeof payload.login<'students'>>>
   try {
     result = await payload.login({
@@ -209,12 +233,7 @@ export async function login(
       context: { rateLimited: true },
     })
   } catch (err) {
-    if (err instanceof LockedAuth) throw new AppError('RATE_LIMITED')
-    if (err instanceof UnverifiedEmail) throw new AppError('EMAIL_NOT_VERIFIED')
-    if (err instanceof AuthenticationError) throw new AppError('INVALID_CREDENTIALS')
-    if (err instanceof APIError && err.message === 'ACCOUNT_DISABLED')
-      throw new AppError('ACCOUNT_DISABLED')
-    throw err
+    throw classifyLoginError(err, lockedBefore) ?? err
   }
   if (!result.token || !result.user) throw new AppError('INVALID_CREDENTIALS')
   await recordAudit(payload, {

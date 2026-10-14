@@ -15,12 +15,39 @@ import {
   E2E_EDITOR_EMAIL,
   E2E_NEW_ADMIN_EMAIL,
   E2E_STUDENT_EMAIL,
+  E2E_UI_DOMAIN,
 } from './admin-account'
 
 async function main(action: string | undefined): Promise<void> {
   const { getPayload } = await import('payload')
   const { default: config } = await import('../../src/payload.config')
   const payload = await getPayload({ config })
+
+  // `token verify|reset <email>`: print the current emailed token for a UI-test student (the E2E
+  // server uses the console email transport, so tests read the token from the database instead).
+  if (action === 'token') {
+    const [kind, email] = process.argv.slice(3)
+    if (!email?.endsWith(E2E_UI_DOMAIN))
+      throw new Error('token lookup is limited to UI-test students')
+    const found = await payload.find({
+      collection: 'students',
+      where: { email: { equals: email } },
+      showHiddenFields: true,
+      limit: 1,
+    })
+    const doc = found.docs[0] as
+      { _verificationToken?: string; resetPasswordToken?: string } | undefined
+    const token = kind === 'reset' ? doc?.resetPasswordToken : doc?._verificationToken
+    if (!token) throw new Error(`no ${kind} token for ${email}`)
+    console.log(`TOKEN=${token}`)
+    return
+  }
+
+  // Students created through the UI by tests (unique address per run).
+  await payload.db.deleteMany({
+    collection: 'students',
+    where: { email: { contains: E2E_UI_DOMAIN } },
+  })
 
   // Repeated local runs would otherwise hit the per-account login limits (10 per 15 minutes).
   const { clearRateLimits } = await import('../../src/server/rate-limit')
@@ -41,7 +68,7 @@ async function main(action: string | undefined): Promise<void> {
     where: { email: { equals: E2E_STUDENT_EMAIL } },
   })
   if (action === 'delete') return
-  if (action !== 'create') throw new Error('usage: e2e-admin.ts create|delete')
+  if (action !== 'create') throw new Error('usage: e2e-admin.ts create|delete|token')
 
   const roleId = async (name: string) =>
     (await payload.find({ collection: 'roles', where: { name: { equals: name } }, limit: 1 }))

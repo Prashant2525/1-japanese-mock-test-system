@@ -27,7 +27,10 @@ test.describe('platform endpoints', () => {
 
   test('home page renders', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('heading', { level: 1, name: 'Nihongo Mock' })).toBeVisible()
+    await expect(page).toHaveURL(/\/en$/)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Your route to Japan starts at',
+    )
   })
 })
 

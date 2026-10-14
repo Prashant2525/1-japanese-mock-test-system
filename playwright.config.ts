@@ -22,7 +22,11 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Student-facing pages also run on a phone with Safari's engine (DESIGN_SYSTEM: mobile-first).
+    { name: 'mobile-webkit', use: { ...devices['iPhone 13'] }, testMatch: 'ui/**/*.e2e.spec.ts' },
+  ],
   webServer: {
     command: process.env.E2E_DEV ? `pnpm dev -p ${PORT}` : `pnpm start -p ${PORT}`,
     url: `http://localhost:${PORT}/healthz`,
@@ -30,5 +34,7 @@ export default defineConfig({
     timeout: 180_000,
     // The server must know its own URL (CSRF origin checks, Payload serverURL).
     env: { APP_URL: `http://localhost:${PORT}` },
+    // E2E_SERVER_LOGS=1 shows the app server's own log (useful when a test sees an unexpected error).
+    stdout: process.env.E2E_SERVER_LOGS ? 'pipe' : 'ignore',
   },
 })

@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-15 — Phase 8: shared frontend foundation
+
+- Design system in code: Tokyo Transit tokens (Tailwind v4 `@theme`), self-hosted fonts, focus styles, Japanese typography rules, reduced motion.
+- Logo variants generated with outlined text (`public/brand/`, D-048): lockup and header wordmark, day and night, plus a mono icon; generator in `scripts/brand/`.
+- EN/JA routing in `proxy.ts` (cookie-remembered, English default), `/en` `/ja` URLs, navbar language switch, translated 404.
+- Every UI string in `messages/{en,ja}.json`, overridable from the CMS through three label globals (migration `ui_labels`).
+- Components and forms: button, fields with accessible errors, password toggle, alerts, toasts, station badge, skyline, route line, header/footer, skip link.
+- Pages: home (temporary), sign up, check email, verify email, log in, forgot/reset password, protected student home, logout. Shared validation rules with the API (`src/shared/auth-schemas.ts`).
+- Fixes found by the new browser tests: login errors mis-classified in production builds (D-065); Secure cookies broke Safari on local http (D-064); a resend form nested inside the login form; Japanese pages rendered in English (missing `setRequestLocale` in layouts); N2/N1 line colours below 3:1 (D-063); Payload query over PostgreSQL's 100-argument limit (labels split into three globals).
+- Domain placeholder guide added to `.env`/`.env.example`.
+- CI flagged two flaky tests, both fixed at the root: background prefetch of the language switch was changing the remembered language (proxy now ignores prefetches; the switch no longer prefetches), and accessibility scans now wait for fade-in animations to finish.
+- CI caught a timing-dependent answer on the attempt that locks an account; the lock is now read before the attempt (deterministic).
+- Tests: unit 82, integration 59, E2E 68 + 1 skipped (desktop Chrome and iPhone Safari, axe accessibility scans in EN/JA).
+
 ## 2026-10-14 — Phase 7b: admin two-factor login, environment files, Resend check
 
 - Admin two-factor login required for every admin (D-058): `payload-totp` 3.0.6 (pinned after source review), forced setup, code every session, wrong codes count toward lockout, "Nihongo Mock" issuer. Migration `admin_totp` (`totp_attempts` table, `admins.totp_secret`). The proxy passes `x-pathname` for admin pages.

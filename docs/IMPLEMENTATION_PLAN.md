@@ -14,8 +14,8 @@ Last updated: 2026-10-14 (Phase 1).
 | 5 | Database/domain design | **COMPLETE** (2026-10-14) — approved (D-049, D-050) | — | Approved schema design in `DATABASE_ARCHITECTURE.md`. |
 | 6 | Project/backend foundation | **COMPLETE** (2026-10-14) — PR #3 | — | Config, DB, migrations, errors/logging, health checks, baseline tests. |
 | 7 | Authentication and authorization | **COMPLETE** (2026-10-14) — roles/permissions, admins with required authenticator codes, students, `/api/v1/auth`, rate limits, audit, bilingual emails; unit 36, int 55, E2E 19 | Resend domain verification (owner) before staging | Auth flows + permission tests pass. |
-| 8 | Shared frontend foundation | **NEXT** | Includes logo variants (D-048), next-intl routing, and the sign-up/login/verify/reset pages | Tokens/components/patterns with tests. |
-| 9 | Admin CMS framework | NOT STARTED | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
+| 8 | Shared frontend foundation | **COMPLETE** (2026-10-15) — design tokens, fonts, logo variants, EN/JA routing + toggle, CMS label overrides, components, auth pages, student home; unit 78, int 59, E2E 66 (+1 skipped) on Chrome and iPhone Safari | — | Tokens/components/patterns with tests. |
+| 9 | Admin CMS framework | **NEXT** | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
 | 10 | Student route gates | NOT STARTED | Phase 7 | Server-side determination gate + bypass E2E tests. |
 | 11 | Level determination engine | NOT STARTED | Phase 10 | All pass/fail branches, idempotency, race tests pass. |
 | 12 | Study materials and media | NOT STARTED | Phase 9 | N5–N3 CRUD/publish/eligibility verified. |

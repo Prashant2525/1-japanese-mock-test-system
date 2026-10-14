@@ -74,6 +74,26 @@ export class AppError extends Error {
   }
 }
 
+/**
+ * Structural checks instead of `instanceof`: the production build can contain several copies of a
+ * module (one per route bundle, plus the shared Payload instance), so class identity is unreliable.
+ */
+export function isAppError(err: unknown): err is AppError {
+  return (
+    err instanceof Error &&
+    err.name === 'AppError' &&
+    typeof (err as AppError).code === 'string' &&
+    (err as AppError).code in ERROR_STATUS
+  )
+}
+
+function isZodError(err: unknown): err is ZodError {
+  return (
+    err instanceof ZodError ||
+    (err instanceof Error && err.name === 'ZodError' && Array.isArray((err as ZodError).issues))
+  )
+}
+
 export type ErrorBody = {
   error: { code: ErrorCode; message: string; details: unknown; requestId: string }
 }
@@ -85,15 +105,15 @@ export type FieldIssue = { path: string; message: string }
  * Unknown errors become INTERNAL with no internal detail exposed.
  */
 export function toErrorBody(err: unknown, requestId: string): { status: number; body: ErrorBody } {
-  if (err instanceof AppError) {
+  if (isAppError(err)) {
     return {
-      status: err.status,
+      status: ERROR_STATUS[err.code],
       body: {
         error: { code: err.code, message: err.message, details: err.details ?? null, requestId },
       },
     }
   }
-  if (err instanceof ZodError) {
+  if (isZodError(err)) {
     const details: FieldIssue[] = err.issues.map((i) => ({
       path: i.path.join('.'),
       message: i.message,

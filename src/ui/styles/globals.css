@@ -1,0 +1,161 @@
+@import 'tailwindcss';
+
+/*
+ * Nihongo Mock design tokens — Direction B "Tokyo Transit" (docs/DESIGN_SYSTEM.md §3).
+ * These are the defaults; colour tokens become CMS-editable (with contrast validation) in Phase 18.
+ * Contrast pairs are checked by tests/unit/contrast.test.ts.
+ */
+:root {
+  --night: #0f2340;
+  --night-2: #16294a;
+  --signal: #d7262f;
+  --signal-hover: #b81e26;
+  --day: #f2f4f8;
+  --surface: #ffffff;
+  --text: #0f2340;
+  --text-muted: #4a5770;
+  --text-on-night: #f3f6fb;
+  --muted-on-night: #b8c4d8;
+  --line: #dce2ec;
+  --focus: #1d5fd1;
+  --focus-on-night: #ffd166;
+  --success: #17803d;
+  --warning: #b25e00;
+  --danger: #b42318;
+  --info: #1f56b8;
+
+  /* Level line (decorative) and badge (white text) colours */
+  --line-n5: #1e9e5a;
+  --badge-n5: #13703f;
+  --line-n4: #e59a00;
+  --badge-n4: #8a5b00;
+  --line-n3: #2b6bd8;
+  --badge-n3: #1f56b8;
+  --line-n2: #8f64da;
+  --badge-n2: #6a42b5;
+  --line-n1: #d04a86;
+  --badge-n1: #962858;
+
+  --nm-radius-input: 6px;
+  --nm-radius-card: 10px;
+  --nm-shadow-card: 0 1px 0 var(--line), 0 10px 30px -22px rgb(15 35 64 / 0.5);
+  --nm-ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --nm-ease-emphasised: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-signal: var(--signal);
+  --color-signal-hover: var(--signal-hover);
+  --color-day: var(--day);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-on-night: var(--text-on-night);
+  --color-muted-on-night: var(--muted-on-night);
+  --color-line: var(--line);
+  --color-focus: var(--focus);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-line-n5: var(--line-n5);
+  --color-badge-n5: var(--badge-n5);
+  --color-line-n4: var(--line-n4);
+  --color-badge-n4: var(--badge-n4);
+  --color-line-n3: var(--line-n3);
+  --color-badge-n3: var(--badge-n3);
+  --color-line-n2: var(--line-n2);
+  --color-badge-n2: var(--badge-n2);
+  --color-line-n1: var(--line-n1);
+  --color-badge-n1: var(--badge-n1);
+
+  --font-display: var(--nm-font-display), 'Noto Sans JP', system-ui, sans-serif;
+  --font-sign: var(--nm-font-sign), 'Arial Narrow', sans-serif;
+  --font-body: var(--nm-font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--nm-font-mono), ui-monospace, monospace;
+
+  --radius-input: var(--nm-radius-input);
+  --radius-card: var(--nm-radius-card);
+  --shadow-card: var(--nm-shadow-card);
+  --ease-standard: var(--nm-ease-standard);
+  --ease-emphasised: var(--nm-ease-emphasised);
+
+  --breakpoint-xs: 360px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--day);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Japanese reading rules (DESIGN_SYSTEM §3 Typography) */
+  :lang(ja) {
+    line-height: 1.8;
+    letter-spacing: 0;
+    line-break: strict;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .on-night :focus-visible {
+    outline-color: var(--focus-on-night);
+  }
+
+  ruby rt {
+    font-size: 0.5em;
+  }
+}
+
+/* Motion preset "fade-up" (Reveal). Starts visible enough to read, ends fully visible. */
+@keyframes nm-rise {
+  from {
+    opacity: 0.2;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nm-reveal {
+  animation: nm-rise 600ms var(--nm-ease-emphasised) both;
+  animation-delay: var(--nm-delay, 0ms);
+}
+
+/* Reduced motion: no transitions or animations beyond a near-instant fade (UX-R02). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .nm-reveal {
+    animation: none;
+  }
+}

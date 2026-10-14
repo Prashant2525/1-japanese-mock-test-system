@@ -50,15 +50,15 @@ Signage cues: condensed numerals for levels, durations and counts; pill-shaped "
 
 ### Level line colours (seeded per level in the CMS)
 
-`line` is decorative (≥ 3:1 against its background); `badge` carries white text (≥ 4.5:1).
+`line` is decorative (≥ 3:1 against both night and white backgrounds); `badge` carries white text (≥ 4.5:1). Checked by `tests/unit/contrast.test.ts`. (N2/N1 lines lightened in Phase 8: the original `#7A4FC8`/`#B0306A` were 2.8:1 and 2.6:1 on night.)
 
 | Level | line | badge |
 |---|---|---|
 | N5 / NAT 5Q | `#1E9E5A` | `#13703F` |
 | N4 / NAT 4Q | `#E59A00` | `#8A5B00` |
 | N3 / NAT 3Q | `#2B6BD8` | `#1F56B8` |
-| N2 / NAT 2Q | `#7A4FC8` | `#6A42B5` |
-| N1 / NAT 1Q | `#B0306A` | `#962858` |
+| N2 / NAT 2Q | `#8F64DA` | `#6A42B5` |
+| N1 / NAT 1Q | `#D04A86` | `#962858` |
 | JFT A1 · A2.1 · A2.2 · A2 | `#14A3A3` · `#0E8A8A` · `#0B7285` · `#0A5F70` | `#0B6E6E` · `#0B6E6E` · `#095C6B` · `#084C5C` |
 
 ### Typography
@@ -107,6 +107,15 @@ WCAG 2.2 AA; visible 3px focus ring (`--focus`); semantic landmarks; labelled, k
 ## 7. Components (built once in Phase 8)
 
 Buttons (primary signal, secondary outline, ghost-on-night), links, inputs, select, checkbox/radio, textarea, form field + validation, **station badge** (level code + line colour), status badges (free / owned until / paid), test card (coloured top rail = level line), material card, tabs, dialog, drawer, toast, data table, pagination, breadcrumb, language toggle (EN / 日本語), navbar (day and night variants), footer, skeletons, empty state, error state, audio player, PDF viewer frame, **route map** (static, scroll-drawn and progress variants), timer, progress bar, question card, option list, question palette, result score ring, section breakdown, answer-review item.
+
+## 7b. Implementation (Phase 8)
+
+- Tokens: `src/ui/styles/globals.css` (`:root` variables + Tailwind v4 `@theme`). Contrast is checked by `tests/unit/contrast.test.ts`.
+- Fonts: `next/font` in `src/app/(frontend)/[locale]/layout.tsx` (self-hosted).
+- Components: `src/ui/components` (Button, Field/PasswordField, Alert, Logo, StationBadge, Skyline, RouteStations, LanguageToggle, Reveal, Toast, SiteHeader/Footer, SkipLink, AuthCard).
+- Logo variants: `public/brand/` (generator and notes in `scripts/brand/`).
+- Motion: fade-up preset `.nm-reveal` (CSS); reduced motion switches it off. GSAP and the Motion library arrive with the scroll scenes in Phase 18.
+- Still to come: Dialog (first real use: Phase 16 submit confirmation), data table, pagination, tabs, audio player, PDF frame, timer, question card and palette, result ring, answer-review item. These are built with the feature that first needs them.
 
 ## 8. CMS-editable design surface (D-030)
 

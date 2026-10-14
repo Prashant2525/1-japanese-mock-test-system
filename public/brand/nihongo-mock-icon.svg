@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-labelledby="title">
+  <title id="title">Nihongo Mock icon</title>
+  <defs>
+    <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E64646"/>
+      <stop offset="1" stop-color="#B91F2B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="96" cy="96" r="92" fill="url(#sun)"/>
+  <circle cx="96" cy="96" r="74" fill="none" stroke="#FFFFFF" stroke-opacity=".20" stroke-width="2"/>
+  <path d="M49 43 H143 L136 55 H56 Z" fill="#FFFFFF"/>
+  <path d="M60 57 H132 V66 H60 Z" fill="#FFFFFF"/>
+  <path d="M68 66 H80 V101 H68 Z M112 66 H124 V101 H112 Z" fill="#FFFFFF"/>
+  <path d="M28 111 C50 100 72 104 93 119 V157 C72 142 50 139 28 149 Z" fill="#FFFFFF"/>
+  <path d="M164 111 C142 100 120 104 99 119 V157 C120 142 142 139 164 149 Z" fill="#FFFFFF"/>
+  <path d="M96 119 V158" fill="none" stroke="#C92732" stroke-width="4" stroke-linecap="round"/>
+  <path d="M43 119 C57 114 70 117 82 124 M43 129 C57 124 70 127 82 134 M149 119 C135 114 122 117 110 124 M149 129 C135 124 122 127 110 134" fill="none" stroke="#AAB7C8" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
