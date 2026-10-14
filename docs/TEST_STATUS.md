@@ -26,6 +26,12 @@ Last updated: 2026-10-14 (Phase 6).
 - Integration: `tests/int/database.int.spec.ts` (8): query, test-DB isolation, migrations applied, admin sessions table, admin persistence (no hash exposed), anonymous create/read refused (403), delete refused even for an admin. `tests/int/health.int.spec.ts` (3): `/healthz`, `/readyz` ready, no connection details exposed.
 - E2E: `tests/e2e/foundation.e2e.spec.ts` (8): security headers and request ID, readiness, home page, anonymous `/api/cms/admins` → 403, GraphQL → 404, admin redirect to login, wrong password rejected, valid login reaches the dashboard. The throwaway admin is removed afterwards (verified: 0 admins in both databases).
 
+## CI results (PR #3)
+
+- Run 38582759563 (commit `585196f`): **pass** in 1m34s. The log shows formatting ✓, migration applied, drift check ran, build compiled, E2E 8 passed.
+- Run 38583141350 (commit `71ef7cf`, password-free CI database): **pass** in 1m59s.
+- GitGuardian: flags commit `585196f` for the throwaway CI database password (KI-11). The latest commit has no password.
+
 ## Coverage gaps (planned)
 
 - WebKit and mobile-viewport E2E projects: added in Phase 8 with the first real UI.

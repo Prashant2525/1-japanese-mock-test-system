@@ -1,7 +1,7 @@
 # Session Handoff
 
 **Session date:** 2026-10-14
-**Current phase / milestone:** Phase 6 — foundation. **COMPLETE locally**; PR open, CI running.
+**Current phase / milestone:** Phase 6 — foundation. **COMPLETE**; PR #3 open, CI green; GitGuardian false positive on commit `585196f` waiting on the owner (KI-11).
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
@@ -15,7 +15,7 @@
 
 ## Partial / unfinished
 
-- The CI result for the PR must be checked. Placeholder home page (KI-08). Console email (KI-09).
+- GitGuardian incident 38202083 needs the owner (mark as test credential) or approval to squash the branch. Placeholder home page (KI-08). Console email (KI-09).
 
 ## Known gotchas
 

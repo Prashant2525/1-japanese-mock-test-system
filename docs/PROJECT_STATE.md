@@ -1,6 +1,6 @@
 # Project State
 
-Current phase / milestone: **Phase 6 — Project and backend foundation: COMPLETE locally** (CI result on the PR is the final check). Next: **Phase 7 — Authentication, sessions, roles and permissions.**
+Current phase / milestone: **Phase 6 — Project and backend foundation: COMPLETE** (local + CI green on PR #3; GitGuardian false positive pending owner action, KI-11). Next: **Phase 7 — Authentication, sessions, roles and permissions.**
 Overall status: **IN PROGRESS** (foundation code exists; no student features yet)
 Last verified commit: branch `feature/phase-6-foundation` (see `git log`); `main` = `5f46dad` (PR #2 merged).
 
@@ -14,7 +14,7 @@ Last verified commit: branch `feature/phase-6-foundation` (see `git log`); `main
     - `/healthz`, `/readyz`, baseline security headers.
     - Tests: unit 18/18, integration 11/11, E2E 8/8; lint, typecheck, formatting and build all pass; migration-drift detection proven.
     - GitHub Actions CI workflow; Husky + lint-staged pre-commit.
-- **Partial / unverified:** the first CI run happens on the PR. The home page is a placeholder (KI-08). Email goes to the console (KI-09).
+- **Partial / unverified:** GitGuardian check on PR #3 is red for an old commit (KI-11). The home page is a placeholder (KI-08). Email goes to the console (KI-09).
 - **In progress:** none.
 - **Remaining:** Phases 7–28.
 

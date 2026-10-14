@@ -15,6 +15,7 @@ Last updated: 2026-10-14 (Phase 6).
 | KI-08 | Info | The home page is a temporary placeholder ("The website is being built."), hard-coded and English-only. | `src/app/(frontend)/page.tsx` | Replaced by CMS-driven, bilingual pages in Phase 8/18. Must not reach production. |
 | KI-09 | Info | Payload logs "No email adapter provided"; emails go to the console. | Server logs | Phase 7 adds the Resend adapter (console fallback in development and tests). |
 | KI-10 | Low | Payload's migration runner cannot load `.ts` migration files outside its own CLI. | Integration test setup failed when calling `payload.db.migrate()` in-process. | Tests and deployments run `pnpm migrate` (the CLI) in a separate process. Documented in `tests/int/global-setup.ts`. |
+| KI-11 | Low | GitGuardian incident 38202083 ("Generic Password") on commit `585196f`: `POSTGRES_PASSWORD: postgres` for the ephemeral CI database. It is not a real credential (the database exists only during a CI job), so nothing needs revoking. Fixed in `71ef7cf` (trust auth, no password). | GitGuardian check on PR #3 | Owner marks the incident as a test credential/false positive in GitGuardian, or approves squashing the PR branch so the old commit disappears. |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 
 ## Requirement ambiguities
