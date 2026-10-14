@@ -15,7 +15,7 @@ Last updated: 2026-10-15 (Phase 8).
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **78/78** |
+| Unit tests | `pnpm test:unit` | **82/82** |
 | Integration tests | `pnpm test:int` | **59/59** |
 | Build | `pnpm build` | Pass |
 | E2E | `pnpm test:e2e` | **66/66 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
@@ -25,6 +25,7 @@ Last updated: 2026-10-15 (Phase 8).
 - **Unit:**
   - `labels` (8): EN/JA have identical keys, no empty labels, identical `{placeholders}`, every validation key exists, label globals cover every namespace once and stay under 80 labels, override merging.
   - `contrast` (22): every text/background token pair ≥ 4.5:1; level badges ≥ 4.5:1 with white text; route lines and focus rings ≥ 3:1.
+  - `login-errors` (4): login failures classified by HTTP status, not class identity; lock decided from the state before the attempt (deterministic).
   - `ui-lib` (10): open-redirect protection for `?next=`; API client success, error code + Retry-After, network failure, non-JSON error.
 - **Integration, `ui-labels` (4):** a CMS override reaches the merged messages and clearing it restores the default; EN overrides don't leak into JA; saves are audited; only `content.manage` can edit.
 - **E2E, `ui/routing` (5 × 2 browsers):** English for first-time visitors even with a Japanese browser; the switch keeps the page and is remembered; translated 404; the student area redirects to login with `next`; no sideways scrolling.

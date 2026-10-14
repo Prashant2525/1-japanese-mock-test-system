@@ -187,33 +187,32 @@ export async function resendVerification(address: string, meta: RequestMeta): Pr
 /**
  * Maps a Payload login failure to our error codes using the HTTP status, because the production
  * build may throw Payload error classes from a different bundle copy (instanceof is unreliable).
- * 401 = wrong credentials or a locked account; 403 = unverified email or our own suspension check.
+ * 403 = unverified email or our own suspension check. 401 = wrong credentials, or an account that
+ * was ALREADY locked before this attempt (`lockedBefore`, read before calling Payload so the answer
+ * never depends on when Payload writes the new lock).
  */
-export async function classifyLoginError(
-  payload: Payload,
-  err: unknown,
-  email: string,
-): Promise<AppError | null> {
+export function classifyLoginError(err: unknown, lockedBefore: boolean): AppError | null {
   const status =
     typeof err === 'object' && err !== null ? (err as { status?: unknown }).status : undefined
   const message = err instanceof Error ? err.message : ''
   if (status === 403) {
     return new AppError(message === 'ACCOUNT_DISABLED' ? 'ACCOUNT_DISABLED' : 'EMAIL_NOT_VERIFIED')
   }
-  if (status === 401) {
-    const found = await payload.find({
-      collection: 'students',
-      where: { email: { equals: email } },
-      limit: 1,
-      depth: 0,
-      overrideAccess: true,
-      showHiddenFields: true,
-    })
-    const lockUntil = (found.docs[0] as { lockUntil?: string | null } | undefined)?.lockUntil
-    const locked = lockUntil ? new Date(lockUntil).getTime() > Date.now() : false
-    return new AppError(locked ? 'RATE_LIMITED' : 'INVALID_CREDENTIALS')
-  }
+  if (status === 401) return new AppError(lockedBefore ? 'RATE_LIMITED' : 'INVALID_CREDENTIALS')
   return null
+}
+
+async function isLocked(payload: Payload, email: string): Promise<boolean> {
+  const found = await payload.find({
+    collection: 'students',
+    where: { email: { equals: email } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+    showHiddenFields: true,
+  })
+  const lockUntil = (found.docs[0] as { lockUntil?: string | null } | undefined)?.lockUntil
+  return lockUntil ? new Date(lockUntil).getTime() > Date.now() : false
 }
 
 export async function login(
@@ -225,6 +224,7 @@ export async function login(
     { key: meta.ip && `login:ip:${meta.ip}`, rule: RATE_LIMITS.loginPerIp },
     { key: `login:acct:${input.email}`, rule: RATE_LIMITS.loginPerAccount },
   ])
+  const lockedBefore = await isLocked(payload, input.email)
   let result: Awaited<ReturnType<typeof payload.login<'students'>>>
   try {
     result = await payload.login({
@@ -233,7 +233,7 @@ export async function login(
       context: { rateLimited: true },
     })
   } catch (err) {
-    throw (await classifyLoginError(payload, err, input.email)) ?? err
+    throw classifyLoginError(err, lockedBefore) ?? err
   }
   if (!result.token || !result.user) throw new AppError('INVALID_CREDENTIALS')
   await recordAudit(payload, {

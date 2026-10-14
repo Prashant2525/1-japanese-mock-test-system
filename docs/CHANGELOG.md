@@ -10,7 +10,8 @@
 - Pages: home (temporary), sign up, check email, verify email, log in, forgot/reset password, protected student home, logout. Shared validation rules with the API (`src/shared/auth-schemas.ts`).
 - Fixes found by the new browser tests: login errors mis-classified in production builds (D-065); Secure cookies broke Safari on local http (D-064); a resend form nested inside the login form; Japanese pages rendered in English (missing `setRequestLocale` in layouts); N2/N1 line colours below 3:1 (D-063); Payload query over PostgreSQL's 100-argument limit (labels split into three globals).
 - Domain placeholder guide added to `.env`/`.env.example`.
-- Tests: unit 78, integration 59, E2E 66 + 1 skipped (desktop Chrome and iPhone Safari, axe accessibility scans in EN/JA).
+- CI caught a timing-dependent answer on the attempt that locks an account; the lock is now read before the attempt (deterministic).
+- Tests: unit 82, integration 59, E2E 66 + 1 skipped (desktop Chrome and iPhone Safari, axe accessibility scans in EN/JA).
 
 ## 2026-10-14 — Phase 7b: admin two-factor login, environment files, Resend check
 
