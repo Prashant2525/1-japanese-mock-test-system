@@ -22,6 +22,8 @@ export function emailedToken(kind: 'verify' | 'reset', email: string): string {
 
 /** WCAG 2.2 A/AA scan; fails on serious or critical violations. */
 export async function expectAccessible(page: Page): Promise<void> {
+  // Scan the settled page: mid fade-in, text is semi-transparent and would read as low contrast.
+  await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'))
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze()

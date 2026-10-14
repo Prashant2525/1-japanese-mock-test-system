@@ -15,7 +15,7 @@ Last verified commit: branch `feature/phase-8-frontend-foundation` (PR to `main`
     - Every UI string in message files, overridable in the CMS (three label globals).
     - Component library and accessible forms (shared validation with the API).
     - Pages: home (temporary), sign up, check email, verify, log in, forgot/reset, protected student home, log out.
-    - Tests: unit 82/82, integration 59/59, E2E 66/66 + 1 intentionally skipped, on desktop Chrome and iPhone Safari; axe scans pass in EN and JA. Lint, typecheck, format and build are clean.
+    - Tests: unit 82/82, integration 59/59, E2E 68/68 + 1 intentionally skipped (two clean runs in a row), on desktop Chrome and iPhone Safari; axe scans pass in EN and JA. Lint, typecheck, format and build are clean.
 - **Partial / unverified:**
   - Real email delivery: waits on a domain (DOM-1, KI-18).
   - The home page is temporary (KI-08).

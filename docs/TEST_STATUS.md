@@ -18,7 +18,7 @@ Last updated: 2026-10-15 (Phase 8).
 | Unit tests | `pnpm test:unit` | **82/82** |
 | Integration tests | `pnpm test:int` | **59/59** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **66/66 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **68/68 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
 
 ## What the Phase 8 tests prove
 
@@ -28,7 +28,7 @@ Last updated: 2026-10-15 (Phase 8).
   - `login-errors` (4): login failures classified by HTTP status, not class identity; lock decided from the state before the attempt (deterministic).
   - `ui-lib` (10): open-redirect protection for `?next=`; API client success, error code + Retry-After, network failure, non-JSON error.
 - **Integration, `ui-labels` (4):** a CMS override reaches the merged messages and clearing it restores the default; EN overrides don't leak into JA; saves are audited; only `content.manage` can edit.
-- **E2E, `ui/routing` (5 × 2 browsers):** English for first-time visitors even with a Japanese browser; the switch keeps the page and is remembered; translated 404; the student area redirects to login with `next`; no sideways scrolling.
+- **E2E, `ui/routing` (6 × 2 browsers):** English for first-time visitors even with a Japanese browser; the switch keeps the page and is remembered; merely seeing the switch (background prefetch) does not change the remembered language; translated 404; the student area redirects to login with `next`; no sideways scrolling.
 - **E2E, `ui/auth-flow` (5 × 2):** full sign up → verify → log in → student home → log out; translated validation and the "email or password is incorrect" error; an unverified student can resend the link; forgot → reset → log in with the new password; reset page without a token.
 - **E2E, `ui/a11y` (14 × 2, skip-link test desktop only):** axe WCAG 2.2 AA scans of 11 pages (EN and JA) with no serious or critical violations; errors linked with `aria-describedby`; the skip link moves focus; reduced motion disables entrance animation.
 

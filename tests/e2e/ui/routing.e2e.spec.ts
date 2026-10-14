@@ -27,6 +27,20 @@ test.describe('language routing (D-028)', () => {
     await expect(page).toHaveURL(/\/ja$/)
   })
 
+  test('seeing the language switch does not change the remembered language (prefetch)', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('/en/login')
+    await page.waitForLoadState('networkidle')
+    await page.getByRole('link', { name: '日本語' }).first().hover()
+    await page.waitForTimeout(500)
+    const cookie = (await context.cookies()).find((c) => c.name === 'NEXT_LOCALE')
+    expect(cookie?.value).toBe('en')
+    await page.goto('/')
+    await expect(page).toHaveURL(/\/en$/)
+  })
+
   test('unknown pages show a translated 404', async ({ page }) => {
     const res = await page.goto('/ja/does-not-exist')
     expect(res?.status()).toBe(404)

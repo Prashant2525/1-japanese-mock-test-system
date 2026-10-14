@@ -37,6 +37,7 @@ export function LanguageToggle({ tone = 'day' }: { tone?: 'day' | 'night' }) {
               <Link
                 href={{ pathname, query }}
                 locale={o.locale}
+                prefetch={false}
                 lang={o.lang}
                 hrefLang={o.lang}
                 aria-current={active ? 'true' : undefined}

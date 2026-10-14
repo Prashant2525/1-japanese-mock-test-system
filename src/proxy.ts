@@ -72,7 +72,12 @@ export function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next()
-  if (request.cookies.get(LOCALE_COOKIE)?.value !== first) {
+  // Only a real visit changes the remembered language. Next.js prefetches visible links (including
+  // the language switch) in the background; those requests must not flip the cookie.
+  const isPrefetch =
+    request.headers.has('next-router-prefetch') ||
+    /prefetch/i.test(request.headers.get('sec-purpose') ?? request.headers.get('purpose') ?? '')
+  if (!isPrefetch && request.cookies.get(LOCALE_COOKIE)?.value !== first) {
     response.cookies.set(LOCALE_COOKIE, first, { path: '/', maxAge: ONE_YEAR, sameSite: 'lax' })
   }
   return response
