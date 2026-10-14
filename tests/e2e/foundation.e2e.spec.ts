@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { E2E_ADMIN_EMAIL } from './admin-account'
+import { adminLogin } from './admin-login'
 
 test.describe('platform endpoints', () => {
   test('liveness responds with request ID and baseline security headers', async ({ request }) => {
@@ -56,15 +57,12 @@ test.describe('admin panel', () => {
     await expect(page.locator('span[title="Dashboard"]')).toHaveCount(0)
   })
 
-  test('lets an admin log in and see the dashboard', async ({ page }) => {
+  test('lets an admin log in (password + authenticator code) and see the dashboard', async ({
+    page,
+  }) => {
     const password = process.env.E2E_ADMIN_PASSWORD
     expect(password, 'global setup must create the E2E admin').toBeTruthy()
-    await page.goto('/admin/login')
-    await page.fill('#field-email', E2E_ADMIN_EMAIL)
-    await page.fill('#field-password', password!)
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/admin$/)
-    await expect(page.locator('span[title="Dashboard"]').first()).toBeVisible()
+    await adminLogin(page, E2E_ADMIN_EMAIL, password!, process.env.E2E_ADMIN_TOTP!)
     await expect(page.getByRole('link', { name: 'Admins' }).first()).toBeVisible()
   })
 })

@@ -13,7 +13,6 @@ Last updated: 2026-10-14 (Phase 6).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
-| OPS-2b | P3 | Is MFA (authenticator-app code) **required** for admin accounts at launch, or optional? | Phase 7 | Required for Super Admin, optional for other roles. | |
 | PA-6 | P3 | Who reviews the Japanese translations of UI text and the drafted page/legal copy before launch? | Phase 18 | Owner or a nominated Japanese speaker; drafts stay marked DRAFT until reviewed. | |
 | PAY-3b | P3 | Merchant onboarding status: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts, and has onboarding started? | Phase 20 | Owner starts onboarding now (D-019). | |
 | PAY-4b | P3 | Is a VAT/tax invoice required on receipts, and what details must a receipt show (business name, PAN/VAT no., address)? | Phase 19 | — | |
@@ -86,6 +85,10 @@ Owner responses are recorded verbatim; the resulting decision is in `docs/DECISI
 ### Phase 5 (2026-10-14)
 - **DB-1** — "Approved." → **D-049**
 - **DB-2**, **ARCH-1** — covered by the same "Approved." reply; recorded as accepted defaults → **D-050** (owner may amend)
+
+### Phase 7 (2026-10-14)
+- **OPS-2b** — "Yes, admins enter a code from an authenticator app when logging in." → **D-058** (applied to all admins)
+- Resend account created and API key added to `.env` by the owner; key verified with `pnpm email:check` (sending-only permission). Sending domain not yet verified.
 
 ### Cross-cutting interpretation
 - "make it entirely managable from CMS" — interpreted with guardrails in **D-020**. The owner may amend it.

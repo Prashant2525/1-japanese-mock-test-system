@@ -1,6 +1,13 @@
 import { execSync } from 'node:child_process'
 
-const KEYS = ['E2E_ADMIN_PASSWORD', 'E2E_EDITOR_PASSWORD', 'E2E_STUDENT_PASSWORD'] as const
+const KEYS = [
+  'E2E_ADMIN_PASSWORD',
+  'E2E_ADMIN_TOTP',
+  'E2E_EDITOR_PASSWORD',
+  'E2E_EDITOR_TOTP',
+  'E2E_NEW_ADMIN_PASSWORD',
+  'E2E_STUDENT_PASSWORD',
+] as const
 
 /** Creates the throwaway E2E accounts and shares their random passwords with tests through the environment. */
 export default function globalSetup(): void {

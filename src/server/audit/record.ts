@@ -29,6 +29,7 @@ const SENSITIVE_KEYS = new Set([
   'resetPasswordToken',
   'resetPasswordExpiration',
   '_verificationToken',
+  'totpSecret',
   'apiKey',
   'secret',
   'loginAttempts',

@@ -125,8 +125,8 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-055 | Session cookies are accepted only with same-origin browser signals (Payload's CSRF rule), **and** `/api/v1` rejects cross-site mutations. Future mobile clients will use `Authorization: JWT <token>`. | AUTH-R02 |
 | D-056 | Rate limits are stored in PostgreSQL (`rate_limits`, hashed keys). Per-IP limits apply only when `TRUST_PROXY=true`. Initial limits: login 20/15 min per IP and 10/15 min per account; emails 3/15 min per address; registration 10/hour per IP. Payload lockout: 5 failures → 15 min. To be tuned in Phase 26. | ARCHITECTURE §4 |
 | D-057 | Email copy lives in the CMS `email-templates` collection (EN/JA, allow-listed `{{variables}}`, escaped into a fixed branded layout). Code defaults are used if a template is missing. Transport: Resend in staging/production, console in development, memory in tests. | D-030, D-042 |
-
-**Admin MFA (OPS-2b) is not implemented.** The playbook forbids adding MFA without approval. Once approved, it is a small TOTP addition.
+| D-058 | **Admin two-factor login is required for every admin** (OPS-2b, owner: "Yes, admins enter a code from an authenticator app when logging in"). It uses the `payload-totp` plugin **3.0.6, pinned exactly** after a source review: `forceSetup` on, every collection's access wrapped, the code required each session, wrong codes counted toward the 5-attempt/15-minute lockout, Japanese UI included. The issuer shown in the authenticator app is "Nihongo Mock". Students are not affected. *(interpretation: "admins" = all admin roles; the owner may relax this to Super Admins only)* | OPS-2b |
+| D-059 | E2E tests start their own production server on port **3100** (`APP_URL` set accordingly), so they never reuse a developer's `pnpm dev` on 3000. | Phase 7b finding |
 
 ## Rejected / parked alternatives
 

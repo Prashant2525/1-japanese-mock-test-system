@@ -20,7 +20,7 @@ pnpm migrate                  # applies database migrations
 pnpm dev                      # http://localhost:3000 · admin at /admin
 ```
 
-The first admin account is created with `pnpm admin:create` (see below); the admin panel has no public sign-up.
+The first admin account is created with `pnpm admin:create` (see below); the admin panel has no public sign-up. On first login every admin must set up an authenticator app (Google Authenticator, Microsoft Authenticator, Authy, 1Password…) by scanning a QR code, then enter a 6-digit code at every login.
 
 ## Commands
 
@@ -34,6 +34,7 @@ The first admin account is created with `pnpm admin:create` (see below); the adm
 | `pnpm migrate` · `pnpm migrate:create <name>` · `pnpm migrate:status` | Database migrations |
 | `pnpm generate:types` · `pnpm generate:importmap` | Regenerate Payload types and admin import map |
 | `pnpm db:up` · `pnpm db:down` | Start or stop the local database |
+| `pnpm email:check` | Check the Resend key and domain (sends no email) |
 | `pnpm admin:create --email you@example.com --name "Your Name"` | Create a Super Admin; a set-password link is emailed (printed to the console in development) |
 
 ## Health checks

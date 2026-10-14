@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-14 — Phase 7b: admin two-factor login, environment files, Resend check
+
+- Admin two-factor login required for every admin (D-058): `payload-totp` 3.0.6 (pinned after source review), forced setup, code every session, wrong codes count toward lockout, "Nihongo Mock" issuer. Migration `admin_totp` (`totp_attempts` table, `admins.totp_secret`). The proxy passes `x-pathname` for admin pages.
+- `totpSecret` redacted in the audit log and logs.
+- Tests: integration +6 (`admin-mfa`); E2E +3 (`admin-mfa`: password alone is not enough, wrong code refused, forced first-time setup). Existing admin E2E logins now enter real codes. E2E runs on its own port 3100 (D-059).
+- `.env.example` rewritten with a commented section per variable, how to get each key, and commented placeholders for later phases. The owner's `.env` was rebuilt from it, keeping existing values.
+- `pnpm email:check` verifies the Resend key and domain status without sending email.
+- Windows exit crash (KI-12) diagnosed: Node/libuv assertion when `process.exit()` runs while fetch sockets close; scripts use `process.exitCode`.
+- Phase 7 PR #4 had merged into the Phase 6 branch instead of `main`; PR #5 brings it to `main`.
+
 ## 2026-10-14 — Phase 7: authentication, sessions, roles and permissions
 
 - Permission catalogue (28 keys) and `can()`; `roles` collection with seeded system roles (Super Admin, Content Editor, Support). Super Admin always has every permission; system roles cannot be deleted.

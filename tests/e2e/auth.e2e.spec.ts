@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_STUDENT_EMAIL } from './admin-account'
+import { adminLogin } from './admin-login'
 
 /** Calls the API from inside the page, exactly as the site's own code will (real browser fetch). */
 async function browserFetch(
@@ -74,17 +75,14 @@ test.describe('student session in a real browser', () => {
   })
 })
 
-async function adminLogin(page: Page, email: string, password: string) {
-  await page.goto('/admin/login')
-  await page.fill('#field-email', email)
-  await page.fill('#field-password', password)
-  await page.click('button[type="submit"]')
-  await page.waitForURL(/\/admin$/)
-}
-
 test.describe('admin roles shape the admin panel', () => {
   test('a Super Admin sees roles, the audit log and email templates', async ({ page }) => {
-    await adminLogin(page, E2E_ADMIN_EMAIL, process.env.E2E_ADMIN_PASSWORD!)
+    await adminLogin(
+      page,
+      E2E_ADMIN_EMAIL,
+      process.env.E2E_ADMIN_PASSWORD!,
+      process.env.E2E_ADMIN_TOTP!,
+    )
     const nav = page.locator('nav')
     for (const label of ['Roles', 'Audit log', 'Email templates', 'Students']) {
       await expect(nav.getByRole('link', { name: label, exact: true }).first()).toBeVisible()
@@ -92,7 +90,12 @@ test.describe('admin roles shape the admin panel', () => {
   })
 
   test('a Content Editor does not see the audit log or email templates', async ({ page }) => {
-    await adminLogin(page, E2E_EDITOR_EMAIL, process.env.E2E_EDITOR_PASSWORD!)
+    await adminLogin(
+      page,
+      E2E_EDITOR_EMAIL,
+      process.env.E2E_EDITOR_PASSWORD!,
+      process.env.E2E_EDITOR_TOTP!,
+    )
     const nav = page.locator('nav')
     await expect(nav.getByRole('link', { name: 'Students', exact: true }).first()).toBeVisible()
     await expect(nav.getByRole('link', { name: 'Audit log', exact: true })).toHaveCount(0)
