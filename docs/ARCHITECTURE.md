@@ -14,20 +14,20 @@ flowchart LR
     A[Admin] --> AD
   end
   subgraph App["Next.js app (one Docker image)"]
-    W["Public site + student area\n/en, /ja"]
-    AD["Payload Admin\n/admin"]
-    API1["Domain API\n/api/v1/*"]
-    CMSAPI["Payload API\n/api/cms/*"]
+    W["Public site + student area<br/>/en, /ja"]
+    AD["Payload Admin<br/>/admin"]
+    API1["Domain API<br/>/api/v1/*"]
+    CMSAPI["Payload API<br/>/api/cms/*"]
     SVC["Application services"]
-    DOM["Domain module\n(pure TypeScript)"]
+    DOM["Domain module<br/>(pure TypeScript)"]
     W --> SVC
     API1 --> SVC
     AD --> CMSAPI
     SVC --> DOM
   end
-  WK["Worker process\n(same image, Payload jobs)"]
+  WK["Worker process<br/>(same image, Payload jobs)"]
   DB[(PostgreSQL)]
-  R2[(Cloudflare R2\npublic + private buckets)]
+  R2[("Cloudflare R2<br/>public + private buckets")]
   EM[Resend email]
   PAY["eSewa · Khalti · connectIPS"]
   SEN[Sentry]
@@ -49,13 +49,13 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  UI["UI layer\nsrc/app (RSC pages, client components)\nsrc/ui (design system, motion)"]
-  HTTP["HTTP layer\nsrc/app/api/v1 route handlers\nZod validation · auth · rate limit · error mapping"]
-  SVC["Application services\nsrc/server/services\nuse cases + authorization + transactions + audit"]
-  DOM["Domain\nsrc/domain\nprogression · scoring · deadlines · eligibility · payment state machine\n(no Next/Payload imports)"]
-  REPO["Data access\nsrc/server/repositories\nPayload Local API + Drizzle (locks, hot paths)"]
-  INT["Integrations\nsrc/server/integrations\npayments · email · storage"]
-  PL["Payload config\nsrc/payload (collections, globals, blocks, hooks, access, admin views, jobs)"]
+  UI["UI layer<br/>src/app (RSC pages, client components)<br/>src/ui (design system, motion)"]
+  HTTP["HTTP layer<br/>src/app/api/v1 route handlers<br/>Zod validation · auth · rate limit · error mapping"]
+  SVC["Application services<br/>src/server/services<br/>use cases + authorization + transactions + audit"]
+  DOM["Domain<br/>src/domain<br/>progression · scoring · deadlines · eligibility · payment state machine<br/>(no Next/Payload imports)"]
+  REPO["Data access<br/>src/server/repositories<br/>Payload Local API + Drizzle (locks, hot paths)"]
+  INT["Integrations<br/>src/server/integrations<br/>payments · email · storage"]
+  PL["Payload config<br/>src/payload (collections, globals, blocks, hooks, access, admin views, jobs)"]
   UI --> SVC
   HTTP --> SVC
   SVC --> DOM
