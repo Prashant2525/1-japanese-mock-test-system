@@ -1,39 +1,48 @@
-# Environment and External Service Requirements (provisional)
+# Environment and External Service Requirements
 
-**Status:** PROVISIONAL. Exact variable names depend on the stack and providers approved in Phase 2. Nothing below is a final `.env` contract, and every group applies only if its integration is approved.
+Rules (PB §8.1): `.env.example` holds names and placeholders only and is committed. Real `.env` files are git-ignored. Production secrets live in the hosting provider's secret manager. Server-only secrets are never exposed through `NEXT_PUBLIC_` variables. **Secrets are never stored in or editable through the Admin CMS (D-020).** Use sandbox credentials until integrations are verified. Never fabricate credentials.
 
-Rules (PB §8.1): `.env.example` holds names and placeholders only and is committed. Real `.env` files are git-ignored. Production secrets live in the hosting provider's secret manager. Server-only secrets are never exposed through client-prefixed variables. Use sandbox credentials until integrations are verified. Never fabricate credentials.
+Validation: `src/server/env.ts` checks every variable at startup and exits with the names of any missing or malformed ones (never their values).
 
-Last updated: 2026-10-14 (Phase 1). Approved architecture: Next.js + PostgreSQL + TypeScript (D-025). Hosting not yet chosen (TECH-5).
+Last updated: 2026-10-14 (Phase 6).
+
+## Variables in use (Phase 6)
+
+| Variable | Required | Secret | Environments | Purpose | How to get it | Rotation |
+|---|---|---|---|---|---|---|
+| `APP_URL` | yes | no | all | Public base URL (Payload `serverURL`, links in emails) | Your domain, e.g. `https://nihongomock.com`; local `http://localhost:3000` | On domain change |
+| `LOG_LEVEL` | no (default `info`) | no | all | Log verbosity | `fatal`…`trace` or `silent` | — |
+| `DATABASE_URL` | yes | **yes** | all | PostgreSQL connection string | Local: Docker default in `.env.example`; production: from the database host | On staff change or suspected leak |
+| `DATABASE_POOL_MAX` | no (default 10) | no | all | Max DB connections per app instance | Size to host limits ÷ instances | — |
+| `PAYLOAD_SECRET` | yes (≥ 32 chars) | **yes** | all | Signs Payload sessions and tokens | Generate: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` | Rotating it logs everyone out |
+| `NEXT_OUTPUT_STANDALONE` | no | no | Docker build only | `1` produces the standalone server for container images | Set in the Dockerfile (Phase 27) | — |
+| `TEST_DATABASE_URL` | no | no (local/CI only) | test | Overrides the integration-test database | CI sets it to the runner's Postgres | — |
+| `E2E_DEV` | no | no | local | `1` runs E2E against `pnpm dev` instead of the build | — | — |
+
+`NODE_ENV` is set by Next.js and the scripts. Don't put it in `.env`.
 
 ## External accounts the owner will eventually need
 
 | Service | Needed by phase | Owner action | Lead time |
 |---|---|---|---|
-| eSewa merchant account (sandbox + live) | 21 (start onboarding after Phase 1) | Register a merchant under the business; obtain sandbox access. | Weeks (business documents) |
-| Khalti merchant account (sandbox + live) | 22 | Register a merchant; obtain test keys from the merchant dashboard. | Days to weeks |
-| connectIPS merchant (via NCHL / bank) | 23 | Contact NCHL/bank for e-payment merchant onboarding, technical documents and test credentials/certificates. | Weeks |
-| Domain name + DNS | 27 | Purchase or confirm the domain. | Days |
-| Hosting (app + database) | 6 (dev), 27 (prod) | Created after the stack/hosting approval. | Same day |
-| File/media storage | 12 | Chosen in Phase 2. | Same day |
-| Transactional email provider + verified sender domain | 7 (**required**: email verification approved, D-021) | Chosen in Phase 2; DNS records for the sending domain. | 1–2 days |
-| Error monitoring (optional) | 6/26 | Only if approved. | Same day |
+| Transactional email (Resend) + verified sender domain | 7 (console fallback until then) | Create an account; add DNS records for the sending domain | 1–2 days |
+| eSewa merchant (sandbox + live) | 21 | Register under the business | Weeks |
+| Khalti merchant (sandbox + live) | 22 | Register; test keys from the merchant dashboard | Days–weeks |
+| connectIPS merchant (via NCHL/bank) | 23 | Contact NCHL/bank for onboarding and test credentials | Weeks |
+| Cloudflare R2 (media) | 12 | Create an account and buckets | Same day |
+| Hosting (app + managed Postgres) | before staging (TECH-5) | Choose a provider | Same day |
+| Domain + DNS | 27 | Purchase/confirm | Days |
+| Sentry (errors) | 26 | Create a project | Same day |
 
-## Likely variable groups (names TBD)
+## Planned variable groups (added in their phases)
 
-| Group | Likely contents | Secret? | Scope |
+| Group | Likely names | Secret | Phase |
 |---|---|---|---|
-| Runtime | node env, public app URL, API base URL (if separate), allowed origins | No | All |
-| Database | connection URL, direct/migration URL if the ORM/provider needs one | **Yes** | Server |
-| Auth | session/auth signing secret; OAuth config only if approved | **Yes** | Server |
-| Email | provider API key or SMTP credentials, sender, reply-to | **Yes** (keys) | Server |
-| Media storage | bucket, region/endpoint, access key/secret, public/CDN base URL, signed-URL TTL | **Yes** (keys) | Server |
-| eSewa | environment flag, product/merchant code, secret key, success/failure URLs, status-check endpoint | **Yes** | Server |
-| Khalti | environment flag, secret key, return URL, website URL | **Yes** | Server |
-| connectIPS | merchant ID, app ID/name, password, private key/certificate material, gateway URLs | **Yes** | Server |
-| Observability | error-tracking DSN, environment name | Partly | Server (+ public DSN if approved) |
-| CI/CD | deploy tokens, project IDs | **Yes** | CI only |
+| Email | `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_REPLY_TO` | key: yes | 7 |
+| Media | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_PUBLIC`, `R2_BUCKET_PRIVATE`, `MEDIA_PUBLIC_BASE_URL` | keys: yes | 12 |
+| eSewa | `ESEWA_ENV`, `ESEWA_PRODUCT_CODE`, `ESEWA_SECRET_KEY` | yes | 21 |
+| Khalti | `KHALTI_ENV`, `KHALTI_SECRET_KEY` | yes | 22 |
+| connectIPS | `CONNECTIPS_MERCHANT_ID`, `CONNECTIPS_APP_ID`, `CONNECTIPS_APP_NAME`, `CONNECTIPS_PASSWORD`, `CONNECTIPS_PRIVATE_KEY` | yes | 23 |
+| Monitoring | `SENTRY_DSN`, `SENTRY_ENVIRONMENT` | partly | 26 |
 
-**Payment credentials and all other secrets are never stored in or editable through the Admin CMS (D-020).** The CMS may only toggle a payment method on/off and set its display order and labels.
-
-Provider-specific fields must be re-verified against current official documentation in Phases 20–23 (PB §8.3, Appendix D).
+Provider-specific names are confirmed against current official documentation in Phases 20–23.

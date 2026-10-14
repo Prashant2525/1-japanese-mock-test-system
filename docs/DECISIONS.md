@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-14 (Phase 3 approved).
+Last updated: 2026-10-14 (Phase 5 approved, Phase 6 foundation).
 
 ---
 
@@ -106,6 +106,14 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-046 | Visual direction **B — "Tokyo Transit"**: railway-signage identity; the level check drawn as a route line (N5 → N4 → N3) that recurs in the dashboard and results; layered skyline parallax; per-level line colours. Final tokens in `docs/DESIGN_SYSTEM.md`. The owner will request any UI changes later. | DS-2 ("Go with B") |
 | D-047 | Tagline changed to **"Practice Smart. Pass with Confidence."** (EN default; JA translation drafted, CMS-editable). Supersedes the tagline in D-031. RISK-06 is closed. | DS-3 |
 | D-048 | Logo variants approved, with no change to the artwork: (1) wordmark converted to outlines; (2) reversed version (white "Nihongo") for dark backgrounds; (3) monochrome small icon; (4) because the tagline changed, lockups carry the new tagline, plus a tagline-free header version. The original files in `nihongo-mock-logo-assets/` stay untouched. Produced in Phase 8 when assets enter the app. | DS-4 ("Yes") |
+
+## Phase 5–6 (2026-10-14)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-049 | Database design in `docs/DATABASE_ARCHITECTURE.md` **approved**. | DB-1 ("Approved.") |
+| D-050 | *(interpretation of "Approved." — owner may amend)* Retention: keep attempts, results, orders, payments and audit records indefinitely until a policy is set. Answer-save grace window: 3 seconds, adjustable 0–10 s in CMS system settings. | DB-2, ARCH-1 |
+| D-051 | Foundation versions: **Payload 3.90.2** (latest stable; 4.0 still beta, RISK-08), **Next.js 16.3.8** (newest patch of the mature 16.3 line; 16.4.0 was 8 days old), React 19.2.6 (Payload template pin), **PostgreSQL 17**, Node 24, pnpm 12.8.1. Payload REST at `/api/cms`, GraphQL disabled, schema changes only through migrations (`push: false`). Standalone Next output only for Docker builds (`NEXT_OUTPUT_STANDALONE=1`). | Phase 6 technical choice within D-033..D-045 |
 
 ## Rejected / parked alternatives
 

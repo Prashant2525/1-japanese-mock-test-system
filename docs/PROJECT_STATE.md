@@ -1,27 +1,40 @@
 # Project State
 
-Current phase / milestone: **Phase 5 — Database design: IN REVIEW** (waiting for DB-1). Phases 0–4 are complete.
-Overall status: **NOT STARTED** (no application code; planning, design and architecture documents only)
-Last verified commit: see `git log` on branch `docs/phase-4-5-architecture` (PR to `main`). `main` = `22f6a07` (PR #1 merged).
+Current phase / milestone: **Phase 6 — Project and backend foundation: COMPLETE** (local + CI green on PR #3; GitGuardian false positive pending owner action, KI-11). Next: **Phase 7 — Authentication, sessions, roles and permissions.**
+Overall status: **IN PROGRESS** (foundation code exists; no student features yet)
+Last verified commit: branch `feature/phase-6-foundation` (see `git log`); `main` = `5f46dad` (PR #2 merged).
 
 ## Work status
 
 - **Verified complete (with evidence):**
-  - Phases 0–2 (requirements, decisions D-001..D-045, stack).
-  - Phase 3: Direction B "Tokyo Transit" approved; tagline "Practice Smart. Pass with Confidence."; logo variants approved (D-046..D-048). `docs/DESIGN_SYSTEM.md` finalized.
-  - Phase 4: `docs/ARCHITECTURE.md`, `docs/API_DOCUMENTATION.md`. Payload facts checked against the official docs on 2026-10-14: sessions are on by default and revocable; `verify`, `maxLoginAttempts`/`lockTime`; jobs run with a separate `payload jobs:run` process; `beforeSchemaInit`/`afterSchemaInit` support custom tables and indexes; `payload.db.drizzle` is available.
-- **Partial / unverified:** Phase 5 schema design is written but not approved; nothing has been applied. D-018 and D-020 remain interpretations the owner may amend.
-- **In progress:** DB-1 approval (owner).
-- **Remaining:** Phases 6–28.
+  - Phases 0–5: requirements, decisions D-001..D-051, stack, design (Direction B), architecture, approved database design.
+  - Phase 6 foundation (all checks run locally on 2026-10-14; details in `docs/TEST_STATUS.md`):
+    - Next.js 16.3.8 + Payload 3.90.2 + PostgreSQL 17; `admins` auth collection, closed by default; EN/JA localization; Payload REST at `/api/cms`; GraphQL off; migration-only schema changes.
+    - Startup environment validation, structured logging with redaction, shared error model, request IDs, strict JSON parsing.
+    - `/healthz`, `/readyz`, baseline security headers.
+    - Tests: unit 18/18, integration 11/11, E2E 8/8; lint, typecheck, formatting and build all pass; migration-drift detection proven.
+    - GitHub Actions CI workflow; Husky + lint-staged pre-commit.
+- **Partial / unverified:** GitGuardian check on PR #3 is red for an old commit (KI-11). The home page is a placeholder (KI-08). Email goes to the console (KI-09).
+- **In progress:** none.
+- **Remaining:** Phases 7–28.
 
 ## Changes
 
-- Docs only. No application code, dependencies or migrations.
+- **Code:** `package.json`, `pnpm-workspace.yaml`, `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, `vitest.config.mts`, `playwright.config.ts`, `src/payload.config.ts`, `src/payload/collections/Admins.ts`, `src/server/{env,logger,health}.ts`, `src/server/http/{errors,route}.ts`, `src/app/(payload)/**` (generated), `src/app/(frontend)/**` (placeholder), `src/app/{healthz,readyz}/route.ts`, `src/domain/README.md`, `tests/**`, `docker/**`, `.github/workflows/ci.yml`, `.husky/pre-commit`, `.env.example`, `.gitignore`, `.nvmrc`, `README.md`.
+- **Database / migrations:** `src/migrations/20261014_141636_initial` (admins + sessions, Payload system tables, locales enum). Applied to the local dev and test databases.
+- **API:** `/healthz`, `/readyz`; Payload REST `/api/cms/*` (admins only, closed).
+- **UI:** placeholder home page; Payload admin at `/admin`.
 
 ## Verification and blockers
 
-- **Tests run:** none (no application code).
-- **Blockers:** DB-1 (approve the database design).
-- **Owner decisions open:** DB-2 (retention), ARCH-1 (3 s grace), OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Owner action outside the code:** merchant onboarding (owner will do it later).
-- **Exact next task:** after DB-1, run Phase 6 (playbook §11.7). Choose the Payload line (3.x stable vs 4.0 if GA); scaffold Next.js 16 + Payload with pnpm; Docker Compose Postgres; env validation; base collections from the approved schema; migrations; error handling; logger; `/healthz` and `/readyz`; Vitest + Playwright setup; GitHub Actions CI; `.gitignore` and `.env.example`; tests for config, health, DB connectivity and errors.
+- **Tests:** see `docs/TEST_STATUS.md`.
+- **Blockers for Phase 7:** none for building auth. A Resend account is needed for real emails (development uses the console). OPS-2b (admin MFA) is needed before Phase 7 finishes.
+- **Owner decisions open:** OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
+- **Environment variable names still needed:** `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_REPLY_TO` (Phase 7).
+- **Exact next task:** Phase 7 (playbook §11.8):
+  - `roles` collection + permission keys + the `can()` helper;
+  - Super Admin CLI;
+  - `students` auth collection (verify, lockout, sessions, preferredLocale, determination fields protected);
+  - `/api/v1/auth/*` with a Postgres rate limiter, plus `rate_limits` and `audit_events`;
+  - email adapter (Resend + console fallback) and bilingual email templates;
+  - tests for valid/invalid credentials, reset, expiry/revocation, privilege escalation and cross-user access.

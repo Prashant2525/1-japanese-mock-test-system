@@ -1,28 +1,29 @@
 # Session Handoff
 
 **Session date:** 2026-10-14
-**Current phase / milestone:** Phase 5 — database design. **IN REVIEW** (waiting for DB-1).
+**Current phase / milestone:** Phase 6 — foundation. **COMPLETE**; PR #3 open, CI green; GitGuardian false positive on commit `585196f` waiting on the owner (KI-11).
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
 
-- PR #1 merged into `main` (`22f6a07`). Work continues on branch `docs/phase-4-5-architecture`.
-- Phase 3 closed: D-046..D-048; `docs/DESIGN_SYSTEM.md` is the approved Direction B spec.
-- Phase 4: `docs/ARCHITECTURE.md`, `docs/API_DOCUMENTATION.md`.
-- Phase 5 proposal: `docs/DATABASE_ARCHITECTURE.md`.
+- DB-1 approved (D-049); DB-2/ARCH-1 defaults recorded from the same reply (D-050).
+- Foundation built on branch `feature/phase-6-foundation`; local results: lint ✓, typecheck ✓, format ✓, unit 18/18, int 11/11, build ✓, E2E 8/8, drift check verified.
+
+## How to run locally
+
+`pnpm install` → `pnpm db:up` → `pnpm migrate` → `pnpm dev`. Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. A local `.env` exists on the owner's machine (git-ignored, random `PAYLOAD_SECRET`).
 
 ## Partial / unfinished
 
-- The schema is not applied (approval gate). Logo variants are scheduled for Phase 8.
+- GitGuardian incident 38202083 needs the owner (mark as test credential) or approval to squash the branch. Placeholder home page (KI-08). Console email (KI-09).
 
-## Tests
+## Known gotchas
 
-None (no application code).
-
-## Blockers and owner decisions required
-
-- DB-1 (blocks Phase 6). DB-2 and ARCH-1 can be answered later. Others: OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
+- Payload's in-process `payload.db.migrate()` cannot load `.ts` migrations; always use `pnpm migrate` (KI-10).
+- Don't call `pool.end()` after Payload migrations in-process; it hangs. Run DB setup and fixtures in child processes (see `tests/int/global-setup.ts`, `tests/e2e/e2e-admin.ts`).
+- pnpm 12 records build permissions under `allowBuilds` in `pnpm-workspace.yaml` (`pnpm approve-builds <pkg>`).
+- Port 5432 is used by another Postgres on the owner's machine; the project uses 5433.
 
 ## Exact next step
 
-On DB-1 approval: record it in `docs/DECISIONS.md`, then start Phase 6 per `docs/PROJECT_STATE.md` "Exact next task". Re-check the Payload 4.0 status first (RISK-08). Keep `src/domain` free of framework imports (ARCHITECTURE §2).
+Phase 7 per `docs/PROJECT_STATE.md` "Exact next task". Ask the owner for OPS-2b (admin MFA) and a Resend account when the email step is reached.

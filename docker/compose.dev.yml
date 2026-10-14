@@ -1,0 +1,24 @@
+# Local development database only. Credentials below are local defaults, not secrets.
+# Start: pnpm db:up   Stop: pnpm db:down
+name: nihongo-mock
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nihongo_mock
+    ports:
+      - '127.0.0.1:5433:5432' # reachable from this computer only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d nihongo_mock']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:

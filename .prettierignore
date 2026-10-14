@@ -1,0 +1,12 @@
+pnpm-lock.yaml
+.next
+node_modules
+coverage
+playwright-report
+test-results
+docs
+nihongo-mock-logo-assets
+*.md
+src/payload-types.ts
+src/migrations/*.json
+src/app/(payload)/admin/importMap.js

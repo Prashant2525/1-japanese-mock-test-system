@@ -1,0 +1,22 @@
+/* Temporary placeholder styles; replaced by the design-system tokens in Phase 8. */
+:root {
+  --night: #0f2340;
+  --day: #f2f4f8;
+}
+
+body {
+  margin: 0;
+  background: var(--day);
+  color: var(--night);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+.placeholder {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 6rem 1rem;
+}
