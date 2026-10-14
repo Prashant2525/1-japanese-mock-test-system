@@ -96,8 +96,16 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ja') | ('en' | 'ja')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'labels-site': LabelsSite;
+    'labels-accounts': LabelsAccount;
+    'labels-messages': LabelsMessage;
+  };
+  globalsSelect: {
+    'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
+    'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
+    'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
+  };
   locale: 'en' | 'ja';
   widgets: {
     collections: CollectionsWidget;
@@ -570,6 +578,684 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-site".
+ */
+export interface LabelsSite {
+  id: number;
+  meta?: {
+    /**
+     * Default — EN: “Nihongo Mock” · JA: “Nihongo Mock”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    siteName?: string | null;
+    /**
+     * Default — EN: “Practice Smart. Pass with Confidence.” · JA: “賢く練習して、自信を持って合格へ。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    tagline?: string | null;
+    /**
+     * Default — EN: “Mock tests for JLPT, NAT and JFT, starting with a free level check from N5.” · JA: “JLPT・NAT・JFTの模擬試験。まずはN5からの無料レベルチェックから。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    description?: string | null;
+  };
+  a11y?: {
+    /**
+     * Default — EN: “Skip to main content” · JA: “本文へスキップ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    skipToContent?: string | null;
+    /**
+     * Default — EN: “Main navigation” · JA: “メインナビゲーション”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    mainNavigation?: string | null;
+    /**
+     * Default — EN: “Language” · JA: “言語”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    languageSwitcher?: string | null;
+    /**
+     * Default — EN: “Loading…” · JA: “読み込み中…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loading?: string | null;
+    /**
+     * Default — EN: “Show password” · JA: “パスワードを表示”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    showPassword?: string | null;
+    /**
+     * Default — EN: “Hide password” · JA: “パスワードを隠す”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    hidePassword?: string | null;
+    /**
+     * Default — EN: “Close” · JA: “閉じる”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    close?: string | null;
+    /**
+     * Default — EN: “Notifications” · JA: “お知らせ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    notifications?: string | null;
+  };
+  nav?: {
+    /**
+     * Default — EN: “Home” · JA: “ホーム”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    home?: string | null;
+    /**
+     * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    login?: string | null;
+    /**
+     * Default — EN: “Sign up” · JA: “新規登録”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    signup?: string | null;
+    /**
+     * Default — EN: “My page” · JA: “マイページ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    myPage?: string | null;
+    /**
+     * Default — EN: “Log out” · JA: “ログアウト”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    logout?: string | null;
+  };
+  footer?: {
+    /**
+     * Default — EN: “© {year} Nihongo Mock” · JA: “© {year} Nihongo Mock”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    rights?: string | null;
+    /**
+     * Default — EN: “Nihongo Mock is an independent practice service. It is not affiliated with the organisers of JLPT, NAT-TEST or JFT-Basic.” · JA: “Nihongo Mockは独立した学習サービスです。JLPT、NAT-TEST、JFT-Basicの実施団体とは関係ありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    notAffiliated?: string | null;
+  };
+  home?: {
+    /**
+     * Default — EN: “JLPT · NAT · JFT” · JA: “JLPT・NAT・JFT”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    eyebrow?: string | null;
+    /**
+     * Default — EN: “Your route to Japan starts at” · JA: “日本への道は”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    title?: string | null;
+    /**
+     * Default — EN: “N5” · JA: “N5”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    titleStation?: string | null;
+    /**
+     * Default — EN: “The full website is being built. You can already create an account.” · JA: “サイトは現在準備中です。アカウントはすでに作成できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    underConstruction?: string | null;
+    /**
+     * Default — EN: “Create a free account” · JA: “無料でアカウントを作成”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    ctaSignup?: string | null;
+    /**
+     * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    ctaLogin?: string | null;
+  };
+  authPanel?: {
+    /**
+     * Default — EN: “Your route to Japan starts at N5.” · JA: “日本への道は、N5から始まる。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    title?: string | null;
+    /**
+     * Default — EN: “Take the free level check, then practise with mock tests under real exam conditions.” · JA: “まずは無料のレベルチェック。その後、本番と同じ条件の模擬試験で練習しましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    body?: string | null;
+    /**
+     * Default — EN: “Level check route: N5, then N4, then N3” · JA: “レベルチェックの順路：N5、N4、N3”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stations?: string | null;
+  };
+  notFound?: {
+    /**
+     * Default — EN: “This page isn't on the route map” · JA: “このページは路線図にありません”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    title?: string | null;
+    /**
+     * Default — EN: “The page you're looking for doesn't exist or has moved.” · JA: “お探しのページは存在しないか、移動した可能性があります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    body?: string | null;
+    /**
+     * Default — EN: “Go to the home page” · JA: “ホームへ戻る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    home?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-accounts".
+ */
+export interface LabelsAccount {
+  id: number;
+  auth?: {
+    /**
+     * Default — EN: “Email” · JA: “メールアドレス”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    email?: string | null;
+    /**
+     * Default — EN: “Password” · JA: “パスワード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    password?: string | null;
+    /**
+     * Default — EN: “New password” · JA: “新しいパスワード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    newPassword?: string | null;
+    /**
+     * Default — EN: “Confirm new password” · JA: “新しいパスワード（確認）”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    confirmPassword?: string | null;
+    /**
+     * Default — EN: “Your name” · JA: “お名前”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    name?: string | null;
+    /**
+     * Default — EN: “At least 10 characters.” · JA: “10文字以上で入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordHint?: string | null;
+    signup?: {
+      /**
+       * Default — EN: “Create your account” · JA: “アカウントを作成”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Free. Start with the level check from N5.” · JA: “無料です。N5からのレベルチェックで始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      subtitle?: string | null;
+      /**
+       * Default — EN: “Create account” · JA: “アカウントを作成”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      submit?: string | null;
+      /**
+       * Default — EN: “Already have an account?” · JA: “すでにアカウントをお持ちですか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      haveAccount?: string | null;
+      /**
+       * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      loginLink?: string | null;
+    };
+    checkEmail?: {
+      /**
+       * Default — EN: “Check your email” · JA: “メールを確認してください”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “If {email} can be used for an account, we've sent a link to confirm it. Open the email and select the button to finish.” · JA: “{email} が利用できる場合、確認用のリンクを送信しました。メールを開き、ボタンを押して登録を完了してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      body?: string | null;
+      /**
+       * Default — EN: “We've sent a link to confirm your email address. Open the email and select the button to finish.” · JA: “メールアドレス確認用のリンクを送信しました。メールを開き、ボタンを押して登録を完了してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      bodyNoEmail?: string | null;
+      /**
+       * Default — EN: “Didn't get it? Check your spam folder, or send it again.” · JA: “届かない場合は、迷惑メールフォルダを確認するか、もう一度送信してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      resendPrompt?: string | null;
+      /**
+       * Default — EN: “Send the link again” · JA: “リンクを再送信”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      resend?: string | null;
+      /**
+       * Default — EN: “If the address needs confirming, a new link is on its way.” · JA: “確認が必要なアドレスであれば、新しいリンクを送信しました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      resent?: string | null;
+      /**
+       * Default — EN: “Back to log in” · JA: “ログインに戻る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      backToLogin?: string | null;
+    };
+    verify?: {
+      /**
+       * Default — EN: “Confirming your email” · JA: “メールアドレスを確認しています”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Checking your link…” · JA: “リンクを確認しています…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      working?: string | null;
+      /**
+       * Default — EN: “Email confirmed” · JA: “メールアドレスを確認しました”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      successTitle?: string | null;
+      /**
+       * Default — EN: “Your account is ready. Log in to start your level check.” · JA: “アカウントの準備ができました。ログインしてレベルチェックを始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      successBody?: string | null;
+      /**
+       * Default — EN: “This link doesn't work” · JA: “このリンクは使用できません”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      errorTitle?: string | null;
+      /**
+       * Default — EN: “It may have been used already or replaced by a newer one. Enter your email to get a new link.” · JA: “すでに使用されたか、新しいリンクに置き換えられた可能性があります。メールアドレスを入力すると、新しいリンクを送信します。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      errorBody?: string | null;
+      /**
+       * Default — EN: “This page needs the link from your email.” · JA: “このページを開くには、メールに記載されたリンクが必要です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      missingToken?: string | null;
+      /**
+       * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      goToLogin?: string | null;
+    };
+    login?: {
+      /**
+       * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Welcome back.” · JA: “おかえりなさい。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      subtitle?: string | null;
+      /**
+       * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      submit?: string | null;
+      /**
+       * Default — EN: “Forgot your password?” · JA: “パスワードをお忘れですか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      forgot?: string | null;
+      /**
+       * Default — EN: “New to Nihongo Mock?” · JA: “Nihongo Mockは初めてですか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      noAccount?: string | null;
+      /**
+       * Default — EN: “Create an account” · JA: “アカウントを作成”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      signupLink?: string | null;
+      /**
+       * Default — EN: “Confirm your email first. We can send the link again.” · JA: “先にメールアドレスを確認してください。確認リンクを再送信できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      notVerified?: string | null;
+      /**
+       * Default — EN: “Send the confirmation link again” · JA: “確認リンクを再送信”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      resendVerification?: string | null;
+    };
+    forgot?: {
+      /**
+       * Default — EN: “Reset your password” · JA: “パスワードの再設定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Enter your email and we'll send you a link to choose a new password.” · JA: “メールアドレスを入力すると、新しいパスワードを設定するためのリンクをお送りします。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      subtitle?: string | null;
+      /**
+       * Default — EN: “Send reset link” · JA: “再設定リンクを送信”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      submit?: string | null;
+      /**
+       * Default — EN: “If there's an account for {email}, a reset link is on its way. It works for 60 minutes.” · JA: “{email} のアカウントがある場合、再設定リンクを送信しました。リンクの有効期限は60分です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      sent?: string | null;
+      /**
+       * Default — EN: “Back to log in” · JA: “ログインに戻る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      backToLogin?: string | null;
+    };
+    reset?: {
+      /**
+       * Default — EN: “Choose a new password” · JA: “新しいパスワードを設定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Save new password” · JA: “新しいパスワードを保存”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      submit?: string | null;
+      /**
+       * Default — EN: “Your password has been changed and you've been logged out on all devices. Log in with your new password.” · JA: “パスワードを変更し、すべての端末からログアウトしました。新しいパスワードでログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      success?: string | null;
+      /**
+       * Default — EN: “This page needs the link from your password-reset email.” · JA: “このページを開くには、パスワード再設定メールのリンクが必要です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      missingToken?: string | null;
+      /**
+       * Default — EN: “Request a new link” · JA: “新しいリンクをリクエスト”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      requestNew?: string | null;
+      /**
+       * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      goToLogin?: string | null;
+    };
+  };
+  app?: {
+    /**
+     * Default — EN: “Welcome, {name}” · JA: “{name} さん、ようこそ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    welcome?: string | null;
+    /**
+     * Default — EN: “Level check” · JA: “レベルチェック”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelCheckTitle?: string | null;
+    levelCheck?: {
+      /**
+       * Default — EN: “Not started yet. The level check opens in an upcoming update.” · JA: “まだ受けていません。レベルチェックは今後のアップデートで公開されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      not_started?: string | null;
+      /**
+       * Default — EN: “In progress.” · JA: “実施中です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      in_progress?: string | null;
+      /**
+       * Default — EN: “Completed.” · JA: “完了しました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      completed?: string | null;
+    };
+    /**
+     * Default — EN: “Account” · JA: “アカウント”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    accountTitle?: string | null;
+    /**
+     * Default — EN: “Language for emails” · JA: “メールの言語”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    language?: string | null;
+    /**
+     * Default — EN: “You've been logged out.” · JA: “ログアウトしました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loggedOut?: string | null;
+    /**
+     * Default — EN: “Email” · JA: “メールアドレス”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    email?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-messages".
+ */
+export interface LabelsMessage {
+  id: number;
+  validation?: {
+    /**
+     * Default — EN: “This field is required.” · JA: “入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    required?: string | null;
+    /**
+     * Default — EN: “Enter a valid email address.” · JA: “正しいメールアドレスを入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    email?: string | null;
+    /**
+     * Default — EN: “Use at least 10 characters.” · JA: “10文字以上で入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordMin?: string | null;
+    /**
+     * Default — EN: “Use at most 128 characters.” · JA: “128文字以内で入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordMax?: string | null;
+    /**
+     * Default — EN: “The passwords don't match.” · JA: “パスワードが一致しません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordsMatch?: string | null;
+    /**
+     * Default — EN: “Use at most 120 characters.” · JA: “120文字以内で入力してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    nameMax?: string | null;
+  };
+  errors?: {
+    /**
+     * Default — EN: “Some fields need attention. Check them and try again.” · JA: “入力内容を確認して、もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    VALIDATION_FAILED?: string | null;
+    /**
+     * Default — EN: “This link is invalid or has expired. Request a new one.” · JA: “このリンクは無効か、有効期限が切れています。新しいリンクをリクエストしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    INVALID_TOKEN?: string | null;
+    /**
+     * Default — EN: “Log in to continue.” · JA: “続けるにはログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    UNAUTHENTICATED?: string | null;
+    /**
+     * Default — EN: “Your session has expired. Log in again.” · JA: “セッションの有効期限が切れました。もう一度ログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    SESSION_EXPIRED?: string | null;
+    /**
+     * Default — EN: “The email or password is incorrect.” · JA: “メールアドレスまたはパスワードが正しくありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    INVALID_CREDENTIALS?: string | null;
+    /**
+     * Default — EN: “You can't do that from here.” · JA: “この操作は実行できません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    FORBIDDEN?: string | null;
+    /**
+     * Default — EN: “This account is suspended. Contact support.” · JA: “このアカウントは停止されています。サポートにお問い合わせください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    ACCOUNT_DISABLED?: string | null;
+    /**
+     * Default — EN: “Confirm your email address first.” · JA: “先にメールアドレスを確認してください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    EMAIL_NOT_VERIFIED?: string | null;
+    /**
+     * Default — EN: “Too many attempts. Wait a few minutes and try again.” · JA: “試行回数が多すぎます。数分待ってからもう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    RATE_LIMITED?: string | null;
+    /**
+     * Default — EN: “Too many attempts. Try again in {seconds} seconds.” · JA: “試行回数が多すぎます。{seconds}秒後にもう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    RATE_LIMITED_SECONDS?: string | null;
+    /**
+     * Default — EN: “We couldn't reach the server. Check your connection and try again.” · JA: “サーバーに接続できませんでした。通信環境を確認して、もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    NETWORK_ERROR?: string | null;
+    /**
+     * Default — EN: “Something went wrong on our side. Try again in a moment.” · JA: “問題が発生しました。しばらくしてからもう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    INTERNAL?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-site_select".
+ */
+export interface LabelsSiteSelect<T extends boolean = true> {
+  meta?:
+    | T
+    | {
+        siteName?: T;
+        tagline?: T;
+        description?: T;
+      };
+  a11y?:
+    | T
+    | {
+        skipToContent?: T;
+        mainNavigation?: T;
+        languageSwitcher?: T;
+        loading?: T;
+        showPassword?: T;
+        hidePassword?: T;
+        close?: T;
+        notifications?: T;
+      };
+  nav?:
+    | T
+    | {
+        home?: T;
+        login?: T;
+        signup?: T;
+        myPage?: T;
+        logout?: T;
+      };
+  footer?:
+    | T
+    | {
+        rights?: T;
+        notAffiliated?: T;
+      };
+  home?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        titleStation?: T;
+        underConstruction?: T;
+        ctaSignup?: T;
+        ctaLogin?: T;
+      };
+  authPanel?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        stations?: T;
+      };
+  notFound?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        home?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-accounts_select".
+ */
+export interface LabelsAccountsSelect<T extends boolean = true> {
+  auth?:
+    | T
+    | {
+        email?: T;
+        password?: T;
+        newPassword?: T;
+        confirmPassword?: T;
+        name?: T;
+        passwordHint?: T;
+        signup?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              submit?: T;
+              haveAccount?: T;
+              loginLink?: T;
+            };
+        checkEmail?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              bodyNoEmail?: T;
+              resendPrompt?: T;
+              resend?: T;
+              resent?: T;
+              backToLogin?: T;
+            };
+        verify?:
+          | T
+          | {
+              title?: T;
+              working?: T;
+              successTitle?: T;
+              successBody?: T;
+              errorTitle?: T;
+              errorBody?: T;
+              missingToken?: T;
+              goToLogin?: T;
+            };
+        login?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              submit?: T;
+              forgot?: T;
+              noAccount?: T;
+              signupLink?: T;
+              notVerified?: T;
+              resendVerification?: T;
+            };
+        forgot?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              submit?: T;
+              sent?: T;
+              backToLogin?: T;
+            };
+        reset?:
+          | T
+          | {
+              title?: T;
+              submit?: T;
+              success?: T;
+              missingToken?: T;
+              requestNew?: T;
+              goToLogin?: T;
+            };
+      };
+  app?:
+    | T
+    | {
+        welcome?: T;
+        levelCheckTitle?: T;
+        levelCheck?:
+          | T
+          | {
+              not_started?: T;
+              in_progress?: T;
+              completed?: T;
+            };
+        accountTitle?: T;
+        language?: T;
+        loggedOut?: T;
+        email?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-messages_select".
+ */
+export interface LabelsMessagesSelect<T extends boolean = true> {
+  validation?:
+    | T
+    | {
+        required?: T;
+        email?: T;
+        passwordMin?: T;
+        passwordMax?: T;
+        passwordsMatch?: T;
+        nameMax?: T;
+      };
+  errors?:
+    | T
+    | {
+        VALIDATION_FAILED?: T;
+        INVALID_TOKEN?: T;
+        UNAUTHENTICATED?: T;
+        SESSION_EXPIRED?: T;
+        INVALID_CREDENTIALS?: T;
+        FORBIDDEN?: T;
+        ACCOUNT_DISABLED?: T;
+        EMAIL_NOT_VERIFIED?: T;
+        RATE_LIMITED?: T;
+        RATE_LIMITED_SECONDS?: T;
+        NETWORK_ERROR?: T;
+        INTERNAL?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -17,6 +17,7 @@ Last updated: 2026-10-14 (Phase 6).
 | PAY-3b | P3 | Merchant onboarding status: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts, and has onboarding started? | Phase 20 | Owner starts onboarding now (D-019). | |
 | PAY-4b | P3 | Is a VAT/tax invoice required on receipts, and what details must a receipt show (business name, PAN/VAT no., address)? | Phase 19 | — | |
 | CON-1b | P3 | Please share a sample of existing question content (any format), if any exists, to shape the import template. | Phase 14 | — | |
+| DOM-1 | P3 | Domain name: the owner will buy it later (2026-10-15). It is needed for the Resend sender domain, `APP_URL` and hosting. The guide is in `.env` / `.env.example` ("WHEN YOU BUY YOUR DOMAIN"). | Before staging | — | Owner: "For now I haven't bought domain … when I buy domain I will add required keys." |
 | TECH-5 | P3 | Hosting provider and monthly budget ("I will decide it later"). Phase 2 will propose host-agnostic options. | Before first staging deployment (Phase 6/27) | — | |
 
 ---

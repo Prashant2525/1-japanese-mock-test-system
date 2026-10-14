@@ -1,0 +1,140 @@
+{
+  "meta": {
+    "siteName": "Nihongo Mock",
+    "tagline": "Practice Smart. Pass with Confidence.",
+    "description": "Mock tests for JLPT, NAT and JFT, starting with a free level check from N5."
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "mainNavigation": "Main navigation",
+    "languageSwitcher": "Language",
+    "loading": "Loading…",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "close": "Close",
+    "notifications": "Notifications"
+  },
+  "nav": {
+    "home": "Home",
+    "login": "Log in",
+    "signup": "Sign up",
+    "myPage": "My page",
+    "logout": "Log out"
+  },
+  "footer": {
+    "rights": "© {year} Nihongo Mock",
+    "notAffiliated": "Nihongo Mock is an independent practice service. It is not affiliated with the organisers of JLPT, NAT-TEST or JFT-Basic."
+  },
+  "home": {
+    "eyebrow": "JLPT · NAT · JFT",
+    "title": "Your route to Japan starts at",
+    "titleStation": "N5",
+    "underConstruction": "The full website is being built. You can already create an account.",
+    "ctaSignup": "Create a free account",
+    "ctaLogin": "Log in"
+  },
+  "authPanel": {
+    "title": "Your route to Japan starts at N5.",
+    "body": "Take the free level check, then practise with mock tests under real exam conditions.",
+    "stations": "Level check route: N5, then N4, then N3"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "name": "Your name",
+    "passwordHint": "At least 10 characters.",
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Free. Start with the level check from N5.",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "checkEmail": {
+      "title": "Check your email",
+      "body": "If {email} can be used for an account, we've sent a link to confirm it. Open the email and select the button to finish.",
+      "bodyNoEmail": "We've sent a link to confirm your email address. Open the email and select the button to finish.",
+      "resendPrompt": "Didn't get it? Check your spam folder, or send it again.",
+      "resend": "Send the link again",
+      "resent": "If the address needs confirming, a new link is on its way.",
+      "backToLogin": "Back to log in"
+    },
+    "verify": {
+      "title": "Confirming your email",
+      "working": "Checking your link…",
+      "successTitle": "Email confirmed",
+      "successBody": "Your account is ready. Log in to start your level check.",
+      "errorTitle": "This link doesn't work",
+      "errorBody": "It may have been used already or replaced by a newer one. Enter your email to get a new link.",
+      "missingToken": "This page needs the link from your email.",
+      "goToLogin": "Log in"
+    },
+    "login": {
+      "title": "Log in",
+      "subtitle": "Welcome back.",
+      "submit": "Log in",
+      "forgot": "Forgot your password?",
+      "noAccount": "New to Nihongo Mock?",
+      "signupLink": "Create an account",
+      "notVerified": "Confirm your email first. We can send the link again.",
+      "resendVerification": "Send the confirmation link again"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a link to choose a new password.",
+      "submit": "Send reset link",
+      "sent": "If there's an account for {email}, a reset link is on its way. It works for 60 minutes.",
+      "backToLogin": "Back to log in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "submit": "Save new password",
+      "success": "Your password has been changed and you've been logged out on all devices. Log in with your new password.",
+      "missingToken": "This page needs the link from your password-reset email.",
+      "requestNew": "Request a new link",
+      "goToLogin": "Log in"
+    }
+  },
+  "app": {
+    "welcome": "Welcome, {name}",
+    "levelCheckTitle": "Level check",
+    "levelCheck": {
+      "not_started": "Not started yet. The level check opens in an upcoming update.",
+      "in_progress": "In progress.",
+      "completed": "Completed."
+    },
+    "accountTitle": "Account",
+    "language": "Language for emails",
+    "loggedOut": "You've been logged out.",
+    "email": "Email"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "passwordMin": "Use at least 10 characters.",
+    "passwordMax": "Use at most 128 characters.",
+    "passwordsMatch": "The passwords don't match.",
+    "nameMax": "Use at most 120 characters."
+  },
+  "errors": {
+    "VALIDATION_FAILED": "Some fields need attention. Check them and try again.",
+    "INVALID_TOKEN": "This link is invalid or has expired. Request a new one.",
+    "UNAUTHENTICATED": "Log in to continue.",
+    "SESSION_EXPIRED": "Your session has expired. Log in again.",
+    "INVALID_CREDENTIALS": "The email or password is incorrect.",
+    "FORBIDDEN": "You can't do that from here.",
+    "ACCOUNT_DISABLED": "This account is suspended. Contact support.",
+    "EMAIL_NOT_VERIFIED": "Confirm your email address first.",
+    "RATE_LIMITED": "Too many attempts. Wait a few minutes and try again.",
+    "RATE_LIMITED_SECONDS": "Too many attempts. Try again in {seconds} seconds.",
+    "NETWORK_ERROR": "We couldn't reach the server. Check your connection and try again.",
+    "INTERNAL": "Something went wrong on our side. Try again in a moment."
+  },
+  "notFound": {
+    "title": "This page isn't on the route map",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "home": "Go to the home page"
+  }
+}

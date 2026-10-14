@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-14 (Phase 7).
+Last updated: 2026-10-15 (Phase 8).
 
 ---
 
@@ -127,6 +127,17 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-057 | Email copy lives in the CMS `email-templates` collection (EN/JA, allow-listed `{{variables}}`, escaped into a fixed branded layout). Code defaults are used if a template is missing. Transport: Resend in staging/production, console in development, memory in tests. | D-030, D-042 |
 | D-058 | **Admin two-factor login is required for every admin** (OPS-2b, owner: "Yes, admins enter a code from an authenticator app when logging in"). It uses the `payload-totp` plugin **3.0.6, pinned exactly** after a source review: `forceSetup` on, every collection's access wrapped, the code required each session, wrong codes counted toward the 5-attempt/15-minute lockout, Japanese UI included. The issuer shown in the authenticator app is "Nihongo Mock". Students are not affected. *(interpretation: "admins" = all admin roles; the owner may relax this to Super Admins only)* | OPS-2b |
 | D-059 | E2E tests start their own production server on port **3100** (`APP_URL` set accordingly), so they never reuse a developer's `pnpm dev` on 3000. | Phase 7b finding |
+
+## Phase 8 — shared frontend foundation (2026-10-15, technical choices within the approved stack)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-060 | Frontend libraries (pinned, each ≥ 2 weeks old at install): Tailwind CSS 4.3.3, next-intl 4.14.8, react-hook-form 7.89.0 + @hookform/resolvers 5.9.1, Radix Slot/Dialog/Toast, clsx + tailwind-merge, @axe-core/playwright. Fonts self-hosted through `next/font`: Zen Kaku Gothic New, Barlow Condensed, Noto Sans JP, IBM Plex Mono. The Motion library is deferred until a feature needs it; the fade-up preset is CSS-only, so content is readable without JavaScript. | D-037, D-038 |
+| D-061 | Locale routing is done in `src/proxy.ts`, not by next-intl's middleware. Unprefixed paths redirect to the `NEXT_LOCALE` cookie or English (never Accept-Language), and the cookie is refreshed on localized pages. Every layout and page calls `setRequestLocale` before translating. | D-028 |
+| D-062 | UI labels are overridable in the CMS through three globals generated from `messages/en.json` (`labels-site`, `labels-accounts`, `labels-messages`). Each must stay under 80 labels because Payload reads a global's localized columns in one PostgreSQL function call (100-argument limit); a unit test enforces it. Overrides are cached for 60 s per instance and cleared on save. | D-030 |
+| D-063 | Level line colours N2 → `#8F64DA` and N1 → `#D04A86` (from `#7A4FC8` / `#B0306A`), because the originals were below the 3:1 visibility minimum on the night background. Checked by `tests/unit/contrast.test.ts`. | DESIGN_SYSTEM §3, UX accessibility |
+| D-064 | Session cookies are `Secure` whenever `APP_URL` is https, not whenever `NODE_ENV=production` (a local production build on http://localhost would otherwise set cookies Safari refuses). | Phase 8 E2E finding |
+| D-065 | Error detection never relies on `instanceof` across bundles: `AppError`/`ZodError` are recognised by name, and Payload login failures are classified by HTTP status (401 = wrong credentials or locked, 403 = unverified or suspended). | Phase 8 E2E finding (production build) |
 
 ## Rejected / parked alternatives
 

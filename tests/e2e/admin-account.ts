@@ -4,3 +4,5 @@ export const E2E_EDITOR_EMAIL = 'e2e-editor@e2e.nihongo-mock.test'
 /** An admin who has not set up an authenticator yet (tests the forced first-time setup). */
 export const E2E_NEW_ADMIN_EMAIL = 'e2e-new-admin@e2e.nihongo-mock.test'
 export const E2E_STUDENT_EMAIL = 'e2e-student@e2e.nihongo-mock.test'
+/** Domain for students that UI tests sign up through the website (removed before/after each run). */
+export const E2E_UI_DOMAIN = '@e2e-ui.nihongo-mock.test'

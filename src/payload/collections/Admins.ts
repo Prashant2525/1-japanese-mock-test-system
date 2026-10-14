@@ -56,7 +56,9 @@ export const Admins: CollectionConfig = {
     tokenExpiration: 8 * 60 * 60,
     cookies: {
       sameSite: 'Lax',
-      secure: process.env.NODE_ENV === 'production',
+      // Secure whenever the site runs on https. Not tied to NODE_ENV: a local production build on
+      // http://localhost would otherwise set cookies that Safari refuses.
+      secure: (process.env.APP_URL ?? '').startsWith('https://'),
     },
     forgotPassword: {
       expiration: RESET_EXPIRATION_MS,

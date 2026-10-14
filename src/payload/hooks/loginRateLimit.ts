@@ -1,7 +1,7 @@
 import { APIError, type CollectionBeforeOperationHook } from 'payload'
 
 import { clientIp } from '@/server/http/client'
-import { AppError } from '@/server/http/errors'
+import { isAppError } from '@/server/http/errors'
 import { enforce, RATE_LIMITS } from '@/server/rate-limit'
 
 /**
@@ -28,7 +28,7 @@ export const loginRateLimit: CollectionBeforeOperationHook = async ({
       },
     ])
   } catch (err) {
-    if (err instanceof AppError) {
+    if (isAppError(err)) {
       throw new APIError('Too many attempts. Try again later.', 429, null, true)
     }
     throw err

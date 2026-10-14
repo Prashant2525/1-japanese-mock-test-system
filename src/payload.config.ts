@@ -13,6 +13,7 @@ import { AuditEvents } from './payload/collections/AuditEvents'
 import { EmailTemplates } from './payload/collections/EmailTemplates'
 import { Roles } from './payload/collections/Roles'
 import { Students } from './payload/collections/Students'
+import { UiLabelGlobals } from './payload/globals/UiLabels'
 import { emailAdapter } from './server/email/adapter'
 import { getEnv } from './server/env'
 
@@ -33,6 +34,7 @@ export default buildConfig({
   routes: { admin: '/admin', api: '/api/cms' },
   graphQL: { disable: true },
   collections: [Admins, Roles, Students, AuditEvents, EmailTemplates],
+  globals: [...UiLabelGlobals],
   email: emailAdapter(),
   // Content locales (D-004, D-028): English default, Japanese with fallback to English.
   localization: {

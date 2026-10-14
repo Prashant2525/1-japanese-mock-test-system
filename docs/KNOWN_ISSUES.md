@@ -1,6 +1,6 @@
 # Known Issues, Ambiguities and Risks
 
-Last updated: 2026-10-14 (Phase 6).
+Last updated: 2026-10-15 (Phase 8).
 
 ## Repository issues
 
@@ -12,7 +12,7 @@ Last updated: 2026-10-14 (Phase 6).
 | KI-07 | Low | The supplied logo files carry the old tagline "PRACTICE SMART. PASS JLPT." | Logo SVG/PNG. | New lockups with the D-047 tagline are produced in Phase 8 (D-048); originals kept. |
 | KI-05 | Low | The logo SVG wordmark uses live `<text>` with `font-family="Inter, Arial…"`, so it renders differently on machines without Inter. | `nihongo-mock-logo.svg` source. | In Phase 3/8, outline the wordmark text to paths (or self-host Inter) for consistent rendering. Do not alter the design itself. |
 | KI-06 | Info | New untracked folder `nihongo-mock-logo-assets/` (brand assets, D-005). | `git status`. | Copy into the app's public assets in Phase 8; commit when the owner asks. |
-| KI-08 | Info | The home page is a temporary placeholder ("The website is being built."), hard-coded and English-only. | `src/app/(frontend)/page.tsx` | Replaced by CMS-driven, bilingual pages in Phase 8/18. Must not reach production. |
+| KI-08 | Info | The home page is a temporary page in the approved design (EN/JA, text editable as UI labels) saying the full site is being built. | `src/app/(frontend)/[locale]/(site)/page.tsx` | Replaced by the CMS-built home page (blocks, parallax hero, route map) in Phase 18. Must not reach production as-is. |
 | KI-09 | Info | Payload logs "No email adapter provided"; emails go to the console. | Server logs | Phase 7 adds the Resend adapter (console fallback in development and tests). |
 | KI-10 | Low | Payload's migration runner cannot load `.ts` migration files outside its own CLI. | Integration test setup failed when calling `payload.db.migrate()` in-process. | Tests and deployments run `pnpm migrate` (the CLI) in a separate process. Documented in `tests/int/global-setup.ts`. |
 | KI-11 | Low | GitGuardian incident 38202083 ("Generic Password") on commit `585196f`: `POSTGRES_PASSWORD: postgres` for the ephemeral CI database. It is not a real credential (the database exists only during a CI job), so nothing needs revoking. Fixed in `71ef7cf` (trust auth, no password). | GitGuardian check on PR #3 | Owner marks the incident as a test credential/false positive in GitGuardian, or approves squashing the PR branch so the old commit disappears. |
@@ -23,6 +23,8 @@ Last updated: 2026-10-14 (Phase 6).
 | KI-16 | Info | In integration tests (no web request), the TOTP plugin logs "`cookies` was called outside a request scope" when admins log in through the Local API. Tests pass; real logins always happen inside a request. | `pnpm test:int` output | Harmless; ignore in test logs. |
 | KI-17 | Info | The TOTP plugin wraps every collection's access, so anonymous reads are refused by default. Future public collections (pages, catalogue, labels) must set `custom.totp.disableAccessWrapper.read: true` and keep their own access rule. | `payload-totp` README | Apply when those collections are built (Phases 12–18); covered by tests then. |
 | KI-18 | Info | The Resend sending domain is not verified yet; until it is, Resend only sends from `onboarding@resend.dev` to the account owner's address. Local development keeps `EMAIL_TRANSPORT=console`. | `pnpm email:check` (sending-only key) | Owner verifies the domain (steps in `docs/ENVIRONMENT_REQUIREMENTS.md`). |
+| KI-19 | Info | On pages whose form sits in a Suspense boundary (login, verify, reset), the server's streamed copy of the form briefly exists in a hidden `div#S:0` (~0.3 s) before React removes it. Visitors never see it. | Playwright found two `name` inputs right after load; the second was hidden | Forms that don't read the URL no longer use Suspense. E2E waits for `networkidle` before typing (`open()` helper). |
+| KI-20 | Info | Browser tests run against the dev database (accounts are created and removed by the fixture; UI-test students use `@e2e-ui.nihongo-mock.test`). | `tests/e2e/e2e-admin.ts` | Fine locally; CI uses its own temporary database. |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 
 ## Requirement ambiguities

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-labelledby="t-mono">
+  <title id="t-mono">Nihongo Mock</title>
+  <defs>
+    <mask id="nm-mono-cut">
+      <rect width="192" height="192" fill="#FFFFFF"/>
+      <g fill="#000000">
+      <path d="M49 43 H143 L136 55 H56 Z"/>
+      <path d="M60 57 H132 V66 H60 Z"/>
+      <path d="M68 66 H80 V101 H68 Z M112 66 H124 V101 H112 Z"/>
+      <path d="M28 111 C50 100 72 104 93 119 V157 C72 142 50 139 28 149 Z"/>
+      <path d="M164 111 C142 100 120 104 99 119 V157 C120 142 142 139 164 149 Z"/>
+      </g>
+    </mask>
+  </defs>
+  <!-- One colour (currentColor): the gate and book are cut out of the sun. For small sizes and monochrome use. -->
+  <circle cx="96" cy="96" r="92" fill="currentColor" mask="url(#nm-mono-cut)"/>
+</svg>
