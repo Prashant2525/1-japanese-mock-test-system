@@ -120,8 +120,9 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
-| AUTH-R01 | Email + password registration with email verification; login, logout, forgot/reset password. No social/SMS login. | D-021, D-054 | CONFIRMED · **API implemented and tested (Phase 7)**; pages in Phase 8 | Unverified accounts cannot start determination (or a defined restricted state); reset tokens are single-use and expiring. |
+| AUTH-R01 | Email + password registration with email verification; login, logout, forgot/reset password. No SMS login; Google is the only social login (AUTH-R04). | D-021, D-054, D-066 | CONFIRMED · **API implemented and tested (Phase 7)**; pages in Phase 8 | Unverified accounts cannot start determination (or a defined restricted state); reset tokens are single-use and expiring. |
 | AUTH-R02 | Password hashing, secure sessions, CSRF protection, rate limits, non-enumerating responses, expiry/revocation. | PB §4.1, D-055, D-056 | TECHNICAL SAFETY RULE · **implemented and tested (Phase 7)** | `tests/int/student-auth.int.spec.ts`, `tests/int/rbac.int.spec.ts`, `tests/e2e/auth.e2e.spec.ts` |
+| AUTH-R04 | "Continue with Google" for students on the login and sign-up pages, with a CMS on/off switch. | D-066 | CONFIRMED (owner, 2026-10-15) · **implemented and tested** | `tests/unit/google.test.ts`, `tests/int/google-auth.int.spec.ts`, `tests/e2e/ui/google.e2e.spec.ts` |
 | AUTH-R03 | Admin MFA: authenticator code required for every admin, every session. | D-022, D-058 | CONFIRMED · **implemented and tested (Phase 7b)** | `tests/int/admin-mfa.int.spec.ts`, `tests/e2e/admin-mfa.e2e.spec.ts` |
 
 ## 9. Public website and commerce (PUB / COM)
@@ -170,4 +171,4 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 ## 12. Out of scope until approved
 
-Social login, SMS/OTP, subscriptions, coupons, refunds, certificates, leaderboards, AI tutoring, forums, mobile apps, offline mode, blog, push notifications, additional question types beyond single-answer MCQ, randomized question blueprints. (PB §2.4; D-018, D-019)
+Social login other than Google (D-066), SMS/OTP, subscriptions, coupons, refunds, certificates, leaderboards, AI tutoring, forums, mobile apps, offline mode, blog, push notifications, additional question types beyond single-answer MCQ, randomized question blueprints. (PB §2.4; D-018, D-019)

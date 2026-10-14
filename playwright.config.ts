@@ -1,3 +1,5 @@
+import { randomBytes } from 'node:crypto'
+
 import { defineConfig, devices } from '@playwright/test'
 
 import 'dotenv/config'
@@ -33,7 +35,12 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     // The server must know its own URL (CSRF origin checks, Payload serverURL).
-    env: { APP_URL: `http://localhost:${PORT}` },
+    env: {
+      APP_URL: `http://localhost:${PORT}`,
+      // "Continue with Google" is switched on with throwaway values; tests stop at Google's door.
+      GOOGLE_CLIENT_ID: 'e2e-test.apps.googleusercontent.com',
+      GOOGLE_CLIENT_SECRET: randomBytes(16).toString('hex'),
+    },
     // E2E_SERVER_LOGS=1 shows the app server's own log (useful when a test sees an unexpected error).
     stdout: process.env.E2E_SERVER_LOGS ? 'pipe' : 'ignore',
   },

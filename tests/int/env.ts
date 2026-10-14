@@ -16,3 +16,6 @@ process.env.LOG_LEVEL = 'silent'
 process.env.EMAIL_TRANSPORT = 'memory'
 // Tests send X-Forwarded-For to exercise per-IP rate limits.
 process.env.TRUST_PROXY = 'true'
+// Google sign-in is configured with throwaway values; tests replace Google's token endpoint.
+process.env.GOOGLE_CLIENT_ID = 'int-test.apps.googleusercontent.com'
+process.env.GOOGLE_CLIENT_SECRET = randomBytes(16).toString('hex')

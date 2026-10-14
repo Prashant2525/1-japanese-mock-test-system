@@ -1,6 +1,6 @@
 # Test Status
 
-Last updated: 2026-10-15 (Phase 8).
+Last updated: 2026-10-15 (Phase 8b, Google sign-in).
 
 ## Environment
 
@@ -15,10 +15,16 @@ Last updated: 2026-10-15 (Phase 8).
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **82/82** |
-| Integration tests | `pnpm test:int` | **59/59** |
+| Unit tests | `pnpm test:unit` | **102/102** |
+| Integration tests | `pnpm test:int` | **76/76** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **68/68 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **78/78 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 8b (Google) tests prove
+
+- **Unit `google` (17):** the Google link carries PKCE (S256), state, nonce and language; values are fresh per attempt; the flow cookie rejects tampering, another secret and expiry; ID-token claims are rejected for wrong issuer, audience, authorized party, expiry, future issue time, nonce, unverified or missing email, missing subject, malformed tokens. **`env` (+2):** empty lines are unset; both Google values or neither.
+- **Integration `google-auth` (17):** new Google user → confirmed account in their language + working session; same user again → same account; existing confirmed account linked and its password still works; unconfirmed account confirmed and its old password stops working; suspended refused; email linked to another Google ID refused; Google sessions end on logout; forged/stale state, missing cookie, replayed nonce, unverified email and refused code all fail safely; cancel keeps language and destination; `next` can't leave the student area; CMS switch off → unavailable; per-IP rate limit.
+- **E2E `ui/google` (5 × 2 browsers):** the button sends the browser to Google with the right client, return address and PKCE; Japanese sign-up page shows 「Google で続ける」 and passes axe; every failure reason is explained on the login page; a stale return lands on the login page; switching Google off in the CMS hides the button on the production build at once (KI-22 regression).
 
 ## What the Phase 8 tests prove
 

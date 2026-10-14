@@ -59,7 +59,8 @@ export function toPublicStudent(s: Student): PublicStudent {
 
 type HiddenAuthFields = { _verified?: boolean | null }
 
-function cookieFor(payload: Payload, token: string): string {
+/** Session cookie for a student token (shared by password and Google sign-in). */
+export function cookieFor(payload: Payload, token: string): string {
   return generatePayloadCookie({
     collectionAuthConfig: payload.collections.students.config.auth,
     cookiePrefix: payload.config.cookiePrefix,

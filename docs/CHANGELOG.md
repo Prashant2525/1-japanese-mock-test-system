@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-15 — Continue with Google (owner-approved, D-066)
+
+- "Continue with Google" on the login and sign-up pages (EN/JA, Google branding), shown when `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are set and the CMS switch (Settings → Sign-in options) is on.
+- `/api/v1/auth/google` + `/callback`: OpenID Connect with PKCE, state, nonce; account linking by Google ID, then by verified email; revocable sessions; audit; rate limit; friendly messages on the login page for every failure.
+- Students get a read-only "Google account ID" field in the admin panel. Migration `google_sign_in` (column, settings table, new label columns).
+- Fixed: the account pages were frozen at build time, so CMS label edits didn't reach a production build (KI-22).
+- Fixed: an empty optional line in `.env` stopped the app from starting (D-067).
+- `.env`/`.env.example`: Google section with step-by-step setup.
+
 ## 2026-10-15 — Phase 8: shared frontend foundation
 
 - Design system in code: Tokyo Transit tokens (Tailwind v4 `@theme`), self-hosted fonts, focus styles, Japanese typography rules, reduced motion.

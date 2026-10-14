@@ -15,6 +15,8 @@ export const RATE_LIMITS = {
   emailPerAccount: { limit: 3, windowSeconds: 15 * 60 },
   emailPerIp: { limit: 20, windowSeconds: 60 * 60 },
   verifyPerIp: { limit: 30, windowSeconds: 15 * 60 },
+  // Counts both the start and the return from Google, so about 15 sign-ins per 15 minutes per IP.
+  googlePerIp: { limit: 30, windowSeconds: 15 * 60 },
 } satisfies Record<string, RateLimitRule>
 
 /** Keys are hashed so the table never stores emails or IPs in clear text. */

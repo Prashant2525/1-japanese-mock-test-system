@@ -7,6 +7,10 @@ import { Logo } from '@/ui/components/logo'
 import { RouteStations } from '@/ui/components/route-stations'
 import { SkylineLayer } from '@/ui/components/skyline'
 
+// Rendered per request, not at build time: CMS label overrides and the Google sign-in switch must
+// take effect without a rebuild (KI-22).
+export const dynamic = 'force-dynamic'
+
 /**
  * Auth pages (Direction B): a night "station" panel with the route N5 → N4 → N3 and skyline,
  * beside a calm day card holding the form. Stacks on phones.

@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-15 (Phase 8).
+Last updated: 2026-10-15 (Google sign-in).
 
 ---
 
@@ -138,6 +138,13 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-063 | Level line colours N2 → `#8F64DA` and N1 → `#D04A86` (from `#7A4FC8` / `#B0306A`), because the originals were below the 3:1 visibility minimum on the night background. Checked by `tests/unit/contrast.test.ts`. | DESIGN_SYSTEM §3, UX accessibility |
 | D-064 | Session cookies are `Secure` whenever `APP_URL` is https, not whenever `NODE_ENV=production` (a local production build on http://localhost would otherwise set cookies Safari refuses). | Phase 8 E2E finding |
 | D-065 | Error detection never relies on `instanceof` across bundles: `AppError`/`ZodError` are recognised by name, and Payload login failures are classified by HTTP status (401 = wrong credentials or locked, 403 = unverified or suspended). | Phase 8 E2E finding (production build) |
+
+## Google sign-in (2026-10-15, owner-approved feature)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-066 | **"Continue with Google" for students** (owner, 2026-10-15: "please add OAuth also"). Students only; admins keep password + authenticator code (D-058). OpenID Connect code flow with PKCE, state and nonce, written without a library; the ID token comes straight from Google's token endpoint over TLS, so its claims are checked (issuer, audience, expiry, nonce, verified email) and its signature is not re-verified (OIDC Core §3.1.3.7). Linking: same Google ID → that student; same email → link (an unconfirmed account is confirmed and its password replaced, against pre-registration takeover); otherwise a new confirmed student with an unusable password ("Forgot password" sets one). Suspended accounts are refused; an email already linked to another Google ID is refused. Sessions are ordinary revocable Payload sessions. Shown only when `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` are set **and** the CMS switch (Settings → Sign-in options) is on; keys never in the CMS (D-020). Other social logins remain out of scope. | Owner request; PB §2.4 |
+| D-067 | An empty line in `.env` (e.g. `GOOGLE_CLIENT_ID=`) means "not set". Previously an empty optional value failed startup validation. | Found while adding D-066 |
 
 ## Rejected / parked alternatives
 

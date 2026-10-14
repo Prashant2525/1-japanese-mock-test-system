@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
+import { isGoogleSignInAvailable } from '@/server/services/google-auth'
 import { AuthCard } from '@/ui/components/auth-card'
 import { LoginForm } from '@/ui/forms/login-form'
 
@@ -17,11 +18,12 @@ export default async function Page({ params }: Props) {
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations()
+  const google = await isGoogleSignInAvailable()
   return (
     <AuthCard title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
       {/* The form reads the URL (useSearchParams), which needs a Suspense boundary. */}
       <Suspense fallback={null}>
-        <LoginForm />
+        <LoginForm google={google} />
       </Suspense>
     </AuthCard>
   )

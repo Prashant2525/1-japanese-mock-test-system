@@ -126,6 +126,23 @@ export const Students: CollectionConfig = {
       access: { create: never, update: never },
       admin: { position: 'sidebar', readOnly: true },
     },
+    {
+      // Google's permanent ID for the student's Google account (D-066). Set only by the sign-in service.
+      name: 'googleSub',
+      type: 'text',
+      unique: true,
+      index: true,
+      label: { en: 'Google account ID', ja: 'Google アカウント ID' },
+      access: { create: never, update: never, read: fieldPermission('students.read') },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: {
+          en: 'Filled in when the student uses “Continue with Google”. Empty = not linked.',
+          ja: '受講者が「Google で続ける」を使うと入力されます。空欄＝未連携。',
+        },
+      },
+    },
   ],
   hooks: {
     beforeOperation: [loginRateLimit],

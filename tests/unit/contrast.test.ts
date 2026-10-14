@@ -55,6 +55,13 @@ describe('default design tokens meet WCAG AA (DESIGN_SYSTEM §3)', () => {
     })
   }
 
+  it('the Google button text and outline are readable on white', () => {
+    expect(contrastRatio(token('google-text'), token('surface'))).toBeGreaterThanOrEqual(AA_TEXT)
+    expect(contrastRatio(token('google-stroke'), token('surface'))).toBeGreaterThanOrEqual(
+      AA_LARGE_OR_UI,
+    )
+  })
+
   it('focus rings are visible (≥ 3:1)', () => {
     expect(contrastRatio(token('focus'), token('surface'))).toBeGreaterThanOrEqual(AA_LARGE_OR_UI)
     expect(contrastRatio(token('focus-on-night'), token('night'))).toBeGreaterThanOrEqual(

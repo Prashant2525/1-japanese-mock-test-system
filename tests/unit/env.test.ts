@@ -16,6 +16,34 @@ describe('parseEnv', () => {
     expect(env.DATABASE_POOL_MAX).toBe(10)
   })
 
+  it('treats empty lines in .env as not set', () => {
+    const env = parseEnv({
+      ...valid,
+      RESEND_API_KEY: '',
+      GOOGLE_CLIENT_ID: '',
+      GOOGLE_CLIENT_SECRET: '',
+    })
+    expect(env.RESEND_API_KEY).toBeUndefined()
+    expect(env.GOOGLE_CLIENT_ID).toBeUndefined()
+  })
+
+  it('needs both Google values or neither', () => {
+    const google = {
+      GOOGLE_CLIENT_ID: '123-abc.apps.googleusercontent.com',
+      GOOGLE_CLIENT_SECRET: 's',
+    }
+    expect(parseEnv({ ...valid, ...google }).GOOGLE_CLIENT_ID).toBe(google.GOOGLE_CLIENT_ID)
+    expect(() => parseEnv({ ...valid, GOOGLE_CLIENT_ID: google.GOOGLE_CLIENT_ID })).toThrow(
+      /GOOGLE_CLIENT_SECRET must be set together/,
+    )
+    expect(() => parseEnv({ ...valid, GOOGLE_CLIENT_SECRET: 's' })).toThrow(
+      /GOOGLE_CLIENT_ID must be set together/,
+    )
+    expect(() => parseEnv({ ...valid, ...google, GOOGLE_CLIENT_ID: 'wrong' })).toThrow(
+      /GOOGLE_CLIENT_ID must end with/,
+    )
+  })
+
   it('coerces DATABASE_POOL_MAX from a string', () => {
     expect(parseEnv({ ...valid, DATABASE_POOL_MAX: '25' }).DATABASE_POOL_MAX).toBe(25)
   })

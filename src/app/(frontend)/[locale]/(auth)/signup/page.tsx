@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import { isGoogleSignInAvailable } from '@/server/services/google-auth'
 import { AuthCard } from '@/ui/components/auth-card'
 import { SignupForm } from '@/ui/forms/signup-form'
 
@@ -16,9 +17,10 @@ export default async function Page({ params }: Props) {
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations()
+  const google = await isGoogleSignInAvailable()
   return (
     <AuthCard title={t('auth.signup.title')} subtitle={t('auth.signup.subtitle')}>
-      <SignupForm />
+      <SignupForm google={google} />
     </AuthCard>
   )
 }
