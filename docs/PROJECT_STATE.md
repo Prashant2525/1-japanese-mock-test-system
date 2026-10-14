@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 7 — Authentication, sessions, roles and permissions: COMPLETE except admin MFA** (waits on owner decision OPS-2b). Next: **Phase 8 — shared frontend foundation.**
+Current phase / milestone: **Phase 7 — Authentication, sessions, roles and permissions: COMPLETE**, including required admin two-factor login (D-058). Next: **Phase 8 — shared frontend foundation.**
 Overall status: **IN PROGRESS** (backend foundation and auth exist; no student-facing pages yet)
-Last verified commit: branch `feature/phase-7-auth` (stacked on `feature/phase-6-foundation`; PR #3 not yet merged).
+Last verified commit: branch `feature/phase-7b-admin-mfa` (PR to `main`; contains Phase 7 too, also in PR #5).
 
 ## Work status
 
@@ -14,11 +14,11 @@ Last verified commit: branch `feature/phase-7-auth` (stacked on `feature/phase-6
     - Students: verification, lockout, revocable sessions, server-only `determinationStatus`.
     - `/api/v1/auth/*` and `/api/v1/me*`: identical responses for unknown emails, rate limits, CSRF, audit.
     - Payload student auth endpoints blocked; append-only audit log; CMS-managed bilingual email templates; `pnpm admin:create`.
-    - Tests: unit 36/36, integration 49/49, E2E 16/16; lint, typecheck, format and build pass.
+    - Admin two-factor login: authenticator setup forced, a code required every session, wrong codes count toward lockout.
+    - Tests: unit 36/36, integration 55/55, E2E 19/19; lint, typecheck, format and build pass.
+    - Resend key verified with `pnpm email:check` (accepted, sending-only).
 - **Partial / unverified:**
-  - Admin MFA not built (OPS-2b).
-  - Resend delivery is untested: no account yet, so development uses the console transport and tests use the memory transport.
-  - One local Playwright run crashed natively and the re-run passed (KI-12).
+  - Real email delivery not yet tested: the sending domain isn't verified in Resend (KI-18); development uses the console transport.
   - Placeholder home page (KI-08).
 - **In progress:** none.
 - **Remaining:** Phases 8–28.
@@ -34,9 +34,9 @@ Last verified commit: branch `feature/phase-7-auth` (stacked on `feature/phase-6
 
 - **Tests:** see `docs/TEST_STATUS.md`.
 - **Blockers:** none for Phase 8.
-- **Owner decisions open:** OPS-2b (admin MFA), PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Owner actions:** merge PR #3, then the Phase 7 PR. Create a Resend account and verify the sending domain before staging.
-- **Environment variables still needed for staging/production:** `RESEND_API_KEY`, `EMAIL_FROM_ADDRESS` (real domain), `APP_ENV=production`, `TRUST_PROXY=true`.
+- **Owner decisions open:** PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
+- **Owner actions:** merge the Phase 7b PR (it includes Phase 7; PR #5 then closes as merged). Verify the sending domain in Resend (steps in `docs/ENVIRONMENT_REQUIREMENTS.md`).
+- **Environment variables still needed for staging/production:** `EMAIL_FROM_ADDRESS` on the verified domain, a production `RESEND_API_KEY` (sending-only, set on the host), `APP_ENV=production`, `TRUST_PROXY=true`.
 - **Exact next task:** Phase 8 (playbook §11.9):
   - design tokens and fonts from `docs/DESIGN_SYSTEM.md`; logo variants (D-048);
   - next-intl `/en` `/ja` routing with the toggle, and the CMS UI-label override layer;

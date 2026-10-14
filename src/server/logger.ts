@@ -20,6 +20,8 @@ export const logger = pino({
       'headers.cookie',
       'req.headers.cookie',
       'req.headers.authorization',
+      'totpSecret',
+      '*.totpSecret',
       'email',
       '*.email',
     ],

@@ -4,6 +4,7 @@ import { en } from '@payloadcms/translations/languages/en'
 import { ja } from '@payloadcms/translations/languages/ja'
 import path from 'path'
 import { buildConfig } from 'payload'
+import { payloadTotp } from 'payload-totp'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
@@ -56,5 +57,14 @@ export default buildConfig({
     push: false,
   }),
   sharp,
+  plugins: [
+    // Admin two-factor login (D-058). Must stay the LAST plugin: it wraps the access rules of every
+    // collection so admins can do nothing until they have entered an authenticator code.
+    payloadTotp({
+      collection: 'admins',
+      forceSetup: true,
+      totp: { issuer: 'Nihongo Mock', digits: 6, period: 30, algorithm: 'SHA1' },
+    }),
+  ],
   telemetry: false,
 })

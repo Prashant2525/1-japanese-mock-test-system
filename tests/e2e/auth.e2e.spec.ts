@@ -1,6 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_STUDENT_EMAIL } from './admin-account'
+import { adminLogin } from './admin-login'
+import { fixture } from './fixture'
 
 /** Calls the API from inside the page, exactly as the site's own code will (real browser fetch). */
 async function browserFetch(
@@ -45,7 +47,7 @@ test.describe('student session in a real browser', () => {
     await page.goto('/')
     const login = await browserFetch(page, '/api/v1/auth/login', {
       method: 'POST',
-      body: { email: E2E_STUDENT_EMAIL, password: process.env.E2E_STUDENT_PASSWORD },
+      body: { email: E2E_STUDENT_EMAIL, password: fixture().student.pw },
     })
     expect(login.status).toBe(200)
     expect(login.body.student.email).toBe(E2E_STUDENT_EMAIL)
@@ -68,23 +70,15 @@ test.describe('student session in a real browser', () => {
   test('rejects a cross-site login attempt', async ({ request }) => {
     const res = await request.post('/api/v1/auth/login', {
       headers: { origin: 'https://evil.example' },
-      data: { email: E2E_STUDENT_EMAIL, password: process.env.E2E_STUDENT_PASSWORD },
+      data: { email: E2E_STUDENT_EMAIL, password: fixture().student.pw },
     })
     expect(res.status()).toBe(403)
   })
 })
 
-async function adminLogin(page: Page, email: string, password: string) {
-  await page.goto('/admin/login')
-  await page.fill('#field-email', email)
-  await page.fill('#field-password', password)
-  await page.click('button[type="submit"]')
-  await page.waitForURL(/\/admin$/)
-}
-
 test.describe('admin roles shape the admin panel', () => {
   test('a Super Admin sees roles, the audit log and email templates', async ({ page }) => {
-    await adminLogin(page, E2E_ADMIN_EMAIL, process.env.E2E_ADMIN_PASSWORD!)
+    await adminLogin(page, E2E_ADMIN_EMAIL, fixture().admin.pw, fixture().admin.totp)
     const nav = page.locator('nav')
     for (const label of ['Roles', 'Audit log', 'Email templates', 'Students']) {
       await expect(nav.getByRole('link', { name: label, exact: true }).first()).toBeVisible()
@@ -92,7 +86,7 @@ test.describe('admin roles shape the admin panel', () => {
   })
 
   test('a Content Editor does not see the audit log or email templates', async ({ page }) => {
-    await adminLogin(page, E2E_EDITOR_EMAIL, process.env.E2E_EDITOR_PASSWORD!)
+    await adminLogin(page, E2E_EDITOR_EMAIL, fixture().editor.pw, fixture().editor.totp)
     const nav = page.locator('nav')
     await expect(nav.getByRole('link', { name: 'Students', exact: true }).first()).toBeVisible()
     await expect(nav.getByRole('link', { name: 'Audit log', exact: true })).toHaveCount(0)
