@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-14 — Phase 6: project and backend foundation
+
+- Scaffolded Next.js 16.3.8 + Payload 3.90.2 (embedded) on PostgreSQL 17 with pnpm 12 and Node 24 (D-051).
+- Payload config: `admins` auth collection (closed access; no public first-user sign-up; delete disabled; lockout after 5 failures; server-side sessions), EN/JA content localization with EN fallback, EN/JA admin UI, REST at `/api/cms`, GraphQL disabled, `push: false`.
+- Initial migration `20261014_141636_initial`.
+- Server foundation: Zod environment validation (`src/server/env.ts`), pino logger with redaction, shared error model and `withRoute` wrapper with request IDs, `parseJson` strict validation.
+- `/healthz` (liveness) and `/readyz` (database + pending migrations) endpoints; baseline security headers; `X-Powered-By` removed.
+- Local Docker Compose Postgres (dev + test databases on port 5433).
+- Tests: Vitest unit (18) and integration (11) projects, Playwright E2E (8) with a throwaway admin per run. ESLint rule keeps `src/domain` framework-free. Prettier, Husky + lint-staged pre-commit.
+- GitHub Actions CI: lint, types, formatting, unit, migrations, integration, migration-drift check, build, E2E.
+- README rewritten in UTF-8 with setup and commands (KI-01).
+
 ## 2026-10-14 — Phase 3 approved, Phase 4 complete, Phase 5 proposal
 
 - Recorded D-046 (Direction B "Tokyo Transit"), D-047 (tagline "Practice Smart. Pass with Confidence."), D-048 (logo variants).

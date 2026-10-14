@@ -5,7 +5,7 @@ Owner decisions that block or shape later phases. Answer by ID (e.g. "MT-4: acce
 **Priority key:** **P1** blocks the next phase · **P2** needed by Phases 3–5 · **P3** needed later (phase named).
 "Suggested default" values are **PROPOSED - APPROVAL REQUIRED** until accepted.
 
-Last updated: 2026-10-14 (Phase 4–5).
+Last updated: 2026-10-14 (Phase 6).
 
 ---
 
@@ -13,9 +13,6 @@ Last updated: 2026-10-14 (Phase 4–5).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
-| DB-1 | **P1** | Approve the database design in `docs/DATABASE_ARCHITECTURE.md` (summary in §8), so Phase 6 can create it. | Phase 5 → Phase 6 | Approve | |
-| DB-2 | P2 | Data retention: keep attempts, results, orders, payments and audit records indefinitely until you set a policy? (Nepal tax/accounting rules may require keeping payment records for a minimum period.) | Phase 26–27 | Keep indefinitely for now | |
-| ARCH-1 | P2 | Answer-save grace window: accept answers up to 3 seconds after the deadline to absorb slow networks (adjustable 0–10 s in the CMS)? | Phase 16 | 3 seconds | |
 | OPS-2b | P3 | Is MFA (authenticator-app code) **required** for admin accounts at launch, or optional? | Phase 7 | Required for Super Admin, optional for other roles. | |
 | PA-6 | P3 | Who reviews the Japanese translations of UI text and the drafted page/legal copy before launch? | Phase 18 | Owner or a nominated Japanese speaker; drafts stay marked DRAFT until reviewed. | |
 | PAY-3b | P3 | Merchant onboarding status: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts, and has onboarding started? | Phase 20 | Owner starts onboarding now (D-019). | |
@@ -85,6 +82,10 @@ Owner responses are recorded verbatim; the resulting decision is in `docs/DECISI
 - **DS-3** — "Use Tagline \"Practice Smart. Pass with Confidence.\"" → **D-047**
 - **DS-4** — "Yes" → **D-048**
 - Merchant onboarding — "I will do this later." (PAY-3b stays open)
+
+### Phase 5 (2026-10-14)
+- **DB-1** — "Approved." → **D-049**
+- **DB-2**, **ARCH-1** — covered by the same "Approved." reply; recorded as accepted defaults → **D-050** (owner may amend)
 
 ### Cross-cutting interpretation
 - "make it entirely managable from CMS" — interpreted with guardrails in **D-020**. The owner may amend it.

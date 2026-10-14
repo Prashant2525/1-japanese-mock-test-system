@@ -19,11 +19,12 @@ Permanent instructions for Claude Code (and any coding agent) working in this re
 
 ## Current status
 
-- **Phase:** Phases 0–4 complete. Phase 5 (database design) is in review: **do not create migrations or tables until DB-1 is approved**. Design direction B "Tokyo Transit" is approved (`docs/DESIGN_SYSTEM.md` is binding). Architecture rules: `docs/ARCHITECTURE.md` §2 (pure domain module, services own state changes).
+- **Phase:** Phases 0–6 complete (foundation built). Next: Phase 7 (auth, roles, permissions). The approved database design is in `docs/DATABASE_ARCHITECTURE.md`; add tables only through migrations. Design direction B "Tokyo Transit" is binding (`docs/DESIGN_SYSTEM.md`). Architecture rules: `docs/ARCHITECTURE.md` §2 (pure domain module, services own state changes).
 - **Owner priorities:** showcase-quality animated UI with parallax (D-029) and **everything manageable from the Admin CMS** (D-030); hard-coded user-facing content is a defect.
 - **Product:** brand **Nihongo Mock**; Nepal market, NPR; UI in **English + Japanese** with a navbar toggle (D-003..D-005). Brand assets: `nihongo-mock-logo-assets/nihongo_mock_logo/`.
 - **Stack:** approved top level — **Next.js + PostgreSQL, TypeScript**, one integrated app with a server-side service layer (D-025). Approved sub-choices: Payload CMS embedded, Payload/Drizzle on Postgres, Payload auth, next-intl, Tailwind v4, GSAP + Motion, R2, Resend, Vitest/Playwright, Docker (D-033..D-045). Hosting still open (TECH-5).
-- **Build/test commands:** none yet (no application code exists).
+- **Commands:** `pnpm db:up` (Postgres on 5433) · `pnpm migrate` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm format:check` · `pnpm test:unit` · `pnpm test:int` · `pnpm build && pnpm test:e2e` · `pnpm migrate:create <name>` after any Payload config change (CI fails on schema drift).
+- **Versions:** Payload 3.90.2, Next.js 16.3.8, PostgreSQL 17, Node 24, pnpm 12 (D-051).
 
 ## Status labels
 
