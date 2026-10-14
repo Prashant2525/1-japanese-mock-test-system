@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-labelledby="title desc">
+  <title id="title">Nihongo Mock</title>
+  <desc id="desc">Nihongo Mock Japanese language and JLPT preparation logo, featuring a red Japanese-inspired emblem and an open book.</desc>
+  <defs>
+    <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E64646"/>
+      <stop offset="1" stop-color="#B91F2B"/>
+    </linearGradient>
+  </defs>
+  <!-- Emblem -->
+  <g transform="translate(24 16)">
+    <circle cx="94" cy="94" r="88" fill="url(#sun)"/>
+    <circle cx="94" cy="94" r="70" fill="none" stroke="#FFFFFF" stroke-opacity=".20" stroke-width="2"/>
+    <!-- Japanese-inspired gate -->
+    <path d="M47 48 H141 L134 59 H54 Z" fill="#FFFFFF"/>
+    <path d="M58 61 H130 V70 H58 Z" fill="#FFFFFF"/>
+    <path d="M66 70 H78 V104 H66 Z M110 70 H122 V104 H110 Z" fill="#FFFFFF"/>
+    <!-- Book -->
+    <path d="M27 112 C49 101 70 105 91 120 V158 C70 143 49 140 27 150 Z" fill="#FFFFFF"/>
+    <path d="M161 112 C139 101 118 105 97 120 V158 C118 143 139 140 161 150 Z" fill="#FFFFFF"/>
+    <path d="M94 120 V159" fill="none" stroke="#C92732" stroke-width="4" stroke-linecap="round"/>
+    <path d="M42 120 C56 115 68 118 80 125 M42 130 C56 125 68 128 80 135 M146 120 C132 115 120 118 108 125 M146 130 C132 125 120 128 108 135" fill="none" stroke="#AAB7C8" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <!-- Wordmark -->
+  <g font-family="Inter, Arial, Helvetica, sans-serif">
+    <text x="226" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#142B4A">Nihongo</text>
+    <text x="527" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#C92732">Mock</text>
+    <rect x="229" y="134" width="66" height="5" rx="2.5" fill="#C92732"/>
+    <text x="229" y="170" font-size="21" font-weight="650" letter-spacing="4.1" fill="#5B6575">PRACTICE SMART. PASS JLPT.</text>
+  </g>
+</svg>

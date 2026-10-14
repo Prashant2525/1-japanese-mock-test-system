@@ -1,0 +1,788 @@
+<title>Nihongo Mock Visual Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@600..800&family=Noto+Sans+JP:wght@400;500;700&family=Nunito:wght@600;800&family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+/* Layout concept: a review board. Neutral shell (theme-aware) with a sticky direction switcher;
+   each direction is a self-contained mini-site in its own fixed palette. */
+:root {
+  --bg: #F3F6FA; --fg: #142B4A; --muted: #56627A; --line: #D6DEE9; --card: #FFFFFF;
+  --brand: #C92732; --chip: #E8EEF6; --focus: #1D5FD1;
+  --f-ui: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1626; --fg: #E6ECF5; --muted: #9BA8BC; --line: #233250; --card: #13203A;
+  --brand: #F0585E; --chip: #1B2A47; --focus: #7FB0FF; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1626; --fg: #E6ECF5; --muted: #9BA8BC; --line: #233250; --card: #13203A;
+  --brand: #F0585E; --chip: #1B2A47; --focus: #7FB0FF; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-ui); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-inline: 16px; }
+h1, h2, h3 { text-wrap: balance; margin: 0 }
+p { margin: 0 }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+button { font: inherit; cursor: pointer }
+
+/* ---------- Shell ---------- */
+.shell-head { padding-block: 28px 8px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+.shell-head .brand { display: flex; align-items: center; gap: 12px; }
+.shell-head .brand svg { width: 44px; height: 44px; flex: none }
+.shell-head h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -.01em }
+.shell-head .sub { color: var(--muted); font-size: .85rem }
+.switches { display: flex; flex-wrap: wrap; gap: 10px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--card); }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 999px; font-size: .82rem; font-weight: 500 }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg) }
+.seg .lbl { align-self: center; padding: 0 8px 0 10px; font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase }
+.intro { padding-block: 8px 20px; max-width: 70ch; color: var(--muted) }
+.intro strong { color: var(--fg) }
+
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-block: 4px 18px; }
+.choice { text-align: left; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; align-content: start; position: relative; transition: border-color .2s, transform .2s; }
+.choice:hover { transform: translateY(-2px) }
+.choice[aria-selected="true"] { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg) inset }
+.choice .k { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.choice .n { font-size: 1.1rem; font-weight: 700 }
+.choice .d { color: var(--muted); font-size: .86rem }
+.choice dl { margin: 4px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: .8rem }
+.choice dt { color: var(--muted) }
+.choice dd { margin: 0 }
+.rec { position: absolute; top: 14px; right: 14px; background: var(--brand); color: #fff; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px }
+.tabbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.tabbar .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 8px; }
+.tabbar button { border: 1px solid var(--line); background: var(--card); color: var(--fg); border-radius: 999px; padding: 7px 14px; white-space: nowrap; font-size: .85rem; font-weight: 500 }
+.tabbar button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg) }
+
+.shared { padding-block: 40px 56px; display: grid; gap: 14px; }
+.shared h2 { font-size: 1.15rem }
+.shared ul { margin: 0; padding-left: 1.2em; color: var(--muted); display: grid; gap: 6px; max-width: 78ch }
+.shared ul strong { color: var(--fg) }
+
+/* ---------- Direction panels (shared skeleton, own palettes) ---------- */
+.dir { background: var(--p-bg); color: var(--p-text); font-family: var(--f-body); overflow: hidden; }
+.dir .in { max-width: 1200px; margin: 0 auto; padding-inline: 16px; }
+.dir .sec { padding-block: clamp(48px, 8vw, 96px); }
+.dir h2 { font-family: var(--f-display); font-size: clamp(1.6rem, 3.6vw, 2.5rem); line-height: 1.25 }
+.dir .eyebrow { font-family: var(--f-util); font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--p-muted) }
+.dir .lead { color: var(--p-muted); max-width: 60ch; font-size: 1.02rem; line-height: 1.85 }
+
+.site-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; position: relative; z-index: 3 }
+.site-nav .logo { height: 40px; width: 164px; flex: none }
+.site-nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: .92rem; font-weight: 500 }
+.site-nav .right { display: flex; align-items: center; gap: 12px }
+.langpill { display: inline-flex; border: 1px solid currentColor; border-radius: 999px; font-size: .75rem; overflow: hidden; opacity: .9 }
+.langpill span { padding: 3px 9px }
+.langpill .on { background: currentColor; }
+.langpill .on b { color: var(--p-bg-inverse, #fff); font-weight: 700 }
+
+.hero { position: relative; isolation: isolate; overflow: hidden; }
+.hero .copy { position: relative; z-index: 2; padding-block: clamp(56px, 9vw, 120px) clamp(72px, 10vw, 140px); max-width: 680px }
+.hero h1 { font-family: var(--f-display); font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1.12; letter-spacing: -.01em }
+.hero .tag { margin-top: 18px; font-size: 1.05rem; line-height: 1.8; color: var(--p-muted); max-width: 52ch }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px }
+.btn { display: inline-flex; align-items: center; gap: 8px; border-radius: var(--radius); padding: 13px 20px; font-weight: 700; font-size: .95rem; border: 2px solid transparent; text-decoration: none; transition: transform .2s cubic-bezier(.2,.7,.2,1), box-shadow .2s, background .2s; }
+.btn:hover { transform: translateY(-2px) }
+.btn-primary { background: var(--p-brand); color: #fff; box-shadow: 0 8px 22px -10px var(--p-brand) }
+.btn-ghost { border-color: currentColor; color: inherit; background: transparent }
+.layer { position: absolute; pointer-events: none; will-change: transform; }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 32px }
+.tcard { background: var(--p-surface); border: 1px solid var(--p-line); border-radius: var(--radius); padding: 20px; display: grid; gap: 12px; align-content: start; transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s }
+.tcard:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(15,35,64,.45) }
+.tcard .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.badge { font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: .02em }
+.b-level { color: #fff }
+.b-free { background: #E5F4EA; color: #17643A }
+.b-paid { background: #EEF1F6; color: #3E4A60 }
+.tcard h3 { font-family: var(--f-display); font-size: 1.15rem; line-height: 1.35 }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--p-muted); font-size: .85rem; font-variant-numeric: tabular-nums }
+.meta b { color: var(--p-text); font-family: var(--f-util) }
+.tcard .go { font-weight: 700; font-size: .9rem; color: var(--p-brand); text-decoration: none }
+.sample-note { font-size: .75rem; color: var(--p-muted); margin-top: 10px }
+
+/* Calm exam runner — same rules in every direction: no motion, high contrast */
+.runner-wrap { background: var(--p-runner-bg); }
+.runner { background: #FFFFFF; color: #142B4A; border: 1px solid #D5DCE6; border-radius: calc(var(--radius) * .75 + 4px); max-width: 860px; margin: 28px auto 0; font-family: "Noto Sans JP", system-ui, sans-serif; }
+.runner * { transition: none !important; animation: none !important }
+.rhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; align-items: center; padding: 14px 20px; border-bottom: 1px solid #E2E7EF; font-size: .9rem }
+.rhead .tname { font-weight: 700 }
+.timer { display: flex; align-items: baseline; gap: 8px; font-variant-numeric: tabular-nums }
+.timer b { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 1.25rem; color: #142B4A }
+.timer span { font-size: .78rem; color: #56627A }
+.rprog { height: 4px; background: #E7ECF3 }
+.rprog i { display: block; height: 100%; width: 23.3%; background: #142B4A }
+.rbody { padding: 22px 20px 8px; display: grid; gap: 16px }
+.qno { font-size: .82rem; color: #56627A; font-weight: 500 }
+.qtext { font-size: 1.2rem; line-height: 1.9 }
+.opts { border: 0; margin: 0; padding: 0; display: grid; gap: 10px }
+.opts legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%) }
+.opt { display: flex; align-items: center; gap: 14px; border: 1.5px solid #D5DCE6; border-radius: 10px; padding: 13px 16px; min-height: 52px; font-size: 1.1rem; cursor: pointer }
+.opt input { width: 20px; height: 20px; accent-color: #142B4A; margin: 0 }
+.opt:has(input:checked) { border-color: #142B4A; background: #F1F4F9 }
+.opt .num { font-family: "IBM Plex Mono", monospace; font-size: .85rem; color: #56627A; width: 1.2em }
+.rfoot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 14px 20px 18px }
+.rbtn { border: 1.5px solid #142B4A; background: #fff; color: #142B4A; border-radius: 8px; padding: 10px 16px; font-weight: 700; font-size: .9rem; min-height: 44px }
+.rbtn.primary { background: #142B4A; color: #fff }
+.rbtn[aria-pressed="true"] { background: #FFF4D6; border-color: #8A6100; color: #6B4B00 }
+.calm-label { text-align: center; color: var(--p-muted); font-size: .82rem; margin-top: 14px }
+
+.spec { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; margin-top: 28px }
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px }
+.sw { display: grid; gap: 6px; font-size: .72rem; font-family: "IBM Plex Mono", monospace; color: var(--p-muted) }
+.sw i { display: block; aspect-ratio: 1; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); max-width: 100% }
+.typespec { display: grid; gap: 10px; margin-top: 22px }
+.typespec .t1 { font-family: var(--f-display); font-size: 2rem; line-height: 1.2 }
+.typespec .t2 { font-size: 1rem; line-height: 1.9; color: var(--p-muted) }
+.typespec .fn { font-family: "IBM Plex Mono", monospace; font-size: .74rem; color: var(--p-muted) }
+.notes { display: grid; gap: 14px; align-content: start }
+.notes h3 { font-family: var(--f-display); font-size: 1.1rem }
+.notes ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; color: var(--p-muted); font-size: .92rem }
+.notes .tradeoff { border-left: 3px solid var(--p-brand); padding-left: 12px; font-size: .92rem; color: var(--p-muted) }
+
+/* Scroll-linked reveal: content is readable at rest; browsers without support simply show it */
+@supports (animation-timeline: view()) {
+  .reveal { animation: nm-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+}
+@keyframes nm-rise { from { opacity: .2; transform: translateY(28px) } to { opacity: 1; transform: none } }
+
+/* ---------- Direction A — Ink & Sun ---------- */
+.dir-a {
+  --p-bg: #FFFFFF; --p-surface: #FFFFFF; --p-text: #142B4A; --p-muted: #4E5A6E; --p-brand: #C92732; --p-line: #DFE5EE;
+  --p-runner-bg: #F4F6F9; --p-bg-inverse: #FFFFFF;
+  --f-display: "Shippori Mincho B1", "Noto Serif JP", serif; --f-body: "Noto Sans JP", system-ui, sans-serif; --f-util: "IBM Plex Mono", ui-monospace, monospace;
+  --radius: 4px;
+}
+.dir-a .site-nav { border-bottom: 1px solid var(--p-line) }
+.dir-a .langpill .on b { color: #fff }
+.hero-a .sun { width: min(62vw, 560px); aspect-ratio: 1; border-radius: 50%; right: max(-8vw, -90px); top: 40px; background: radial-gradient(circle at 35% 30%, #E64646, #B91F2B 70%); opacity: .95 }
+.hero-a .tate { right: clamp(16px, 4vw, 48px); top: 70px; writing-mode: vertical-rl; font-family: var(--f-display); font-size: clamp(1.6rem, 3vw, 2.4rem); color: #fff; letter-spacing: .3em; z-index: 1 }
+.hero-a .rule { left: 0; right: 0; height: 1px; background: var(--p-line) }
+.hero-a h1 em { font-style: normal; position: relative; white-space: nowrap }
+.hero-a h1 em svg { position: absolute; left: -2%; bottom: -.18em; width: 104%; height: .4em; overflow: visible }
+.hero-a h1 em path { fill: none; stroke: #C92732; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: nm-draw 1.4s .4s cubic-bezier(.16,1,.3,1) both }
+@keyframes nm-draw { from { stroke-dashoffset: 1 } to { stroke-dashoffset: 0 } }
+.dir-a .btn { border-radius: 2px }
+.dir-a .btn-ghost { border-width: 1px }
+.path-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start }
+.steps-a { position: relative; display: grid; gap: 34px; padding-left: 64px }
+.steps-a svg.ink { position: absolute; left: 22px; top: 8px; width: 8px; height: calc(100% - 16px); overflow: visible }
+.steps-a svg.ink path { fill: none; stroke: #142B4A; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1 }
+.step-a { position: relative }
+.step-a .n { position: absolute; left: -64px; top: -6px; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1.5px solid #142B4A; font-family: var(--f-display); font-weight: 800; font-size: 1.05rem }
+.step-a.lit .n { background: #C92732; border-color: #C92732; color: #fff }
+.step-a h3 { font-family: var(--f-display); font-size: 1.3rem }
+.step-a p { color: var(--p-muted); line-height: 1.85; margin-top: 4px }
+.dir-a .tcard { border-top: 3px solid #142B4A }
+
+/* ---------- Direction B — Tokyo Transit ---------- */
+.dir-b {
+  --p-bg: #F2F4F8; --p-surface: #FFFFFF; --p-text: #0F2340; --p-muted: #4A5770; --p-brand: #D7262F; --p-line: #DCE2EC;
+  --p-runner-bg: #E8ECF2;
+  --f-display: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif; --f-body: "Noto Sans JP", system-ui, sans-serif; --f-util: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --radius: 10px;
+  --l-n5: #1E9E5A; --l-n4: #E59A00; --l-n3: #2B6BD8;
+}
+.dir-b .eyebrow { font-size: .95rem; font-weight: 700; letter-spacing: .2em }
+.hero-b { background: #0F2340; color: #F3F6FB }
+.hero-b .site-nav { color: #F3F6FB }
+.hero-b .langpill .on b { color: #0F2340 }
+.hero-b .tag { color: #B8C4D8 }
+.hero-b .eyebrow { color: #FF8A8F }
+.hero-b h1 { font-weight: 900 }
+.hero-b h1 .stn { display: inline-block; background: #fff; color: #0F2340; border-radius: 10px; padding: 0 .22em; font-family: "Barlow Condensed", sans-serif; font-weight: 700; border: 4px solid var(--l-n5) }
+.hero-b .sky { left: 0; right: 0; bottom: -90px; width: 100%; height: calc(62% + 90px) }
+.hero-b .sky svg { width: 100%; height: 100%; display: block }
+.hero-b .sun-b { width: 150px; aspect-ratio: 1; border-radius: 50%; right: 12%; top: 22%; background: radial-gradient(circle at 35% 30%, #F25555, #C21E2A) ; box-shadow: 0 0 80px 10px rgba(242,85,85,.35) }
+.hero-b .rail { left: 0; right: 0; bottom: 36px; height: 10px; background: var(--p-brand); z-index: 1 }
+.hero-b .rail::before, .hero-b .rail::after { content: ""; position: absolute; top: -9px; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 6px solid var(--p-brand) }
+.hero-b .rail::before { left: 18% } .hero-b .rail::after { left: 58% }
+.dir-b .btn-ghost { color: #F3F6FB }
+.dir-b .btn-primary { box-shadow: 0 10px 28px -8px rgba(215,38,47,.7) }
+.route-b { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px; align-items: center }
+.route { position: relative; }
+.route svg { width: 100%; height: auto; display: block; overflow: visible }
+.route .trk { fill: none; stroke: #D3DAE6; stroke-width: 14; stroke-linecap: round }
+.route .drawn { fill: none; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 1; stroke: url(#nm-line) }
+.route .st circle.o { fill: #fff; stroke: #9AA6BA; stroke-width: 6 }
+.route .st circle.p { fill: none; stroke: transparent; stroke-width: 3 }
+.route .st text { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 30px; fill: #0F2340 }
+.route .st text.s { font-family: "Noto Sans JP", sans-serif; font-weight: 500; font-size: 15px; fill: #4A5770 }
+.route .st.lit circle.o { stroke: var(--c) }
+.route .st.lit circle.p { stroke: var(--c); animation: nm-pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center }
+@keyframes nm-pulse { from { opacity: .9; transform: scale(1) } to { opacity: 0; transform: scale(2.1) } }
+.dir-b .tcard { border: 0; box-shadow: 0 1px 0 #DCE2EC, 0 10px 30px -22px rgba(15,35,64,.5); position: relative; padding-top: 26px }
+.dir-b .tcard::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; border-radius: 10px 10px 0 0; background: var(--line, #2B6BD8) }
+.dir-b .meta b { font-size: 1.25rem; font-family: "Barlow Condensed", sans-serif }
+
+/* ---------- Direction C — Washi Layers ---------- */
+.dir-c {
+  --p-bg: #F6F2EC; --p-surface: #FFFDF9; --p-text: #1F2F47; --p-muted: #56637A; --p-brand: #D33F46; --p-line: #E6DED2;
+  --p-runner-bg: #EEE8DF;
+  --f-display: "Zen Maru Gothic", "Nunito", sans-serif; --f-body: "Zen Maru Gothic", "Nunito", system-ui, sans-serif; --f-util: "Nunito", system-ui, sans-serif;
+  --radius: 18px;
+}
+.hero-c { background: linear-gradient(#DCE8F4, #F3EEE6 78%) }
+.hero-c h1 { font-weight: 900; color: #1F2F47 }
+.hero-c .sun-c { width: min(34vw, 300px); aspect-ratio: 1; border-radius: 50%; right: 14%; top: 60px; background: radial-gradient(circle at 40% 35%, #EE6A6A, #C8323A) }
+.hero-c .mtn { left: -2%; right: -2%; bottom: -100px; width: 104% }
+.hero-c .mtn svg { display: block; width: 100%; height: auto }
+.hero-c .m1 { filter: drop-shadow(0 -4px 10px rgba(31,47,71,.10)) }
+.hero-c .m2 { filter: drop-shadow(0 -6px 12px rgba(31,47,71,.14)) }
+.hero-c .m3 { filter: drop-shadow(0 -8px 16px rgba(31,47,71,.18)) }
+.hero-c .cloud { height: 26px; border-radius: 999px; background: #fff; opacity: .9; box-shadow: 0 6px 16px -10px rgba(31,47,71,.4) }
+.hero-c .cloud::before { content: ""; position: absolute; width: 46%; height: 180%; left: 18%; bottom: 30%; background: #fff; border-radius: 50% }
+.drift { animation: nm-drift 38s linear infinite alternate }
+@keyframes nm-drift { from { translate: 0 0 } to { translate: 90px 0 } }
+.dir-c .btn { border-radius: 999px }
+.dir-c .btn-ghost { background: #FFFDF9; border-color: #1F2F47 }
+.cats-c { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 32px }
+.paper { background: #FFFDF9; border-radius: 18px; padding: 22px 18px; box-shadow: 0 2px 0 #E6DED2, 0 14px 30px -22px rgba(31,47,71,.55); display: grid; gap: 8px; transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s; position: relative }
+.paper:hover { transform: translateY(-8px) rotate(-1deg); box-shadow: 0 2px 0 #E6DED2, 0 26px 40px -24px rgba(31,47,71,.6) }
+.paper .kj { font-size: 2.4rem; font-weight: 900; line-height: 1; color: var(--p-brand) }
+.paper h3 { font-size: 1.1rem; font-weight: 700 }
+.paper p { color: var(--p-muted); font-size: .88rem; line-height: 1.7 }
+.dir-c .tcard { border: 0; box-shadow: 0 2px 0 #E6DED2, 0 14px 30px -22px rgba(31,47,71,.5) }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .choices, .cards { grid-template-columns: minmax(0, 1fr) }
+  .path-a, .route-b, .spec { grid-template-columns: minmax(0, 1fr) }
+  .cats-c { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .site-nav ul { display: none }
+}
+@media (max-width: 640px) {
+  .hero-a .sun { width: 64vw; top: auto; bottom: -22vw; right: -22vw }
+}
+@media (max-width: 480px) {
+  .swatches { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+  .hero-a .tate { display: none }
+  .hero-b .sun-b { width: 90px }
+}
+
+/* ---------- Reduced motion (system setting or preview switch) ---------- */
+.rm .layer { transform: none !important }
+.rm .reveal, .rm .drift, .rm .route .st circle.p, .rm .hero-a h1 em path { animation: none !important }
+.rm .tcard:hover, .rm .paper:hover, .rm .btn:hover, .rm .choice:hover { transform: none }
+@media (prefers-reduced-motion: reduce) {
+  .layer { transform: none !important }
+  .reveal, .drift, .route .st circle.p, .hero-a h1 em path { animation: none !important }
+}
+</style>
+
+<!-- Brand logo, reproduced from nihongo-mock-logo.svg (unchanged artwork) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="nm-sun" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E64646"/><stop offset="1" stop-color="#B91F2B"/></linearGradient>
+    <linearGradient id="nm-line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1E9E5A"/><stop offset=".5" stop-color="#E59A00"/><stop offset="1" stop-color="#2B6BD8"/></linearGradient>
+  </defs>
+  <symbol id="nm-emblem" viewBox="0 0 192 192">
+    <circle cx="96" cy="96" r="92" fill="url(#nm-sun)"/>
+    <circle cx="96" cy="96" r="74" fill="none" stroke="#FFFFFF" stroke-opacity=".20" stroke-width="2"/>
+    <path d="M49 43 H143 L136 55 H56 Z" fill="#FFFFFF"/>
+    <path d="M60 57 H132 V66 H60 Z" fill="#FFFFFF"/>
+    <path d="M68 66 H80 V101 H68 Z M112 66 H124 V101 H112 Z" fill="#FFFFFF"/>
+    <path d="M28 111 C50 100 72 104 93 119 V157 C72 142 50 139 28 149 Z" fill="#FFFFFF"/>
+    <path d="M164 111 C142 100 120 104 99 119 V157 C120 142 142 139 164 149 Z" fill="#FFFFFF"/>
+    <path d="M96 119 V158" fill="none" stroke="#C92732" stroke-width="4" stroke-linecap="round"/>
+    <path d="M43 119 C57 114 70 117 82 124 M43 129 C57 124 70 127 82 134 M149 119 C135 114 122 117 110 124 M149 129 C135 124 122 127 110 134" fill="none" stroke="#AAB7C8" stroke-width="2.5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nm-logo" viewBox="0 0 900 220">
+    <use href="#nm-emblem" x="20" y="12" width="196" height="196"/>
+    <g font-family="Inter, Arial, Helvetica, sans-serif">
+      <text x="226" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#142B4A">Nihongo</text>
+      <text x="527" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#C92732">Mock</text>
+      <rect x="229" y="134" width="66" height="5" rx="2.5" fill="#C92732"/>
+      <text x="229" y="170" font-size="21" font-weight="650" letter-spacing="4.1" fill="#5B6575">PRACTICE SMART. PASS JLPT.</text>
+    </g>
+  </symbol>
+  <symbol id="nm-logo-rev" viewBox="0 0 900 220">
+    <use href="#nm-emblem" x="20" y="12" width="196" height="196"/>
+    <g font-family="Inter, Arial, Helvetica, sans-serif">
+      <text x="226" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#FFFFFF">Nihongo</text>
+      <text x="527" y="112" font-size="72" font-weight="750" letter-spacing="-2.5" fill="#FF6B70">Mock</text>
+      <rect x="229" y="134" width="66" height="5" rx="2.5" fill="#FF6B70"/>
+      <text x="229" y="170" font-size="21" font-weight="650" letter-spacing="4.1" fill="#AAB7C8">PRACTICE SMART. PASS JLPT.</text>
+    </g>
+  </symbol>
+</svg>
+
+<header class="wrap shell-head">
+  <div class="brand">
+    <svg viewBox="0 0 192 192" role="img" aria-label="Nihongo Mock"><use href="#nm-emblem"/></svg>
+    <div>
+      <h1>Nihongo Mock: visual directions</h1>
+      <p class="sub">Phase 3 proposal · pick one direction · sample content only</p>
+    </div>
+  </div>
+  <div class="switches">
+    <div class="seg" role="group" aria-label="Preview language">
+      <span class="lbl">Language</span>
+      <button type="button" id="lang-en" aria-pressed="true">English</button>
+      <button type="button" id="lang-ja" aria-pressed="false">日本語</button>
+    </div>
+    <div class="seg" role="group" aria-label="Motion preview">
+      <span class="lbl">Motion</span>
+      <button type="button" id="rm-off" aria-pressed="true">Full</button>
+      <button type="button" id="rm-on" aria-pressed="false">Reduced</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="intro">All three directions use your logo, the same screens and the same calm exam screen. They differ in <strong>typography, illustration and motion</strong>. Pick a direction, then scroll through it to see the parallax and scroll effects. The <strong>Language</strong> switch shows the Japanese version, and <strong>Reduced</strong> shows what students who turn off motion will see.</p>
+
+  <div class="choices" role="tablist" aria-label="Design directions" id="choices">
+    <button class="choice" role="tab" id="t-a" aria-controls="a" aria-selected="false" type="button">
+      <span class="k">Direction A</span><span class="n">Ink &amp; Sun</span>
+      <span class="d">A Japanese textbook page: white paper, navy ink, one red sun. Calm and credible.</span>
+      <dl><dt>Motion</dt><dd>Low–medium</dd><dt>Feels</dt><dd>Serious, trustworthy</dd><dt>Effort</dt><dd>Lowest</dd></dl>
+    </button>
+    <button class="choice" role="tab" id="t-b" aria-controls="b" aria-selected="true" type="button">
+      <span class="rec">Recommended</span>
+      <span class="k">Direction B</span><span class="n">Tokyo Transit</span>
+      <span class="d">Railway signage and route maps. The level check is a train line: N5 → N4 → N3.</span>
+      <dl><dt>Motion</dt><dd>Medium–high</dd><dt>Feels</dt><dd>Energetic, purposeful</dd><dt>Effort</dt><dd>Highest</dd></dl>
+    </button>
+    <button class="choice" role="tab" id="t-c" aria-controls="c" aria-selected="false" type="button">
+      <span class="k">Direction C</span><span class="n">Washi Layers</span>
+      <span class="d">Layered paper cut-outs with deep parallax. Rounded type, warm and friendly.</span>
+      <dl><dt>Motion</dt><dd>High parallax, gentle UI</dd><dt>Feels</dt><dd>Friendly, low-anxiety</dd><dt>Effort</dt><dd>Medium</dd></dl>
+    </button>
+  </div>
+</div>
+
+<nav class="tabbar" aria-label="Jump between directions">
+  <div class="wrap">
+    <button type="button" data-go="a" aria-pressed="false">A · Ink &amp; Sun</button>
+    <button type="button" data-go="b" aria-pressed="true">B · Tokyo Transit</button>
+    <button type="button" data-go="c" aria-pressed="false">C · Washi Layers</button>
+  </div>
+</nav>
+
+<!-- ======================= DIRECTION A ======================= -->
+<section class="dir dir-a" id="a" role="tabpanel" aria-labelledby="t-a" hidden>
+  <div class="hero hero-a">
+    <div class="layer sun" data-speed="0.28"></div>
+    <div class="layer tate" data-speed="0.22" lang="ja" aria-hidden="true">日本語模試</div>
+    <div class="layer rule" style="top:38%" data-speed="0.06"></div>
+    <div class="layer rule" style="top:74%" data-speed="0.1"></div>
+    <div class="in">
+      <nav class="site-nav" aria-label="Sample site navigation">
+        <svg class="logo" role="img" aria-label="Nihongo Mock"><use href="#nm-logo"/></svg>
+        <ul><li data-i18n="nav.exams">Exams</li><li data-i18n="nav.tests">Mock tests</li><li data-i18n="nav.study">Study</li><li data-i18n="nav.pricing">Pricing</li></ul>
+        <div class="right"><span class="langpill" aria-hidden="true"><span class="on" data-lp="en"><b>EN</b></span><span data-lp="ja">日本語</span></span></div>
+      </nav>
+      <div class="copy">
+        <p class="eyebrow">JLPT · NAT · JFT</p>
+        <h1 style="margin-top:14px"><span data-i18n="a.h1a">Know your level.</span><br><em><span data-i18n="a.h1b">Practice for the real exam.</span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 7 C 30 2, 60 9, 98 4"/></svg></em></h1>
+        <p class="tag" data-i18n="hero.sub">A free level check from N5, then full mock tests for JLPT, NAT and JFT.</p>
+        <div class="ctas"><a class="btn btn-primary" href="#a" data-i18n="cta.level">Take the free level check</a><a class="btn btn-ghost" href="#a" data-i18n="cta.browse">Browse mock tests</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="background:#F7F9FC">
+    <div class="in path-a">
+      <div class="reveal">
+        <p class="eyebrow" data-i18n="route.k">Level check</p>
+        <h2 style="margin-top:10px" data-i18n="route.title">How the level check works</h2>
+        <p class="lead" style="margin-top:14px" data-i18n="route.body">Start at N5. Pass a stage to move to the next one. The check stops at the first stage you don't pass, and your level is the last stage you cleared.</p>
+      </div>
+      <div class="steps-a route-a">
+        <svg class="ink" viewBox="0 0 8 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 0 V100"/></svg>
+        <div class="step-a" data-at=".05"><span class="n">N5</span><h3 data-i18n="s1">Stage 1 · N5</h3><p data-i18n="s1d">Everyone starts here. No skipping ahead.</p></div>
+        <div class="step-a" data-at=".5"><span class="n">N4</span><h3 data-i18n="s2">Stage 2 · N4</h3><p data-i18n="s2d">Unlocked only after passing N5.</p></div>
+        <div class="step-a" data-at=".92"><span class="n">N3</span><h3 data-i18n="s3">Stage 3 · N3</h3><p data-i18n="s3d">Pass all three and your level is N3.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in">
+      <p class="eyebrow" data-i18n="cat.k">Mock tests</p>
+      <h2 style="margin-top:10px" data-i18n="cat.title">Practice under real exam conditions</h2>
+      <div class="cards">
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#142B4A">JLPT N4</span><span class="badge b-free" data-i18n="card.free">Free sample</span></div><h3 data-i18n="t1">JLPT N4 Practice Test A</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>60</b> <span data-i18n="card.q">questions</span></span><span><b>90</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#a" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#142B4A">NAT 4Q</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t2">NAT 4Q Practice Test 2</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>65</b> <span data-i18n="card.q">questions</span></span><span><b>95</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#a" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#142B4A">JFT A2</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t3">JFT-Basic A2 Practice Set 1</h3><div class="meta"><span><b>4</b> <span data-i18n="card.sec">sections</span></span><span><b>50</b> <span data-i18n="card.q">questions</span></span><span><b>60</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#a" data-i18n="card.go">View test →</a></article>
+      </div>
+      <p class="sample-note" data-i18n="sample">Sample content for the design preview. Real tests, sections and prices come from the CMS.</p>
+    </div>
+  </div>
+
+  <div class="sec runner-wrap"><div class="in" data-runner></div></div>
+
+  <div class="sec">
+    <div class="in spec">
+      <div>
+        <p class="eyebrow">Palette &amp; type</p>
+        <div class="swatches" style="margin-top:14px">
+          <div class="sw"><i style="background:#FFFFFF"></i>#FFFFFF paper</div>
+          <div class="sw"><i style="background:#142B4A"></i>#142B4A ink</div>
+          <div class="sw"><i style="background:#C92732"></i>#C92732 sun</div>
+          <div class="sw"><i style="background:#4E5A6E"></i>#4E5A6E slate</div>
+          <div class="sw"><i style="background:#F7F9FC"></i>#F7F9FC wash</div>
+        </div>
+        <div class="typespec">
+          <p class="t1" lang="ja">合格への道を、一歩ずつ。</p>
+          <p class="t2">Shippori Mincho B1 headings give a printed-textbook voice; Noto Sans JP keeps long Japanese passages easy to read.</p>
+          <p class="fn">Display: Shippori Mincho B1 · Body: Noto Sans JP · Numbers: IBM Plex Mono</p>
+        </div>
+      </div>
+      <div class="notes">
+        <h3>Motion in this direction</h3>
+        <ul><li>The red sun rises slowly behind the hero as you scroll.</li><li>A brush-stroke underline draws under the headline on load.</li><li>The ink line and N5/N4/N3 stamps fill in as you scroll the level-check section.</li><li>Sections fade up gently; cards lift slightly on hover.</li></ul>
+        <h3>Best for</h3>
+        <p class="lead" style="font-size:.95rem">A serious exam-prep brand that wants parents, employers and students to trust it at first glance.</p>
+        <p class="tradeoff">Trade-off: the quietest of the three. Less "wow" than your brief asks for.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= DIRECTION B ======================= -->
+<section class="dir dir-b" id="b" role="tabpanel" aria-labelledby="t-b">
+  <div class="hero hero-b">
+    <div class="layer sun-b" data-speed="0.32"></div>
+    <div class="layer sky" data-speed="0.18"><svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" data-sky="1" aria-hidden="true"></svg></div>
+    <div class="layer sky" data-speed="0.09"><svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" data-sky="2" aria-hidden="true"></svg></div>
+    <div class="layer sky" data-speed="0.02"><svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" data-sky="3" aria-hidden="true"></svg></div>
+    <div class="layer rail" aria-hidden="true"></div>
+    <div class="in">
+      <nav class="site-nav" aria-label="Sample site navigation">
+        <svg class="logo" role="img" aria-label="Nihongo Mock"><use href="#nm-logo-rev"/></svg>
+        <ul><li data-i18n="nav.exams">Exams</li><li data-i18n="nav.tests">Mock tests</li><li data-i18n="nav.study">Study</li><li data-i18n="nav.pricing">Pricing</li></ul>
+        <div class="right"><span class="langpill" aria-hidden="true"><span class="on" data-lp="en"><b>EN</b></span><span data-lp="ja">日本語</span></span></div>
+      </nav>
+      <div class="copy">
+        <p class="eyebrow">JLPT · NAT · JFT</p>
+        <h1 style="margin-top:14px"><span data-i18n="b.h1a">Your route to Japan starts at</span> <span class="stn">N5</span><span data-i18n="b.h1b">.</span></h1>
+        <p class="tag" data-i18n="hero.sub">A free level check from N5, then full mock tests for JLPT, NAT and JFT.</p>
+        <div class="ctas"><a class="btn btn-primary" href="#b" data-i18n="cta.level">Take the free level check</a><a class="btn btn-ghost" href="#b" data-i18n="cta.browse">Browse mock tests</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in route-b">
+      <div class="reveal">
+        <p class="eyebrow" data-i18n="route.k">Level check</p>
+        <h2 style="margin-top:10px" data-i18n="route.title">How the level check works</h2>
+        <p class="lead" style="margin-top:14px" data-i18n="route.body">Start at N5. Pass a stage to move to the next one. The check stops at the first stage you don't pass, and your level is the last stage you cleared.</p>
+      </div>
+      <div class="route route-svg">
+        <svg viewBox="0 0 600 300" role="img" aria-label="Route map: N5, then N4, then N3">
+          <path class="trk" d="M40 230 C 160 230, 180 80, 300 80 S 450 230, 560 150"/>
+          <path class="drawn" pathLength="1" d="M40 230 C 160 230, 180 80, 300 80 S 450 230, 560 150"/>
+          <g class="st" data-at=".02" style="--c:#1E9E5A"><circle class="p" cx="40" cy="230" r="20"/><circle class="o" cx="40" cy="230" r="20"/><text x="22" y="285">N5</text><text class="s" x="70" y="282" data-i18n="st1">Stage 1</text></g>
+          <g class="st" data-at=".5" style="--c:#E59A00"><circle class="p" cx="300" cy="80" r="20"/><circle class="o" cx="300" cy="80" r="20"/><text x="282" y="40">N4</text><text class="s" x="326" y="38" data-i18n="st2">Stage 2</text></g>
+          <g class="st" data-at=".97" style="--c:#2B6BD8"><circle class="p" cx="560" cy="150" r="20"/><circle class="o" cx="560" cy="150" r="20"/><text x="542" y="205">N3</text><text class="s" x="476" y="250" data-i18n="st3">Stage 3</text></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="background:#FFFFFF">
+    <div class="in">
+      <p class="eyebrow" data-i18n="cat.k">Mock tests</p>
+      <h2 style="margin-top:10px" data-i18n="cat.title">Practice under real exam conditions</h2>
+      <div class="cards">
+        <article class="tcard reveal" style="--line:#E59A00"><div class="row"><span class="badge b-level" style="background:#B87800">JLPT N4</span><span class="badge b-free" data-i18n="card.free">Free sample</span></div><h3 data-i18n="t1">JLPT N4 Practice Test A</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>60</b> <span data-i18n="card.q">questions</span></span><span><b>90</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#b" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal" style="--line:#E59A00"><div class="row"><span class="badge b-level" style="background:#B87800">NAT 4Q</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t2">NAT 4Q Practice Test 2</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>65</b> <span data-i18n="card.q">questions</span></span><span><b>95</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#b" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal" style="--line:#7A4FC8"><div class="row"><span class="badge b-level" style="background:#6A42B5">JFT A2</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t3">JFT-Basic A2 Practice Set 1</h3><div class="meta"><span><b>4</b> <span data-i18n="card.sec">sections</span></span><span><b>50</b> <span data-i18n="card.q">questions</span></span><span><b>60</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#b" data-i18n="card.go">View test →</a></article>
+      </div>
+      <p class="sample-note" data-i18n="sample">Sample content for the design preview. Real tests, sections and prices come from the CMS.</p>
+    </div>
+  </div>
+
+  <div class="sec runner-wrap"><div class="in" data-runner></div></div>
+
+  <div class="sec">
+    <div class="in spec">
+      <div>
+        <p class="eyebrow">Palette &amp; type</p>
+        <div class="swatches" style="margin-top:14px">
+          <div class="sw"><i style="background:#0F2340"></i>#0F2340 night</div>
+          <div class="sw"><i style="background:#D7262F"></i>#D7262F signal</div>
+          <div class="sw"><i style="background:#1E9E5A"></i>#1E9E5A N5 line</div>
+          <div class="sw"><i style="background:#E59A00"></i>#E59A00 N4 line</div>
+          <div class="sw"><i style="background:#2B6BD8"></i>#2B6BD8 N3 line</div>
+        </div>
+        <div class="typespec">
+          <p class="t1" lang="ja" style="font-weight:900">次の駅は、<span style="font-family:'Barlow Condensed',sans-serif">N4</span>。</p>
+          <p class="t2">Heavy Zen Kaku Gothic New for headings, Barlow Condensed for station numbers and signs, Noto Sans JP for reading.</p>
+          <p class="fn">Display: Zen Kaku Gothic New 900 · Signs: Barlow Condensed · Body: Noto Sans JP</p>
+        </div>
+      </div>
+      <div class="notes">
+        <h3>Motion in this direction</h3>
+        <ul><li>Three skyline layers and the sun move at different speeds as you scroll (parallax).</li><li>The route line draws itself on scroll; stations light up and pulse when reached.</li><li>Each level has its own line colour, reused on badges, the dashboard and results.</li><li>In the real build, "How it works" becomes a pinned, scroll-driven scene on desktop.</li></ul>
+        <h3>Best for</h3>
+        <p class="lead" style="font-size:.95rem">Your brief: animation, parallax and a design people remember. The route metaphor explains the N5-first rule visually and follows the student from the level check to their results.</p>
+        <p class="tradeoff">Trade-off: the most custom illustration and animation work. It needs discipline to keep the student area tidy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= DIRECTION C ======================= -->
+<section class="dir dir-c" id="c" role="tabpanel" aria-labelledby="t-c" hidden>
+  <div class="hero hero-c">
+    <div class="layer sun-c" data-speed="0.36"></div>
+    <div class="layer cloud drift" style="width:150px;left:8%;top:120px" data-speed="0.22"></div>
+    <div class="layer cloud drift" style="width:110px;left:58%;top:70px;animation-duration:46s" data-speed="0.3"></div>
+    <div class="layer mtn m1" data-speed="0.24"><svg viewBox="0 0 1200 420" aria-hidden="true"><path fill="#C9D6E5" d="M0 250 L160 175 L300 215 L470 130 L640 205 L820 150 L1000 200 L1200 140 V420 H0Z"/></svg></div>
+    <div class="layer mtn m2" data-speed="0.14"><svg viewBox="0 0 1200 420" aria-hidden="true"><path fill="#9FB2CA" d="M260 320 L560 110 Q600 92 640 110 L960 320 V420 H260 Z"/><path fill="#FFFDF9" d="M512 144 L560 110 Q600 92 640 110 L688 144 L660 134 L636 152 L612 132 L588 154 L562 134 Z"/></svg></div>
+    <div class="layer mtn m3" data-speed="0.05"><svg viewBox="0 0 1200 420" aria-hidden="true"><path fill="#3B5273" d="M0 420 V270 Q220 215 430 262 T840 246 T1200 262 V420 Z"/><g fill="#D33F46" transform="translate(905 196) scale(.5)"><path d="M0 0 H94 L87 12 H7 Z"/><path d="M11 14 H83 V23 H11 Z"/><path d="M19 23 H31 V84 H19 Z M63 23 H75 V84 H63 Z"/></g></svg></div>
+    <div class="in">
+      <nav class="site-nav" aria-label="Sample site navigation">
+        <svg class="logo" role="img" aria-label="Nihongo Mock"><use href="#nm-logo"/></svg>
+        <ul><li data-i18n="nav.exams">Exams</li><li data-i18n="nav.tests">Mock tests</li><li data-i18n="nav.study">Study</li><li data-i18n="nav.pricing">Pricing</li></ul>
+        <div class="right"><span class="langpill" aria-hidden="true"><span class="on" data-lp="en"><b>EN</b></span><span data-lp="ja">日本語</span></span></div>
+      </nav>
+      <div class="copy" style="padding-bottom:clamp(140px,22vw,260px)">
+        <p class="eyebrow">JLPT · NAT · JFT</p>
+        <h1 style="margin-top:14px" data-i18n="c.h1">Learn Japanese one calm step at a time.</h1>
+        <p class="tag" data-i18n="hero.sub">A free level check from N5, then full mock tests for JLPT, NAT and JFT.</p>
+        <div class="ctas"><a class="btn btn-primary" href="#c" data-i18n="cta.level">Take the free level check</a><a class="btn btn-ghost" href="#c" data-i18n="cta.browse">Browse mock tests</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in">
+      <p class="eyebrow" data-i18n="study.k">Study library</p>
+      <h2 style="margin-top:10px" data-i18n="study.title">Four ways to study at your level</h2>
+      <div class="cats-c">
+        <div class="paper reveal"><span class="kj" lang="ja">聴</span><h3 data-i18n="c1">Listening</h3><p data-i18n="c1d">Audio lessons with transcripts.</p></div>
+        <div class="paper reveal"><span class="kj" lang="ja">文</span><h3 data-i18n="c2">Grammar</h3><p data-i18n="c2d">Patterns with example sentences.</p></div>
+        <div class="paper reveal"><span class="kj" lang="ja">読</span><h3 data-i18n="c3">Reading</h3><p data-i18n="c3d">Short passages with furigana.</p></div>
+        <div class="paper reveal"><span class="kj" lang="ja">漢</span><h3 data-i18n="c4">Kanji</h3><p data-i18n="c4d">Readings, meanings and practice.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="background:#FBF8F3">
+    <div class="in">
+      <p class="eyebrow" data-i18n="cat.k">Mock tests</p>
+      <h2 style="margin-top:10px" data-i18n="cat.title">Practice under real exam conditions</h2>
+      <div class="cards">
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#3B5273">JLPT N4</span><span class="badge b-free" data-i18n="card.free">Free sample</span></div><h3 data-i18n="t1">JLPT N4 Practice Test A</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>60</b> <span data-i18n="card.q">questions</span></span><span><b>90</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#c" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#3B5273">NAT 4Q</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t2">NAT 4Q Practice Test 2</h3><div class="meta"><span><b>3</b> <span data-i18n="card.sec">sections</span></span><span><b>65</b> <span data-i18n="card.q">questions</span></span><span><b>95</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#c" data-i18n="card.go">View test →</a></article>
+        <article class="tcard reveal"><div class="row"><span class="badge b-level" style="background:#3B5273">JFT A2</span><span class="badge b-paid" data-i18n="card.price">Price set in CMS</span></div><h3 data-i18n="t3">JFT-Basic A2 Practice Set 1</h3><div class="meta"><span><b>4</b> <span data-i18n="card.sec">sections</span></span><span><b>50</b> <span data-i18n="card.q">questions</span></span><span><b>60</b> <span data-i18n="card.min">min</span></span></div><a class="go" href="#c" data-i18n="card.go">View test →</a></article>
+      </div>
+      <p class="sample-note" data-i18n="sample">Sample content for the design preview. Real tests, sections and prices come from the CMS.</p>
+    </div>
+  </div>
+
+  <div class="sec runner-wrap"><div class="in" data-runner></div></div>
+
+  <div class="sec">
+    <div class="in spec">
+      <div>
+        <p class="eyebrow">Palette &amp; type</p>
+        <div class="swatches" style="margin-top:14px">
+          <div class="sw"><i style="background:#F6F2EC"></i>#F6F2EC washi</div>
+          <div class="sw"><i style="background:#DCE8F4"></i>#DCE8F4 sky</div>
+          <div class="sw"><i style="background:#9FB2CA"></i>#9FB2CA ridge</div>
+          <div class="sw"><i style="background:#3B5273"></i>#3B5273 dusk</div>
+          <div class="sw"><i style="background:#D33F46"></i>#D33F46 sun</div>
+        </div>
+        <div class="typespec">
+          <p class="t1" lang="ja" style="font-weight:900">日本語を、一歩ずつ着実に。</p>
+          <p class="t2">Zen Maru Gothic's rounded strokes feel friendly for beginners; Nunito matches it for Latin text and numbers.</p>
+          <p class="fn">Display &amp; body: Zen Maru Gothic · Latin: Nunito</p>
+        </div>
+      </div>
+      <div class="notes">
+        <h3>Motion in this direction</h3>
+        <ul><li>Four paper layers (sky, ridges, Mount Fuji, foreground hill with a torii) move at different depths as you scroll.</li><li>Clouds drift slowly across the sky.</li><li>Study cards lift and tilt like paper on hover.</li></ul>
+        <h3>Best for</h3>
+        <p class="lead" style="font-size:.95rem">Beginners at N5 and N4 who are nervous about exams. It feels welcoming and low-pressure.</p>
+        <p class="tradeoff">Trade-off: can read as playful rather than exam-serious, and rounded type is a little less crisp for dense reading passages.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap shared">
+  <h2>The same in every direction</h2>
+  <ul>
+    <li><strong>Calm exam screen:</strong> no decorative motion, static timer digits, large answer targets, keyboard shortcuts (1–4 to answer, F to flag).</li>
+    <li><strong>Everything editable in the CMS:</strong> headings, buttons, images, parallax layers, the animation used by each section, colours and the tagline, in English and Japanese.</li>
+    <li><strong>Reduced motion:</strong> students who turn off motion on their device see a still version with every piece of content intact.</li>
+    <li><strong>English first:</strong> every visitor starts in English, with a 日本語 switch in the navbar that is remembered.</li>
+    <li><strong>Logo unchanged.</strong> Direction B uses a white-text version of the same logo on dark backgrounds.</li>
+  </ul>
+  <p style="color:var(--muted)">To choose, reply with <strong>A</strong>, <strong>B</strong> or <strong>C</strong>, or name parts to combine (for example "B with A's headings").</p>
+</div>
+
+<template id="runner-tpl">
+  <div class="runner" role="group" aria-label="Sample exam screen">
+    <div class="rhead">
+      <span class="tname" data-i18n="t1">JLPT N4 Practice Test A</span>
+      <span class="qno" data-i18n="r.q">Question 7 of 30</span>
+      <span class="timer"><span data-i18n="r.time">Time left</span><b>24:13</b></span>
+    </div>
+    <div class="rprog" aria-hidden="true"><i></i></div>
+    <div class="rbody">
+      <p class="qno" data-i18n="r.sample">Sample question · Vocabulary</p>
+      <p class="qtext" lang="ja">「学校」の読み方として、正しいものを一つ選んでください。</p>
+      <fieldset class="opts">
+        <legend>Answer options</legend>
+        <label class="opt"><input type="radio" name="__NAME__" id="__NAME__-1"><span class="num">1</span><span lang="ja">がっこう</span></label>
+        <label class="opt"><input type="radio" name="__NAME__" id="__NAME__-2"><span class="num">2</span><span lang="ja">がこう</span></label>
+        <label class="opt"><input type="radio" name="__NAME__" id="__NAME__-3"><span class="num">3</span><span lang="ja">がっこ</span></label>
+        <label class="opt"><input type="radio" name="__NAME__" id="__NAME__-4"><span class="num">4</span><span lang="ja">かっこう</span></label>
+      </fieldset>
+    </div>
+    <div class="rfoot">
+      <button class="rbtn" type="button" data-i18n="r.prev">← Previous</button>
+      <button class="rbtn flag" type="button" aria-pressed="false" data-i18n="r.flag">Mark for review</button>
+      <button class="rbtn primary" type="button" data-i18n="r.next">Next →</button>
+    </div>
+  </div>
+  <p class="calm-label" data-i18n="r.calm">Exam screen: kept calm on purpose, with no decorative motion.</p>
+</template>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const dict = {
+    "nav.exams": ["Exams", "試験"], "nav.tests": ["Mock tests", "模擬試験"], "nav.study": ["Study", "学習"], "nav.pricing": ["Pricing", "料金"],
+    "a.h1a": ["Know your level.", "自分のレベルを知り、"], "a.h1b": ["Practice for the real exam.", "本番に備えよう。"],
+    "b.h1a": ["Your route to Japan starts at", "日本への道は"], "b.h1b": [".", "から始まる。"],
+    "c.h1": ["Learn Japanese one calm step at a time.", "日本語を、一歩ずつ着実に。"],
+    "hero.sub": ["A free level check from N5, then full mock tests for JLPT, NAT and JFT.", "N5からの無料レベルチェックと、JLPT・NAT・JFTの本格的な模擬試験。"],
+    "cta.level": ["Take the free level check", "無料のレベルチェックを受ける"], "cta.browse": ["Browse mock tests", "模擬試験を見る"],
+    "route.k": ["Level check", "レベルチェック"], "route.title": ["How the level check works", "レベルチェックの流れ"],
+    "route.body": ["Start at N5. Pass a stage to move to the next one. The check stops at the first stage you don't pass, and your level is the last stage you cleared.", "N5からスタートします。合格すると次のステージへ進みます。不合格になったステージで終了し、最後に合格したステージがあなたのレベルになります。"],
+    "s1": ["Stage 1 · N5", "ステージ1・N5"], "s1d": ["Everyone starts here. No skipping ahead.", "全員ここから始めます。飛ばすことはできません。"],
+    "s2": ["Stage 2 · N4", "ステージ2・N4"], "s2d": ["Unlocked only after passing N5.", "N5に合格すると挑戦できます。"],
+    "s3": ["Stage 3 · N3", "ステージ3・N3"], "s3d": ["Pass all three and your level is N3.", "3つすべてに合格すると、レベルはN3です。"],
+    "st1": ["Stage 1", "ステージ1"], "st2": ["Stage 2", "ステージ2"], "st3": ["Stage 3", "ステージ3"],
+    "cat.k": ["Mock tests", "模擬試験"], "cat.title": ["Practice under real exam conditions", "本番と同じ条件で練習しよう"],
+    "card.free": ["Free sample", "無料サンプル"], "card.price": ["Price set in CMS", "料金はCMSで設定"],
+    "card.sec": ["sections", "セクション"], "card.q": ["questions", "問"], "card.min": ["min", "分"], "card.go": ["View test →", "詳細を見る →"],
+    "t1": ["JLPT N4 Practice Test A", "JLPT N4 模擬試験 A"], "t2": ["NAT 4Q Practice Test 2", "NAT 4級 模擬試験 2"], "t3": ["JFT-Basic A2 Practice Set 1", "JFT-Basic A2 練習セット 1"],
+    "sample": ["Sample content for the design preview. Real tests, sections and prices come from the CMS.", "デザイン確認用のサンプルです。実際の試験・セクション・料金はCMSで管理します。"],
+    "study.k": ["Study library", "学習ライブラリ"], "study.title": ["Four ways to study at your level", "あなたのレベルに合わせた4つの学習"],
+    "c1": ["Listening", "聴解"], "c1d": ["Audio lessons with transcripts.", "スクリプト付きの音声教材。"],
+    "c2": ["Grammar", "文法"], "c2d": ["Patterns with example sentences.", "例文付きの文型解説。"],
+    "c3": ["Reading", "読解"], "c3d": ["Short passages with furigana.", "ふりがな付きの短い文章。"],
+    "c4": ["Kanji", "漢字"], "c4d": ["Readings, meanings and practice.", "読み方・意味・練習問題。"],
+    "r.q": ["Question 7 of 30", "第7問（全30問）"], "r.time": ["Time left", "残り時間"], "r.sample": ["Sample question · Vocabulary", "サンプル問題・語彙"],
+    "r.prev": ["← Previous", "← 前へ"], "r.next": ["Next →", "次へ →"], "r.flag": ["Mark for review", "見直しマーク"],
+    "r.calm": ["Exam screen: kept calm on purpose, with no decorative motion.", "試験画面：集中できるよう、装飾的な動きはありません。"]
+  };
+
+  // Runner sample into each direction
+  const tpl = document.getElementById("runner-tpl");
+  document.querySelectorAll("[data-runner]").forEach((host, i) => {
+    host.innerHTML = tpl.innerHTML.replaceAll("__NAME__", "q7-" + i);
+  });
+  document.addEventListener("click", e => {
+    const f = e.target.closest(".flag");
+    if (f) f.setAttribute("aria-pressed", f.getAttribute("aria-pressed") !== "true");
+  });
+
+  // Skyline layers for Direction B (deterministic)
+  const colors = { 1: "#1D3558", 2: "#16294A", 3: "#0B1A31" };
+  document.querySelectorAll("[data-sky]").forEach(svg => {
+    const layer = +svg.dataset.sky;
+    let seed = layer * 97, x = -20, out = "";
+    const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const [minH, maxH] = layer === 1 ? [90, 200] : layer === 2 ? [60, 150] : [30, 90];
+    while (x < 1220) {
+      const w = 34 + rnd() * 60, h = minH + rnd() * (maxH - minH);
+      out += `<rect x="${x.toFixed(0)}" y="${(300 - h).toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" fill="${colors[layer]}"/>`;
+      if (layer === 1 && rnd() > .55) {
+        for (let wy = 300 - h + 14; wy < 290; wy += 18) for (let wx = x + 8; wx < x + w - 8; wx += 14)
+          if (rnd() > .62) out += `<rect x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="5" height="7" fill="#F2C14E" opacity=".55"/>`;
+      }
+      x += w + 2;
+    }
+    if (layer === 1) out += `<path d="M880 300 L905 60 L930 300 Z M893 170 H917" stroke="#1D3558" stroke-width="3" fill="#1D3558"/>`;
+    svg.innerHTML = out;
+  });
+
+  // Tabs
+  const panels = ["a", "b", "c"].map(id => document.getElementById(id));
+  const tabButtons = [...document.querySelectorAll("#choices [role=tab]")];
+  const jumpButtons = [...document.querySelectorAll(".tabbar button")];
+  function show(id, scroll) {
+    panels.forEach(p => p.hidden = p.id !== id);
+    tabButtons.forEach(b => b.setAttribute("aria-selected", b.getAttribute("aria-controls") === id));
+    jumpButtons.forEach(b => b.setAttribute("aria-pressed", b.dataset.go === id));
+    try { localStorage.setItem("nm-dir", id); } catch (e) {}
+    if (scroll) document.getElementById(id).scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    requestAnimationFrame(update);
+  }
+  tabButtons.forEach(b => b.addEventListener("click", () => show(b.getAttribute("aria-controls"), false)));
+  jumpButtons.forEach(b => b.addEventListener("click", () => show(b.dataset.go, true)));
+  document.getElementById("choices").addEventListener("keydown", e => {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    const i = tabButtons.indexOf(document.activeElement); if (i < 0) return;
+    const n = tabButtons[(i + (e.key === "ArrowRight" ? 1 : 2)) % 3]; n.focus(); n.click();
+  });
+
+  // Language
+  function setLang(l) {
+    const k = l === "ja" ? 1 : 0;
+    document.querySelectorAll("[data-i18n]").forEach(el => { const v = dict[el.dataset.i18n]; if (v) el.textContent = v[k]; });
+    panels.forEach(p => p.setAttribute("lang", l));
+    document.querySelectorAll(".langpill").forEach(pill => pill.querySelectorAll("[data-lp]").forEach(s => {
+      const on = s.dataset.lp === l; s.classList.toggle("on", on);
+      s.innerHTML = on ? `<b>${s.dataset.lp === "en" ? "EN" : "日本語"}</b>` : (s.dataset.lp === "en" ? "EN" : "日本語");
+    }));
+    document.getElementById("lang-en").setAttribute("aria-pressed", l === "en");
+    document.getElementById("lang-ja").setAttribute("aria-pressed", l === "ja");
+  }
+  document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
+  document.getElementById("lang-ja").addEventListener("click", () => setLang("ja"));
+
+  // Motion
+  const mq = matchMedia("(prefers-reduced-motion: reduce)");
+  let reduced = mq.matches;
+  function setReduced(v) {
+    reduced = v; root.classList.toggle("rm", v);
+    document.getElementById("rm-on").setAttribute("aria-pressed", v);
+    document.getElementById("rm-off").setAttribute("aria-pressed", !v);
+    update();
+  }
+  document.getElementById("rm-on").addEventListener("click", () => setReduced(true));
+  document.getElementById("rm-off").addEventListener("click", () => setReduced(false));
+
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  function update() {
+    const vh = innerHeight;
+    const panel = panels.find(p => !p.hidden); if (!panel) return;
+    panel.querySelectorAll("[data-speed]").forEach(el => {
+      if (reduced) { el.style.transform = ""; return; }
+      const r = el.closest(".hero").getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const off = (r.top + r.height / 2 - vh / 2) * parseFloat(el.dataset.speed);
+      el.style.transform = `translate3d(0, ${off.toFixed(1)}px, 0)`;
+    });
+    panel.querySelectorAll(".route-svg, .route-a").forEach(box => {
+      const r = box.getBoundingClientRect();
+      const p = reduced ? 1 : clamp((vh * 0.9 - r.top) / (r.height + vh * 0.35), 0, 1);
+      const line = box.querySelector(".drawn, svg.ink path");
+      if (line) line.style.strokeDashoffset = (1 - p).toFixed(3);
+      box.querySelectorAll("[data-at]").forEach(s => s.classList.toggle("lit", p >= parseFloat(s.dataset.at)));
+    });
+  }
+  let ticking = false;
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; update(); }); } }, { passive: true });
+  addEventListener("resize", update);
+
+  let start = "b";
+  const h = location.hash.replace("#", "");
+  try { start = ["a", "b", "c"].includes(h) ? h : (localStorage.getItem("nm-dir") || "b"); } catch (e) {}
+  if (!["a", "b", "c"].includes(start)) start = "b";
+  show(start, false);
+  setReduced(reduced);
+})();
+</script>
