@@ -3,9 +3,12 @@ import { ZodError } from 'zod'
 /** Stable error codes shared with clients (docs/API_DOCUMENTATION.md §3). Clients switch on `code`. */
 export const ERROR_STATUS = {
   VALIDATION_FAILED: 400,
+  INVALID_TOKEN: 400,
   UNAUTHENTICATED: 401,
   SESSION_EXPIRED: 401,
+  INVALID_CREDENTIALS: 401,
   FORBIDDEN: 403,
+  ACCOUNT_DISABLED: 403,
   LEVEL_NOT_DETERMINED: 403,
   EMAIL_NOT_VERIFIED: 403,
   NOT_ENTITLED: 403,
@@ -32,9 +35,12 @@ export type ErrorCode = keyof typeof ERROR_STATUS
  */
 const DEFAULT_MESSAGES: Record<ErrorCode, string> = {
   VALIDATION_FAILED: 'Some fields are invalid. Check them and try again.',
+  INVALID_TOKEN: 'This link is invalid or has expired. Request a new one.',
   UNAUTHENTICATED: 'Log in to continue.',
   SESSION_EXPIRED: 'Your session has expired. Log in again.',
+  INVALID_CREDENTIALS: 'The email or password is incorrect.',
   FORBIDDEN: 'You do not have permission to do this.',
+  ACCOUNT_DISABLED: 'This account is suspended. Contact support.',
   LEVEL_NOT_DETERMINED: 'Finish the level check to unlock this.',
   EMAIL_NOT_VERIFIED: 'Verify your email address to continue.',
   NOT_ENTITLED: 'You do not have access to this test yet.',

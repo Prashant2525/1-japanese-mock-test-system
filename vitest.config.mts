@@ -10,7 +10,13 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          env: { LOG_LEVEL: 'silent' },
+          env: {
+            LOG_LEVEL: 'silent',
+            APP_URL: 'http://localhost:3000',
+            DATABASE_URL: 'postgres://unit:unit@localhost:1/none',
+            PAYLOAD_SECRET: 'unit-test-secret-unit-test-secret-0000',
+            TRUST_PROXY: 'true',
+          },
           include: ['tests/unit/**/*.test.ts'],
         },
       },

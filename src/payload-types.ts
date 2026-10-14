@@ -64,10 +64,15 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     admins: AdminAuthOperations;
+    students: StudentAuthOperations;
   };
   blocks: {};
   collections: {
     admins: Admin;
+    roles: Role;
+    students: Student;
+    'audit-events': AuditEvent;
+    'email-templates': EmailTemplate;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,6 +81,10 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
+    students: StudentsSelect<false> | StudentsSelect<true>;
+    'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
+    'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -91,13 +100,31 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: Admin;
+  user: Admin | Student;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface AdminAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface StudentAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -122,6 +149,12 @@ export interface AdminAuthOperations {
 export interface Admin {
   id: number;
   name: string;
+  roles: (number | Role)[];
+  status: 'active' | 'disabled';
+  /**
+   * Language for account emails.
+   */
+  preferredLocale: 'en' | 'ja';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -141,6 +174,142 @@ export interface Admin {
     | null;
   password?: string | null;
   collection: 'admins';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: number;
+  name: string;
+  description?: string | null;
+  permissions?:
+    | (
+        | 'admins.read'
+        | 'admins.manage'
+        | 'roles.manage'
+        | 'students.read'
+        | 'students.update'
+        | 'students.reset_determination'
+        | 'students.override_level'
+        | 'audit.read'
+        | 'settings.manage'
+        | 'content.manage'
+        | 'content.publish'
+        | 'catalogue.manage'
+        | 'materials.manage'
+        | 'materials.publish'
+        | 'media.manage'
+        | 'media.upload_svg'
+        | 'questions.manage'
+        | 'questions.publish'
+        | 'questions.import'
+        | 'tests.manage'
+        | 'tests.publish'
+        | 'determination.manage'
+        | 'determination.publish'
+        | 'results.read'
+        | 'products.manage'
+        | 'orders.read'
+        | 'payments.read'
+        | 'support.read'
+      )[]
+    | null;
+  /**
+   * System roles are created by the platform and cannot be deleted.
+   */
+  isSystem?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "students".
+ */
+export interface Student {
+  id: number;
+  name: string;
+  preferredLocale: 'en' | 'ja';
+  status: 'active' | 'suspended';
+  determinationStatus: 'not_started' | 'in_progress' | 'completed';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'students';
+}
+/**
+ * Read-only record of sensitive actions.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-events".
+ */
+export interface AuditEvent {
+  id: number;
+  actorType: 'admin' | 'student' | 'system';
+  actorId?: string | null;
+  action: string;
+  entityType: string;
+  entityId?: string | null;
+  summary?: string | null;
+  before?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  ip?: string | null;
+  userAgent?: string | null;
+  requestId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-templates".
+ */
+export interface EmailTemplate {
+  id: number;
+  key: 'verify_email' | 'reset_password' | 'admin_reset_password' | 'contact_notification' | 'order_receipt';
+  subject: string;
+  /**
+   * Plain text. A blank line starts a new paragraph.
+   */
+  body: string;
+  buttonLabel?: string | null;
+  footer?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -165,15 +334,37 @@ export interface PayloadKv {
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?: {
-    relationTo: 'admins';
-    value: number | Admin;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'admins';
+        value: number | Admin;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'students';
+        value: number | Student;
+      } | null)
+    | ({
+        relationTo: 'audit-events';
+        value: number | AuditEvent;
+      } | null)
+    | ({
+        relationTo: 'email-templates';
+        value: number | EmailTemplate;
+      } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'admins';
-    value: number | Admin;
-  };
+  user:
+    | {
+        relationTo: 'admins';
+        value: number | Admin;
+      }
+    | {
+        relationTo: 'students';
+        value: number | Student;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -183,10 +374,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'admins';
-    value: number | Admin;
-  };
+  user:
+    | {
+        relationTo: 'admins';
+        value: number | Admin;
+      }
+    | {
+        relationTo: 'students';
+        value: number | Student;
+      };
   key?: string | null;
   value?:
     | {
@@ -217,6 +413,9 @@ export interface PayloadMigration {
  */
 export interface AdminsSelect<T extends boolean = true> {
   name?: T;
+  roles?: T;
+  status?: T;
+  preferredLocale?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -234,6 +433,79 @@ export interface AdminsSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  permissions?: T;
+  isSystem?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "students_select".
+ */
+export interface StudentsSelect<T extends boolean = true> {
+  name?: T;
+  preferredLocale?: T;
+  status?: T;
+  determinationStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-events_select".
+ */
+export interface AuditEventsSelect<T extends boolean = true> {
+  actorType?: T;
+  actorId?: T;
+  action?: T;
+  entityType?: T;
+  entityId?: T;
+  summary?: T;
+  before?: T;
+  after?: T;
+  ip?: T;
+  userAgent?: T;
+  requestId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-templates_select".
+ */
+export interface EmailTemplatesSelect<T extends boolean = true> {
+  key?: T;
+  subject?: T;
+  body?: T;
+  buttonLabel?: T;
+  footer?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
