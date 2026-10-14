@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-14 — Phase 7: authentication, sessions, roles and permissions
+
+- Permission catalogue (28 keys) and `can()`; `roles` collection with seeded system roles (Super Admin, Content Editor, Support). Super Admin always has every permission; system roles cannot be deleted.
+- `admins`: roles and status changeable only by `admins.manage`; no deletion; last-Super-Admin guard; disabled admins are blocked and their sessions revoked; login audit; bilingual set-password email.
+- `students` auth collection: email verification, lockout, 7-day revocable sessions, server-only `determinationStatus`; suspension revokes sessions.
+- `/api/v1/auth/{register, verify, resend-verification, login, logout, forgot-password, reset-password}`, `/api/v1/me`, `/api/v1/me/preferences`: strict validation, identical responses for unknown emails, PostgreSQL rate limits with Retry-After, CSRF same-origin check, audit events.
+- `src/proxy.ts` blocks Payload's own student auth and create endpoints.
+- `audit-events` (append-only) and `email-templates` (EN/JA, CMS-editable) collections. Email transports: Resend / console / memory.
+- `pnpm admin:create` creates a Super Admin and emails a set-password link (no default passwords).
+- Migrations: `auth_roles_students` (schema) and `seed_auth` (rate-limit table, roles, email templates).
+- `APP_ENV` added (D-052). New env vars: `APP_ENV`, `TRUST_PROXY`, `EMAIL_TRANSPORT`, `RESEND_API_KEY`, `EMAIL_FROM_ADDRESS`, `EMAIL_FROM_NAME`.
+- Tests: unit 36, integration 49, E2E 16.
+- README re-encoded to UTF-8 (KI-01 fixed properly).
+
 ## 2026-10-14 — Phase 6: project and backend foundation
 
 - Scaffolded Next.js 16.3.8 + Payload 3.90.2 (embedded) on PostgreSQL 17 with pnpm 12 and Node 24 (D-051).

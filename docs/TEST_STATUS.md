@@ -1,40 +1,55 @@
 # Test Status
 
-Last updated: 2026-10-14 (Phase 6).
+Last updated: 2026-10-14 (Phase 7).
 
 ## Environment
 
-- Local: Windows 11, Node v24.15.0, pnpm 12.8.1, Docker 29.8.1, PostgreSQL 17 (Docker, port 5433). Databases: `nihongo_mock` (dev) and `nihongo_mock_test` (integration tests).
-- CI: GitHub Actions `ubuntu-latest`, Postgres 17 service, per-run random `PAYLOAD_SECRET` (`.github/workflows/ci.yml`).
+- Local: Windows 11, Node v24.15.0, pnpm 12.8.1, Docker 29.8.1, PostgreSQL 17 (Docker, 127.0.0.1:5433). Databases: `nihongo_mock` (dev) and `nihongo_mock_test` (integration tests).
+- Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
+- CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands
+## Commands and latest local results (2026-10-14)
 
-| Purpose | Command | Status |
+| Purpose | Command | Result |
 |---|---|---|
-| Lint | `pnpm lint` | Passing (0 problems) |
-| Type-check | `pnpm typecheck` | Passing |
-| Formatting | `pnpm format:check` | Passing |
-| Unit tests | `pnpm test:unit` | **18/18 passing** |
-| Integration tests | `pnpm test:int` | **11/11 passing**; migrates the test DB first via the CLI |
-| Build | `pnpm build` | Passing |
-| E2E tests | `pnpm test:e2e` (after `pnpm build`) | **8/8 passing** (Chromium, production build) |
-| Migration drift | `pnpm payload migrate:create ci_drift_check --skip-empty` | No drift. Detection verified by adding a probe field (a migration was generated) and reverting. |
+| Lint | `pnpm lint` | 0 problems |
+| Type-check | `pnpm typecheck` | Pass |
+| Formatting | `pnpm format:check` | Pass |
+| Unit tests | `pnpm test:unit` | **36/36** |
+| Integration tests | `pnpm test:int` | **49/49** |
+| Build | `pnpm build` | Pass |
+| E2E | `pnpm test:e2e` | **16/16** (first attempt crashed natively before any test ran, KI-12; re-run passed) |
 
-## Latest local results (2026-10-14)
+## What the Phase 7 tests prove
 
-- Unit: `tests/unit/env.test.ts` (6): defaults, coercion, missing variables named, secret value never printed, non-Postgres URL rejected, pool bounds. `tests/unit/errors.test.ts` (12): error mapping, Zod field details, unknown errors hidden, request-ID generation/validation, params, strict JSON parsing.
-- Integration: `tests/int/database.int.spec.ts` (8): query, test-DB isolation, migrations applied, admin sessions table, admin persistence (no hash exposed), anonymous create/read refused (403), delete refused even for an admin. `tests/int/health.int.spec.ts` (3): `/healthz`, `/readyz` ready, no connection details exposed.
-- E2E: `tests/e2e/foundation.e2e.spec.ts` (8): security headers and request ID, readiness, home page, anonymous `/api/cms/admins` → 403, GraphQL → 404, admin redirect to login, wrong password rejected, valid login reaches the dashboard. The throwaway admin is removed afterwards (verified: 0 admins in both databases).
-
-## CI results (PR #3)
-
-- Run 38582759563 (commit `585196f`): **pass** in 1m34s. The log shows formatting ✓, migration applied, drift check ran, build compiled, E2E 8 passed.
-- Run 38583141350 (commit `71ef7cf`, password-free CI database): **pass** in 1m59s.
-- GitGuardian: flags commit `585196f` for the throwaway CI database password (KI-11). The latest commit has no password.
+- **Unit:**
+  - `permissions` (5): Super Admin has every permission; a fake "Super Admin" role gets nothing extra; the rest fail closed.
+  - `email-templates` (5): allow-listed variables, escaping, fallback to code defaults, subject newline stripping.
+  - `client` (5): CSRF same-origin rules, client IP parsing.
+  - `env` (+3): email/proxy rules, APP_ENV production checks.
+- **Integration, `rbac` (14):**
+  - seeded role sets; system roles undeletable; Super Admin permissions can't be reduced; `isSystem` can't be set;
+  - an editor can't create admins, escalate themselves, edit another admin or edit roles;
+  - Support is read-only; only `audit.read` sees the audit log, and it can't be edited;
+  - a disabled admin is locked out at once; the last Super Admin is protected.
+- **Integration, `student-auth` (23):**
+  - sign-up sends an EN/JA verification email with HTML escaped;
+  - duplicate sign-up and unknown emails get the same answer; weak passwords and extra fields are rejected;
+  - no login before verification; verification tokens work once; re-send works;
+  - wrong password and unknown email give identical answers; the cookie is HttpOnly and SameSite;
+  - the cookie is ignored without browser signals; `/me` shows no secrets;
+  - logout revokes only that device; 5 failures lock the account; the per-IP limit sends Retry-After;
+  - suspension ends sessions; CSRF is rejected; login and logout are audited;
+  - reset is single-use, revokes all sessions and swaps the password;
+  - a student can't read others, can't change protected fields, and can change only the language preference.
+- **Integration, `database` (9), `health` (3):** connectivity, migrations, session tables, rate-limit table, admin access closed.
+- **E2E, `auth` (8):** Payload student endpoints return 404; anonymous listing returns 403; a real-browser login sets an HTTP-only cookie invisible to JavaScript; `/me` and logout work; cross-site login is rejected; a Super Admin sees roles, the audit log and email templates, and an editor does not.
+- **E2E, `foundation` (8):** as in Phase 6.
 
 ## Coverage gaps (planned)
 
-- WebKit and mobile-viewport E2E projects: added in Phase 8 with the first real UI.
-- Accessibility (axe) and reduced-motion runs: Phase 8 onward.
+- Real Resend delivery: needs an account (staging).
+- Admin MFA: not built (OPS-2b).
+- WebKit and mobile-viewport E2E, axe accessibility and reduced-motion runs: Phase 8.
+- Session expiry by time (7 days students, 8 h admins) is enforced by Payload's JWT `exp`. It is not tested by waiting; revocation is tested.
 - Load test (k6, 500 concurrent): Phase 26.
-- All feature acceptance criteria (PB §16.2–16.5): their phases.

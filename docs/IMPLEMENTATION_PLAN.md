@@ -12,9 +12,9 @@ Last updated: 2026-10-14 (Phase 1).
 | 3 | Visual direction, journeys, design-system plan | **COMPLETE** (2026-10-14) — Direction B approved (D-046..D-048) | — | Approved art direction; `UI_SCREEN_INVENTORY.md`; `DESIGN_SYSTEM.md`. |
 | 4 | System architecture | **COMPLETE** (2026-10-14) — `ARCHITECTURE.md`, `API_DOCUMENTATION.md`; no blockers | — | `ARCHITECTURE.md`, `API_DOCUMENTATION.md`, repo structure. |
 | 5 | Database/domain design | **COMPLETE** (2026-10-14) — approved (D-049, D-050) | — | Approved schema design in `DATABASE_ARCHITECTURE.md`. |
-| 6 | Project/backend foundation | **COMPLETE locally** (2026-10-14) — Payload 3.90.2 + Next 16.3.8 + Postgres 17; unit 18/18, int 11/11, E2E 8/8; CI added (first CI run on the PR) | — | Config, DB, migrations, errors/logging, health checks, baseline tests. |
-| 7 | Authentication and authorization | **NEXT** | OPS-2b (admin MFA); Resend account for real email (console adapter until then) | Auth flows + permission tests pass. |
-| 8 | Shared frontend foundation | NOT STARTED | Phase 3, 6; includes logo variants (D-048) | Tokens/components/patterns with tests. |
+| 6 | Project/backend foundation | **COMPLETE** (2026-10-14) — PR #3 | — | Config, DB, migrations, errors/logging, health checks, baseline tests. |
+| 7 | Authentication and authorization | **COMPLETE except admin MFA** (2026-10-14) — roles/permissions, admins, students, `/api/v1/auth`, rate limits, audit, bilingual emails; unit 36, int 49, E2E 16 | OPS-2b (MFA) pending owner; real email needs a Resend account | Auth flows + permission tests pass. |
+| 8 | Shared frontend foundation | **NEXT** | Includes logo variants (D-048), next-intl routing, and the sign-up/login/verify/reset pages | Tokens/components/patterns with tests. |
 | 9 | Admin CMS framework | NOT STARTED | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
 | 10 | Student route gates | NOT STARTED | Phase 7 | Server-side determination gate + bypass E2E tests. |
 | 11 | Level determination engine | NOT STARTED | Phase 10 | All pass/fail branches, idempotency, race tests pass. |

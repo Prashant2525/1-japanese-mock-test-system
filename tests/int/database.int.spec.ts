@@ -1,21 +1,15 @@
-import config from '@payload-config'
 import { sql } from '@payloadcms/db-postgres'
-import { getPayload, type Payload } from 'payload'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import type { Payload } from 'payload'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 import { migrations } from '@/migrations'
+
+import { asUser, client, createAdmin, roleId, strongPassword, uniqueEmail } from './helpers'
 
 let payload: Payload
 
 beforeAll(async () => {
-  payload = await getPayload({ config })
-})
-
-afterAll(async () => {
-  await payload.delete({
-    collection: 'admins',
-    where: { email: { contains: '@int.nihongo-mock.test' } },
-  })
+  payload = await client()
 })
 
 describe('database connectivity', () => {
@@ -35,27 +29,28 @@ describe('database connectivity', () => {
     for (const m of migrations) expect(names).toContain(m.name)
   })
 
-  it('stores admin sessions server-side so they can be revoked', async () => {
+  it('stores admin and student sessions server-side so they can be revoked', async () => {
     const result = await payload.db.drizzle.execute(
-      sql`select to_regclass('public.admins_sessions') is not null as present`,
+      sql`select to_regclass('public.admins_sessions') is not null as admins, to_regclass('public.students_sessions') is not null as students`,
+    )
+    expect(result.rows[0]).toEqual({ admins: true, students: true })
+  })
+
+  it('has the rate-limit table', async () => {
+    const result = await payload.db.drizzle.execute(
+      sql`select to_regclass('public.rate_limits') is not null as present`,
     )
     expect(result.rows[0].present).toBe(true)
   })
 })
 
 describe('admins collection access (closed by default)', () => {
-  it('persists an admin created by a trusted server process', async () => {
-    const created = await payload.create({
-      collection: 'admins',
-      data: {
-        name: 'Integration Admin',
-        email: 'persist@int.nihongo-mock.test',
-        password: crypto.randomUUID(),
-      },
-    })
-    const found = await payload.findByID({ collection: 'admins', id: created.id })
-    expect(found.email).toBe('persist@int.nihongo-mock.test')
+  it('persists an admin created by a trusted server process, without exposing the hash', async () => {
+    const { admin } = await createAdmin('Support')
+    const found = await payload.findByID({ collection: 'admins', id: admin.id })
+    expect(found.email).toBe(admin.email)
     expect(found).not.toHaveProperty('hash')
+    expect(found).not.toHaveProperty('salt')
   })
 
   it('refuses to create an admin for an anonymous request (no public first-user signup)', async () => {
@@ -65,8 +60,11 @@ describe('admins collection access (closed by default)', () => {
         overrideAccess: false,
         data: {
           name: 'Intruder',
-          email: 'intruder@int.nihongo-mock.test',
-          password: crypto.randomUUID(),
+          email: uniqueEmail('intruder'),
+          password: strongPassword(),
+          roles: [await roleId('Super Admin')],
+          preferredLocale: 'en',
+          status: 'active',
         },
       }),
     ).rejects.toMatchObject({ status: 403 })
@@ -80,21 +78,15 @@ describe('admins collection access (closed by default)', () => {
     })
   })
 
-  it('refuses deleting admins even for a logged-in admin', async () => {
-    const admin = await payload.create({
-      collection: 'admins',
-      data: {
-        name: 'Delete Guard',
-        email: 'guard@int.nihongo-mock.test',
-        password: crypto.randomUUID(),
-      },
-    })
+  it('refuses deleting admins even for a Super Admin', async () => {
+    const { admin: target } = await createAdmin('Support')
+    const { admin: actor } = await createAdmin('Super Admin')
     await expect(
       payload.delete({
         collection: 'admins',
-        id: admin.id,
+        id: target.id,
         overrideAccess: false,
-        user: { ...admin, collection: 'admins' },
+        user: await asUser(actor),
       }),
     ).rejects.toMatchObject({ status: 403 })
   })

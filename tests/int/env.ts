@@ -9,6 +9,10 @@ import 'dotenv/config'
  */
 process.env.DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5433/nihongo_mock_test'
-process.env.APP_URL ??= 'http://localhost:3000'
+process.env.APP_URL = 'http://localhost:3000'
 process.env.PAYLOAD_SECRET ??= randomBytes(32).toString('hex')
 process.env.LOG_LEVEL = 'silent'
+// Emails are captured in memory so tests can read verification and reset links.
+process.env.EMAIL_TRANSPORT = 'memory'
+// Tests send X-Forwarded-For to exercise per-IP rate limits.
+process.env.TRUST_PROXY = 'true'

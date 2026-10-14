@@ -54,3 +54,38 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...valid, DATABASE_POOL_MAX: '0' })).toThrow(EnvValidationError)
   })
 })
+
+describe('parseEnv email and proxy rules', () => {
+  it('defaults to the console email transport and an untrusted proxy', () => {
+    const env = parseEnv(valid)
+    expect(env.EMAIL_TRANSPORT).toBe('console')
+    expect(env.TRUST_PROXY).toBe(false)
+  })
+
+  it('requires RESEND_API_KEY for the resend transport', () => {
+    expect(() => parseEnv({ ...valid, EMAIL_TRANSPORT: 'resend' })).toThrow(
+      /RESEND_API_KEY is required/,
+    )
+  })
+
+  it('requires resend and a real sender when APP_ENV=production (not merely a production build)', () => {
+    expect(() => parseEnv({ ...valid, NODE_ENV: 'production' })).not.toThrow()
+    try {
+      parseEnv({ ...valid, APP_ENV: 'production' })
+      expect.unreachable()
+    } catch (err) {
+      const msg = (err as Error).message
+      expect(msg).toContain('EMAIL_TRANSPORT must be "resend" when APP_ENV=production')
+      expect(msg).toContain('EMAIL_FROM_ADDRESS must be a real')
+    }
+    expect(() =>
+      parseEnv({
+        ...valid,
+        APP_ENV: 'production',
+        EMAIL_TRANSPORT: 'resend',
+        RESEND_API_KEY: 're_test_placeholder',
+        EMAIL_FROM_ADDRESS: 'no-reply@nihongomock.com',
+      }),
+    ).not.toThrow()
+  })
+})

@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 
 import { logger } from '../logger'
+import { assertSameOrigin } from './client'
 import { AppError, toErrorBody } from './errors'
 
 export type RouteContext<P = Record<string, string>> = {
@@ -21,12 +22,16 @@ function requestIdFrom(req: Request): string {
  * Wraps a Next.js route handler with request IDs, the shared error model and logging.
  * Every /api/v1 handler must use this.
  */
-export function withRoute<P = Record<string, string>>(handler: Handler<P>) {
+export function withRoute<P = Record<string, string>>(
+  handler: Handler<P>,
+  options: { csrf?: boolean } = {},
+) {
   return async (req: Request, nextCtx?: { params?: Promise<P> }): Promise<Response> => {
     const requestId = requestIdFrom(req)
     const started = performance.now()
     let response: Response
     try {
+      if (options.csrf !== false) assertSameOrigin(req)
       const params = ((await nextCtx?.params) ?? {}) as P
       response = await handler(req, { requestId, params })
     } catch (err) {
@@ -37,6 +42,9 @@ export function withRoute<P = Record<string, string>>(handler: Handler<P>) {
         logger.info({ requestId, code: body.error.code }, 'request rejected')
       }
       response = Response.json(body, { status })
+      const retry = (body.error.details as { retryAfterSeconds?: number } | null)?.retryAfterSeconds
+      if (body.error.code === 'RATE_LIMITED' && retry)
+        response.headers.set('Retry-After', String(retry))
     }
     response.headers.set('X-Request-Id', requestId)
     logger.debug(
