@@ -19,7 +19,7 @@ Permanent instructions for Claude Code (and any coding agent) working in this re
 
 ## Current status
 
-- **Phase:** Phases 0–6 complete (foundation built). Next: Phase 7 (auth, roles, permissions). The approved database design is in `docs/DATABASE_ARCHITECTURE.md`; add tables only through migrations. Design direction B "Tokyo Transit" is binding (`docs/DESIGN_SYSTEM.md`). Architecture rules: `docs/ARCHITECTURE.md` §2 (pure domain module, services own state changes).
+- **Phase:** Phases 0–7 complete (Phase 7 except admin MFA, which waits on OPS-2b). Next: Phase 8 (shared frontend foundation). The approved database design is in `docs/DATABASE_ARCHITECTURE.md`; add tables only through migrations. Design direction B "Tokyo Transit" is binding (`docs/DESIGN_SYSTEM.md`). Architecture rules: `docs/ARCHITECTURE.md` §2 (pure domain module, services own state changes).
 - **Owner priorities:** showcase-quality animated UI with parallax (D-029) and **everything manageable from the Admin CMS** (D-030); hard-coded user-facing content is a defect.
 - **Product:** brand **Nihongo Mock**; Nepal market, NPR; UI in **English + Japanese** with a navbar toggle (D-003..D-005). Brand assets: `nihongo-mock-logo-assets/nihongo_mock_logo/`.
 - **Stack:** approved top level — **Next.js + PostgreSQL, TypeScript**, one integrated app with a server-side service layer (D-025). Approved sub-choices: Payload CMS embedded, Payload/Drizzle on Postgres, Payload auth, next-intl, Tailwind v4, GSAP + Motion, R2, Resend, Vitest/Playwright, Docker (D-033..D-045). Hosting still open (TECH-5).
@@ -46,6 +46,7 @@ Work-item status: `COMPLETE` / `PARTIAL` / `MISSING` / `BROKEN` / `BLOCKED` / `U
 11. CMS changes are permission-checked server-side and auditable; archive instead of destructive delete where history depends on a record.
 12. No fake testimonials, ratings, analytics, success claims or official NAT/JLPT/JFT affiliation.
 13. Follow the approved design system, accessibility and reduced-motion guidance; exam screens stay low-distraction.
+13c. **Auth rules:** students authenticate only through `/api/v1/auth/*` (Payload's student auth endpoints are blocked in `src/proxy.ts`). Every admin permission check goes through `can()` in `src/server/auth/permissions.ts`; add new permission keys there. Every sensitive change writes an audit event (`recordAudit`). Every `/api/v1` handler uses `withRoute` (request ID, error model, CSRF).
 13a. **CMS configurability boundary (D-020):** values, toggles, catalogue, bilingual content and roles are CMS-editable; safety invariants (N5-first sequential determination, server authority, no answer exposure during attempts, server payment verification, audit, non-editable results) and secrets are not. Scoring-affecting config is versioned and applies to new attempts only.
 13b. **Bilingual (D-004):** no hard-coded single-language UI strings; every CMS-managed user-facing text field stores EN and JA.
 14. Do not add unapproved features (social login, SMS/OTP, subscriptions, coupons, refunds, certificates, leaderboards, AI tutoring, forums, mobile apps, offline mode, blog, push notifications, etc.). Propose them in the requirements register and ask.

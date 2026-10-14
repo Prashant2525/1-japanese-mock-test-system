@@ -20,7 +20,7 @@ pnpm migrate                  # applies database migrations
 pnpm dev                      # http://localhost:3000 · admin at /admin
 ```
 
-The first admin account is created from the command line (added in Phase 7); the admin panel has no public sign-up.
+The first admin account is created with `pnpm admin:create` (see below); the admin panel has no public sign-up.
 
 ## Commands
 
@@ -34,6 +34,7 @@ The first admin account is created from the command line (added in Phase 7); the
 | `pnpm migrate` · `pnpm migrate:create <name>` · `pnpm migrate:status` | Database migrations |
 | `pnpm generate:types` · `pnpm generate:importmap` | Regenerate Payload types and admin import map |
 | `pnpm db:up` · `pnpm db:down` | Start or stop the local database |
+| `pnpm admin:create --email you@example.com --name "Your Name"` | Create a Super Admin; a set-password link is emailed (printed to the console in development) |
 
 ## Health checks
 

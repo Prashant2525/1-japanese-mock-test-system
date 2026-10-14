@@ -4,14 +4,56 @@ import { z } from 'zod'
  * Server environment, validated once at startup (TSR-10).
  * Error messages name the variables that are wrong, never their values.
  */
-const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  APP_URL: z.url(),
-  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
-  DATABASE_URL: z.string().regex(/^postgres(ql)?:\/\//, 'must be a postgres:// connection string'),
-  DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
-  PAYLOAD_SECRET: z.string().min(32, 'must be at least 32 characters'),
-})
+const booleanFlag = z
+  .enum(['true', 'false', '1', '0'])
+  .default('false')
+  .transform((v) => v === 'true' || v === '1')
+
+const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    // Where this instance is deployed. NODE_ENV only says how the code was built (next build is always production).
+    APP_ENV: z.enum(['local', 'test', 'staging', 'production']).default('local'),
+    APP_URL: z.url(),
+    LOG_LEVEL: z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .default('info'),
+    DATABASE_URL: z
+      .string()
+      .regex(/^postgres(ql)?:\/\//, 'must be a postgres:// connection string'),
+    DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
+    PAYLOAD_SECRET: z.string().min(32, 'must be at least 32 characters'),
+    // Trust X-Forwarded-For for client IPs (set to true only behind your own reverse proxy).
+    TRUST_PROXY: booleanFlag,
+    // Email: "resend" in production; "console" prints emails in development; "memory" for tests.
+    EMAIL_TRANSPORT: z.enum(['resend', 'console', 'memory']).default('console'),
+    RESEND_API_KEY: z.string().min(1).optional(),
+    EMAIL_FROM_ADDRESS: z.email().default('no-reply@nihongomock.invalid'),
+    EMAIL_FROM_NAME: z.string().min(1).default('Nihongo Mock'),
+  })
+  .superRefine((env, ctx) => {
+    if (env.EMAIL_TRANSPORT === 'resend' && !env.RESEND_API_KEY) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['RESEND_API_KEY'],
+        message: 'is required when EMAIL_TRANSPORT=resend',
+      })
+    }
+    if (env.APP_ENV === 'production' && env.EMAIL_TRANSPORT !== 'resend') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['EMAIL_TRANSPORT'],
+        message: 'must be "resend" when APP_ENV=production',
+      })
+    }
+    if (env.APP_ENV === 'production' && env.EMAIL_FROM_ADDRESS.endsWith('.invalid')) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['EMAIL_FROM_ADDRESS'],
+        message: 'must be a real, verified sender address when APP_ENV=production',
+      })
+    }
+  })
 
 export type Env = z.infer<typeof envSchema>
 

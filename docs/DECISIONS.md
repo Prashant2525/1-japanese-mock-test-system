@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-14 (Phase 5 approved, Phase 6 foundation).
+Last updated: 2026-10-14 (Phase 7).
 
 ---
 
@@ -114,6 +114,19 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-049 | Database design in `docs/DATABASE_ARCHITECTURE.md` **approved**. | DB-1 ("Approved.") |
 | D-050 | *(interpretation of "Approved." — owner may amend)* Retention: keep attempts, results, orders, payments and audit records indefinitely until a policy is set. Answer-save grace window: 3 seconds, adjustable 0–10 s in CMS system settings. | DB-2, ARCH-1 |
 | D-051 | Foundation versions: **Payload 3.90.2** (latest stable; 4.0 still beta, RISK-08), **Next.js 16.3.8** (newest patch of the mature 16.3 line; 16.4.0 was 8 days old), React 19.2.6 (Payload template pin), **PostgreSQL 17**, Node 24, pnpm 12.8.1. Payload REST at `/api/cms`, GraphQL disabled, schema changes only through migrations (`push: false`). Standalone Next output only for Docker builds (`NEXT_OUTPUT_STANDALONE=1`). | Phase 6 technical choice within D-033..D-045 |
+
+## Phase 7 — authentication and authorization (2026-10-14, technical choices within the approved stack)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-052 | `APP_ENV` (`local`/`test`/`staging`/`production`) names the deployment. Strict production checks (Resend email, real sender) depend on `APP_ENV=production`, not `NODE_ENV` (every `next build` runs with NODE_ENV=production). | Phase 7 build finding |
+| D-053 | Permission catalogue of 28 keys in `src/server/auth/permissions.ts`. Roles are CMS-editable bundles of keys; the Super Admin system role always has every key. Access checks fail closed: unpopulated roles, disabled admins and students get nothing. Admin roles and status can be changed only with `admins.manage`. Admins cannot be deleted (disable instead). The last active Super Admin cannot be disabled or demoted. | D-022 implementation |
+| D-054 | Students authenticate only via `/api/v1/auth/*` (rate limits, identical responses for unknown emails, audit). Payload's own student auth and create REST endpoints are blocked in `src/proxy.ts`. Sessions are server-side and revocable: logout ends the current session; password reset and suspension end all sessions. Passwords must be 10–128 characters. | AUTH-R01/R02 implementation |
+| D-055 | Session cookies are accepted only with same-origin browser signals (Payload's CSRF rule), **and** `/api/v1` rejects cross-site mutations. Future mobile clients will use `Authorization: JWT <token>`. | AUTH-R02 |
+| D-056 | Rate limits are stored in PostgreSQL (`rate_limits`, hashed keys). Per-IP limits apply only when `TRUST_PROXY=true`. Initial limits: login 20/15 min per IP and 10/15 min per account; emails 3/15 min per address; registration 10/hour per IP. Payload lockout: 5 failures → 15 min. To be tuned in Phase 26. | ARCHITECTURE §4 |
+| D-057 | Email copy lives in the CMS `email-templates` collection (EN/JA, allow-listed `{{variables}}`, escaped into a fixed branded layout). Code defaults are used if a template is missing. Transport: Resend in staging/production, console in development, memory in tests. | D-030, D-042 |
+
+**Admin MFA (OPS-2b) is not implemented.** The playbook forbids adding MFA without approval. Once approved, it is a small TOTP addition.
 
 ## Rejected / parked alternatives
 
