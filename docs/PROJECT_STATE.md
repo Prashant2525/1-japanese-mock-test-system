@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 8 — Shared frontend foundation: COMPLETE** (2026-10-15). Next: **Phase 9 — Admin CMS framework.**
+Current phase / milestone: **Phase 8b — Continue with Google: COMPLETE** (2026-10-15, after Phase 8). Next: **Phase 9 — Admin CMS framework.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-8-frontend-foundation` (PR to `main`).
+Last verified commit: branch `feature/google-sign-in` (PR to `main`).
 
 ## Work status
 
@@ -16,11 +16,18 @@ Last verified commit: branch `feature/phase-8-frontend-foundation` (PR to `main`
     - Component library and accessible forms (shared validation with the API).
     - Pages: home (temporary), sign up, check email, verify, log in, forgot/reset, protected student home, log out.
     - Tests: unit 82/82, integration 59/59, E2E 68/68 + 1 intentionally skipped (two clean runs in a row), on desktop Chrome and iPhone Safari; axe scans pass in EN and JA. Lint, typecheck, format and build are clean.
+  - Phase 8b, Continue with Google (D-066): students only, CMS switch, account linking, revocable sessions. Tests: unit 102/102, integration 76/76, E2E 78/78 + 1 skipped. Real Google login waits on the owner's Google Cloud client (steps in `.env`).
 - **Partial / unverified:**
   - Real email delivery: waits on a domain (DOM-1, KI-18).
   - The home page is temporary (KI-08).
   - The admin panel uses Payload's own design (by plan).
 - **Remaining:** Phases 9–28.
+
+## Changes (Phase 8b)
+
+- **Code:** `src/server/auth/google.ts`, `src/server/services/google-auth.ts`, `src/app/api/v1/auth/google/**`, `src/payload/globals/SignInSettings.ts`, `Students.googleSub`, `src/ui/components/google-button.tsx`, login/sign-up forms and pages, `(auth)` layout rendered per request (KI-22), `src/server/env.ts` (Google variables; empty = unset).
+- **Database:** migration `20261014_203352_google_sign_in`.
+- **Env files:** Google section in `.env` and `.env.example` (empty until the owner creates the client).
 
 ## Changes (Phase 8)
 

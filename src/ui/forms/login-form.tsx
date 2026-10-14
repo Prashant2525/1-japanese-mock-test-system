@@ -12,6 +12,7 @@ import { loginSchema } from '@/shared/auth-schemas'
 import { Alert } from '../components/alert'
 import { Button } from '../components/button'
 import { Field, PasswordField } from '../components/field'
+import { GoogleButton, OrDivider } from '../components/google-button'
 import { apiRequest, type ApiErrorInfo } from '../lib/api'
 import { safeNextPath } from '../lib/safe-next'
 import { ResendForm } from './resend-form'
@@ -19,12 +20,23 @@ import { useMessages } from './use-api-error'
 
 type Values = { email: string; password: string }
 
-export function LoginForm() {
+/** Reasons the Google route can send back as ?oauth=… (see server/services/google-auth.ts). */
+const GOOGLE_FAILURES = new Set([
+  'cancelled',
+  'expired',
+  'failed',
+  'disabled',
+  'unavailable',
+  'rate_limited',
+])
+
+export function LoginForm({ google = false }: { google?: boolean }) {
   const { t, fieldError, apiError } = useMessages()
   const locale = useLocale()
   const search = useSearchParams()
   const router = useAbsoluteRouter()
   const [error, setError] = useState<ApiErrorInfo | null>(null)
+  const oauth = search.get('oauth')
   const {
     register,
     handleSubmit,
@@ -44,6 +56,11 @@ export function LoginForm() {
   return (
     <div className="grid gap-5">
       {search.get('loggedOut') ? <Alert tone="success">{t('app.loggedOut')}</Alert> : null}
+      {oauth && GOOGLE_FAILURES.has(oauth) && !error ? (
+        <Alert tone={oauth === 'cancelled' ? 'info' : 'danger'}>
+          {t(`auth.google.errors.${oauth}` as never)}
+        </Alert>
+      ) : null}
       {error && error.code !== 'EMAIL_NOT_VERIFIED' ? (
         <Alert tone="danger">{apiError(error)}</Alert>
       ) : null}
@@ -57,6 +74,16 @@ export function LoginForm() {
             />
           </div>
         </Alert>
+      ) : null}
+      {google ? (
+        <>
+          <GoogleButton
+            locale={locale}
+            next={search.get('next')}
+            label={t('auth.google.continue')}
+          />
+          <OrDivider label={t('auth.google.or')} />
+        </>
       ) : null}
       <form onSubmit={onSubmit} noValidate className="grid gap-5">
         <Field

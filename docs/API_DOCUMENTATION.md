@@ -70,6 +70,17 @@ Rate-limited responses include `Retry-After` (seconds). Per-IP limits apply only
 
 **Admin authentication** uses Payload's own admin login at `/admin` (`/api/cms/admins/login`), with lockout after 5 failures, the same rate limits, and revocable sessions. Disabled admins cannot log in, and disabling an admin revokes their sessions. The first Super Admin is created with `pnpm admin:create --email … --name …`, which emails a set-password link.
 
+### 4.1b Continue with Google — IMPLEMENTED (D-066)
+
+Opened by the browser (links and redirects), not by `fetch`. Both always answer `303` with `Cache-Control: no-store`.
+
+| Method | Path | Query | Result |
+|---|---|---|---|
+| GET | `/api/v1/auth/google` | `locale` (`en` or `ja`), `next` (optional, student-area path only) | Redirect to Google's account chooser (PKCE S256, state, nonce, `prompt=select_account`). Sets `nm_google_flow` (signed, HttpOnly, SameSite=Lax, path `/api/v1/auth/google`, 10 minutes). |
+| GET | `/api/v1/auth/google/callback` | from Google: `state`, `code` or `error` | Success: session cookie (`payload-token`, same as password login) + redirect to `next` or `/{locale}/app`. Failure: redirect to `/{locale}/login?oauth=<reason>` (`cancelled`, `expired`, `failed`, `disabled`, `unavailable`, `rate_limited`). |
+
+Limit: 30 requests/15 min per IP (start and return both count). Not available (`unavailable`) unless both Google variables are set and Settings → Sign-in options has the switch on. Audit events: `student.registered` / `student.login` (summary "via Google"), `student.google_linked`.
+
 ### 4.2 Planned endpoints
 
 #### Level determination (Phases 10–11)

@@ -1,10 +1,12 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 8 — shared frontend foundation. **COMPLETE.**
+**Current phase / milestone:** Phase 8b — Continue with Google. **COMPLETE.**
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
+
+- Phase 8b on `feature/google-sign-in`: unit 102/102, integration 76/76, E2E 78/78 (+1 skipped). The return from Google is tested in integration tests with a stand-in token endpoint; E2E stops at Google's door.
 
 - Phase 8 on `feature/phase-8-frontend-foundation`: unit 78/78, integration 59/59, E2E 66/66 (+1 skipped: skip link on phones), Chrome desktop + iPhone Safari, axe clean in EN/JA.
 - Screenshots reviewed (desktop and phone, EN and JA): no horizontal overflow; the route line draws; Japanese pages are fully Japanese.
@@ -14,6 +16,9 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- Playwright's `page.route` does not intercept the second hop of a redirect in Chromium; capture the redirect with `route.fetch({ maxRedirects: 0 })` instead.
+- Pages that show CMS-controlled content must be rendered per request (check the `pnpm build` route list for `●`).
 
 - Call `setRequestLocale` in every layout and page under `[locale]`. next-intl caches the locale per request; a layout that translates first otherwise forces English.
 - Never use `instanceof` for errors that may come from Payload or another route bundle (D-065).

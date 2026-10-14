@@ -20,6 +20,11 @@ export function emailedToken(kind: 'verify' | 'reset', email: string): string {
   return match[1]
 }
 
+/** Flips the CMS switch for "Continue with Google" (Settings → Sign-in options). */
+export function setGoogleSignIn(state: 'on' | 'off'): void {
+  execSync(`pnpm --silent exec tsx tests/e2e/e2e-admin.ts google ${state}`, { env: process.env })
+}
+
 /** WCAG 2.2 A/AA scan; fails on serious or critical violations. */
 export async function expectAccessible(page: Page): Promise<void> {
   // Scan the settled page: mid fade-in, text is semi-transparent and would read as low contrast.

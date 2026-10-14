@@ -100,11 +100,13 @@ export interface Config {
     'labels-site': LabelsSite;
     'labels-accounts': LabelsAccount;
     'labels-messages': LabelsMessage;
+    'sign-in-settings': SignInSetting;
   };
   globalsSelect: {
     'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
+    'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
   };
   locale: 'en' | 'ja';
   widgets: {
@@ -244,6 +246,10 @@ export interface Student {
   preferredLocale: 'en' | 'ja';
   status: 'active' | 'suspended';
   determinationStatus: 'not_started' | 'in_progress' | 'completed';
+  /**
+   * Filled in when the student uses “Continue with Google”. Empty = not linked.
+   */
+  googleSub?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -478,6 +484,7 @@ export interface StudentsSelect<T extends boolean = true> {
   preferredLocale?: T;
   status?: T;
   determinationStatus?: T;
+  googleSub?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -925,6 +932,42 @@ export interface LabelsAccount {
        */
       goToLogin?: string | null;
     };
+    google?: {
+      /**
+       * Default — EN: “Continue with Google” · JA: “Google で続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      continue?: string | null;
+      /**
+       * Default — EN: “or” · JA: “または”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      or?: string | null;
+      errors?: {
+        /**
+         * Default — EN: “Google sign-in was cancelled. Try again, or use your email and password.” · JA: “Google でのログインがキャンセルされました。もう一度試すか、メールアドレスとパスワードでログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        cancelled?: string | null;
+        /**
+         * Default — EN: “That Google sign-in took too long or was started in another window. Please try again.” · JA: “Google でのログインに時間がかかりすぎたか、別のウィンドウで開始されました。もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        expired?: string | null;
+        /**
+         * Default — EN: “We couldn't sign you in with Google. Please try again, or use your email and password.” · JA: “Google でログインできませんでした。もう一度試すか、メールアドレスとパスワードでログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        failed?: string | null;
+        /**
+         * Default — EN: “This account has been suspended. Contact support if you think this is a mistake.” · JA: “このアカウントは停止されています。誤りだと思われる場合はサポートにお問い合わせください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        disabled?: string | null;
+        /**
+         * Default — EN: “Google sign-in isn't available right now. Log in with your email and password.” · JA: “現在 Google でのログインはご利用いただけません。メールアドレスとパスワードでログインしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        unavailable?: string | null;
+        /**
+         * Default — EN: “Too many attempts. Please wait a few minutes and try again.” · JA: “試行回数が多すぎます。数分待ってからもう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+         */
+        rate_limited?: string | null;
+      };
+    };
   };
   app?: {
     /**
@@ -1053,6 +1096,21 @@ export interface LabelsMessage {
      */
     INTERNAL?: string | null;
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * How students can log in. Email and password is always available.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sign-in-settings".
+ */
+export interface SignInSetting {
+  id: number;
+  /**
+   * Also needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in the server settings; until both are set, the button stays hidden. When switched off, students who joined with Google can still log in by choosing “Forgot your password?” to set a password.
+   */
+  googleEnabled?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1200,6 +1258,22 @@ export interface LabelsAccountsSelect<T extends boolean = true> {
               requestNew?: T;
               goToLogin?: T;
             };
+        google?:
+          | T
+          | {
+              continue?: T;
+              or?: T;
+              errors?:
+                | T
+                | {
+                    cancelled?: T;
+                    expired?: T;
+                    failed?: T;
+                    disabled?: T;
+                    unavailable?: T;
+                    rate_limited?: T;
+                  };
+            };
       };
   app?:
     | T
@@ -1253,6 +1327,16 @@ export interface LabelsMessagesSelect<T extends boolean = true> {
         NETWORK_ERROR?: T;
         INTERNAL?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sign-in-settings_select".
+ */
+export interface SignInSettingsSelect<T extends boolean = true> {
+  googleEnabled?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

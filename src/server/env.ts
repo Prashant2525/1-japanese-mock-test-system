@@ -30,8 +30,21 @@ const envSchema = z
     RESEND_API_KEY: z.string().min(1).optional(),
     EMAIL_FROM_ADDRESS: z.email().default('no-reply@nihongomock.invalid'),
     EMAIL_FROM_NAME: z.string().min(1).default('Nihongo Mock'),
+    // "Continue with Google" (D-066). Both set = available; both empty = button hidden.
+    GOOGLE_CLIENT_ID: z
+      .string()
+      .regex(/\.apps\.googleusercontent\.com$/, 'must end with .apps.googleusercontent.com')
+      .optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
   })
   .superRefine((env, ctx) => {
+    if (Boolean(env.GOOGLE_CLIENT_ID) !== Boolean(env.GOOGLE_CLIENT_SECRET)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [env.GOOGLE_CLIENT_ID ? 'GOOGLE_CLIENT_SECRET' : 'GOOGLE_CLIENT_ID'],
+        message: 'must be set together with the other Google value (or leave both empty)',
+      })
+    }
     if (env.EMAIL_TRANSPORT === 'resend' && !env.RESEND_API_KEY) {
       ctx.addIssue({
         code: 'custom',
@@ -65,7 +78,11 @@ export class EnvValidationError extends Error {
 }
 
 export function parseEnv(source: Record<string, string | undefined>): Env {
-  const result = envSchema.safeParse(source)
+  // An empty line in .env (e.g. `GOOGLE_CLIENT_ID=`) means "not set", not "set to nothing".
+  const cleaned = Object.fromEntries(
+    Object.entries(source).map(([key, value]) => [key, value === '' ? undefined : value]),
+  )
+  const result = envSchema.safeParse(cleaned)
   if (result.success) return result.data
   const problems = result.error.issues.map((issue) => {
     const name = issue.path.join('.') || '(root)'

@@ -3,6 +3,7 @@
  * connection stays open in the Playwright runner).
  *   pnpm exec tsx tests/e2e/e2e-admin.ts create   → prints one E2E_FIXTURE=<json> line (random credentials)
  *   pnpm exec tsx tests/e2e/e2e-admin.ts delete
+ *   pnpm exec tsx tests/e2e/e2e-admin.ts google on|off   → the CMS switch for Google sign-in
  */
 import { randomBytes } from 'node:crypto'
 
@@ -40,6 +41,17 @@ async function main(action: string | undefined): Promise<void> {
     const token = kind === 'reset' ? doc?.resetPasswordToken : doc?._verificationToken
     if (!token) throw new Error(`no ${kind} token for ${email}`)
     console.log(`TOKEN=${token}`)
+    return
+  }
+
+  // `google on|off`: the CMS switch for "Continue with Google" (Settings → Sign-in options).
+  if (action === 'google') {
+    const state = process.argv[3]
+    if (state !== 'on' && state !== 'off') throw new Error('usage: e2e-admin.ts google on|off')
+    await payload.updateGlobal({
+      slug: 'sign-in-settings',
+      data: { googleEnabled: state === 'on' },
+    })
     return
   }
 

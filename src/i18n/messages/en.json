@@ -95,6 +95,18 @@
       "missingToken": "This page needs the link from your password-reset email.",
       "requestNew": "Request a new link",
       "goToLogin": "Log in"
+    },
+    "google": {
+      "continue": "Continue with Google",
+      "or": "or",
+      "errors": {
+        "cancelled": "Google sign-in was cancelled. Try again, or use your email and password.",
+        "expired": "That Google sign-in took too long or was started in another window. Please try again.",
+        "failed": "We couldn't sign you in with Google. Please try again, or use your email and password.",
+        "disabled": "This account has been suspended. Contact support if you think this is a mistake.",
+        "unavailable": "Google sign-in isn't available right now. Log in with your email and password.",
+        "rate_limited": "Too many attempts. Please wait a few minutes and try again."
+      }
     }
   },
   "app": {

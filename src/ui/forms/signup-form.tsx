@@ -11,6 +11,7 @@ import { registerSchema } from '@/shared/auth-schemas'
 import { Alert } from '../components/alert'
 import { Button } from '../components/button'
 import { Field, PasswordField } from '../components/field'
+import { GoogleButton, OrDivider } from '../components/google-button'
 import { apiRequest, type ApiErrorInfo } from '../lib/api'
 import { useMessages } from './use-api-error'
 
@@ -19,7 +20,7 @@ type Values = { name: string; email: string; password: string }
 
 export const PENDING_EMAIL_KEY = 'nm-pending-email'
 
-export function SignupForm() {
+export function SignupForm({ google = false }: { google?: boolean }) {
   const { t, fieldError, apiError } = useMessages()
   const locale = useLocale()
   const router = useRouter()
@@ -44,7 +45,7 @@ export function SignupForm() {
     router.push('/check-email')
   })
 
-  return (
+  const form = (
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       {error ? <Alert tone="danger">{apiError(error)}</Alert> : null}
       <Field
@@ -80,5 +81,13 @@ export function SignupForm() {
         </Link>
       </p>
     </form>
+  )
+  if (!google) return form
+  return (
+    <div className="grid gap-5">
+      <GoogleButton locale={locale} label={t('auth.google.continue')} />
+      <OrDivider label={t('auth.google.or')} />
+      {form}
+    </div>
   )
 }

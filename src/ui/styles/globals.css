@@ -36,6 +36,10 @@
   --line-n1: #d04a86;
   --badge-n1: #962858;
 
+  /* "Continue with Google" button, per Google's sign-in branding guidelines (light theme) */
+  --google-text: #1f1f1f;
+  --google-stroke: #747775;
+
   --nm-radius-input: 6px;
   --nm-radius-card: 10px;
   --nm-shadow-card: 0 1px 0 var(--line), 0 10px 30px -22px rgb(15 35 64 / 0.5);
@@ -55,6 +59,8 @@
   --color-on-night: var(--text-on-night);
   --color-muted-on-night: var(--muted-on-night);
   --color-line: var(--line);
+  --color-google-text: var(--google-text);
+  --color-google-stroke: var(--google-stroke);
   --color-focus: var(--focus);
   --color-success: var(--success);
   --color-warning: var(--warning);
