@@ -6,7 +6,7 @@ Last updated: 2026-10-14 (Phase 6).
 
 | ID | Severity | Issue | Evidence | Proposed action |
 |---|---|---|---|---|
-| KI-01 | ~~Low~~ **Resolved (Phase 6)** | `README.md` was UTF-16 LE encoded, so it shows as garbled bytes in many tools and diffs. Content is only `# 1-japanese-mock-test-system`. | Raw output shows a BOM and interleaved null bytes. | Re-save as UTF-8 with real project info when the owner approves (Phase 6 at the latest). |
+| KI-01 | ~~Low~~ **Resolved (Phase 6, fixed properly in commit after 9044656)** | `README.md` was UTF-16 LE encoded (the first rewrite kept UTF-16 because the editor preserved the encoding; re-encoded to UTF-8 and verified with `file`), so it shows as garbled bytes in many tools and diffs. Content is only `# 1-japanese-mock-test-system`. | Raw output shows a BOM and interleaved null bytes. | Re-save as UTF-8 with real project info when the owner approves (Phase 6 at the latest). |
 | KI-02 | ~~Low~~ **Resolved (PR #1)** | The playbook was untracked in Git. | `git status --porcelain` → `?? JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md` | Commit the playbook and Phase 0 docs when the owner asks. |
 | KI-03 | ~~Low~~ **Resolved (Phase 6)** | No `.gitignore`. A `.env` could be committed accidentally once development starts. | Directory listing. | Add a stack-appropriate `.gitignore` (including `.env*` except `.env.example`) in Phase 6. |
 | KI-07 | Low | The supplied logo files carry the old tagline "PRACTICE SMART. PASS JLPT." | Logo SVG/PNG. | New lockups with the D-047 tagline are produced in Phase 8 (D-048); originals kept. |
