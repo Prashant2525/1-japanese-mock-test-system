@@ -5,7 +5,7 @@ Owner decisions that block or shape later phases. Answer by ID (e.g. "MT-4: acce
 **Priority key:** **P1** blocks the next phase · **P2** needed by Phases 3–5 · **P3** needed later (phase named).
 "Suggested default" values are **PROPOSED - APPROVAL REQUIRED** until accepted.
 
-Last updated: 2026-10-14 (Phase 3 in review).
+Last updated: 2026-10-14 (Phase 4–5).
 
 ---
 
@@ -13,9 +13,9 @@ Last updated: 2026-10-14 (Phase 3 in review).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
-| DS-2 | **P1** | Choose the visual direction: **A** Ink & Sun, **B** Tokyo Transit (recommended), **C** Washi Layers, or a named combination. Preview: https://claude.ai/artifact/XNZRmr4e8HoxCs76bUZy9b | Phase 3 approval → Phase 4+ | B | |
-| DS-3 | **P1** | Tagline: keep "Practice Smart. Pass JLPT." or pick an alternative from `docs/DESIGN_SYSTEM.md` §1. | Phase 3 | Keep | |
-| DS-4 | **P1** | Approve deriving logo variants without changing the design: outlined wordmark, reversed (white-text) logo for dark backgrounds, monochrome small icon. | Phase 3/8 | Approve | |
+| DB-1 | **P1** | Approve the database design in `docs/DATABASE_ARCHITECTURE.md` (summary in §8), so Phase 6 can create it. | Phase 5 → Phase 6 | Approve | |
+| DB-2 | P2 | Data retention: keep attempts, results, orders, payments and audit records indefinitely until you set a policy? (Nepal tax/accounting rules may require keeping payment records for a minimum period.) | Phase 26–27 | Keep indefinitely for now | |
+| ARCH-1 | P2 | Answer-save grace window: accept answers up to 3 seconds after the deadline to absorb slow networks (adjustable 0–10 s in the CMS)? | Phase 16 | 3 seconds | |
 | OPS-2b | P3 | Is MFA (authenticator-app code) **required** for admin accounts at launch, or optional? | Phase 7 | Required for Super Admin, optional for other roles. | |
 | PA-6 | P3 | Who reviews the Japanese translations of UI text and the drafted page/legal copy before launch? | Phase 18 | Owner or a nominated Japanese speaker; drafts stay marked DRAFT until reviewed. | |
 | PAY-3b | P3 | Merchant onboarding status: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts, and has onboarding started? | Phase 20 | Owner starts onboarding now (D-019). | |
@@ -79,6 +79,12 @@ Owner responses are recorded verbatim; the resulting decision is in `docs/DECISI
 ### Phase 2 (2026-10-14)
 - **STACK-1** (admin approach), **STACK-2** (rest of the stack), **STACK-3** (Docker packaging) — "Continue with your suggestions and recommendation" → **D-033..D-045**
 - Commit/push to a planning branch with a PR — same answer → approved.
+
+### Phase 3 (2026-10-14)
+- **DS-2** — "Go with B. If any UI changes are required then i will tell you to do." → **D-046**
+- **DS-3** — "Use Tagline \"Practice Smart. Pass with Confidence.\"" → **D-047**
+- **DS-4** — "Yes" → **D-048**
+- Merchant onboarding — "I will do this later." (PAY-3b stays open)
 
 ### Cross-cutting interpretation
 - "make it entirely managable from CMS" — interpreted with guardrails in **D-020**. The owner may amend it.

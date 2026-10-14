@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-14 (Phase 2 approved).
+Last updated: 2026-10-14 (Phase 3 approved).
 
 ---
 
@@ -99,6 +99,14 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-044 | Ops | Sentry error tracking, uptime monitor on the health endpoint, structured logs without secrets; GitHub Actions CI. |
 | D-045 | Packaging | Docker image (Next.js standalone + worker process); Docker Compose Postgres for local dev. Hosting provider still deferred (TECH-5), preferring a region near Nepal (Mumbai/Singapore). |
 
+## Phase 3 — design (2026-10-14)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-046 | Visual direction **B — "Tokyo Transit"**: railway-signage identity; the level check drawn as a route line (N5 → N4 → N3) that recurs in the dashboard and results; layered skyline parallax; per-level line colours. Final tokens in `docs/DESIGN_SYSTEM.md`. The owner will request any UI changes later. | DS-2 ("Go with B") |
+| D-047 | Tagline changed to **"Practice Smart. Pass with Confidence."** (EN default; JA translation drafted, CMS-editable). Supersedes the tagline in D-031. RISK-06 is closed. | DS-3 |
+| D-048 | Logo variants approved, with no change to the artwork: (1) wordmark converted to outlines; (2) reversed version (white "Nihongo") for dark backgrounds; (3) monochrome small icon; (4) because the tagline changed, lockups carry the new tagline, plus a tagline-free header version. The original files in `nihongo-mock-logo-assets/` stay untouched. Produced in Phase 8 when assets enter the app. | DS-4 ("Yes") |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |
@@ -111,4 +119,5 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | Separate headless CMS (Strapi/Directus/Sanity) | Rejected 2026-10-14 | Second service; contradicts D-025. |
 | Prisma | Rejected 2026-10-14 | Would create a second migration system beside Payload. |
 | Better Auth / Auth.js | Parked | Revisit only if Payload auth fails AUTH-R02 checks in Phase 7. |
+| Directions A (Ink & Sun) and C (Washi Layers) | Rejected 2026-10-14 | Owner chose B (D-046). |
 | Vercel serverless hosting | Parked | Weaker fit for the background worker and static-IP payment callbacks; hosting still open (TECH-5). |

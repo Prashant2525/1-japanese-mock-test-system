@@ -9,12 +9,12 @@ Last updated: 2026-10-14 (Phase 1).
 | 0 | Repository and requirements discovery | **COMPLETE** (2026-10-14) | — | Repo audited; docs created; grouped questions issued. |
 | 1 | Product rules and owner decisions | **COMPLETE** (2026-10-14) | — | Decisions D-003..D-026 recorded; acceptance criteria in `REQUIREMENTS_REGISTER.md`. Remaining questions are P2/P3 and deferred to their phases. |
 | 2 | Technology alternatives and approval | **COMPLETE** (2026-10-14) — stack approved, D-033..D-045 | — | `TECH_STACK_OPTIONS.md` comparing the sub-choices (ORM, auth, i18n, styling/components, animation, forms/validation, storage, email, testing, monitoring, CI/CD, local DB); owner approval recorded in `DECISIONS.md`. |
-| 3 | Visual direction, journeys, design-system plan | **IN REVIEW** — inventory, design system draft and live preview done 2026-10-14; waiting for DS-2..4 | DS-2..4 | Approved art direction; `UI_SCREEN_INVENTORY.md`; `DESIGN_SYSTEM.md`. |
-| 4 | System architecture | NOT STARTED | Phase 2–3; capacity assumption D-032 | `ARCHITECTURE.md`, `API_DOCUMENTATION.md`, repo structure. |
-| 5 | Database/domain design | NOT STARTED | Phase 4 | Approved schema design in `DATABASE_ARCHITECTURE.md`. |
-| 6 | Project/backend foundation | NOT STARTED | Phase 5 | Config, DB, migrations, errors/logging, health checks, baseline tests. |
+| 3 | Visual direction, journeys, design-system plan | **COMPLETE** (2026-10-14) — Direction B approved (D-046..D-048) | — | Approved art direction; `UI_SCREEN_INVENTORY.md`; `DESIGN_SYSTEM.md`. |
+| 4 | System architecture | **COMPLETE** (2026-10-14) — `ARCHITECTURE.md`, `API_DOCUMENTATION.md`; no blockers | — | `ARCHITECTURE.md`, `API_DOCUMENTATION.md`, repo structure. |
+| 5 | Database/domain design | **IN REVIEW** — `DATABASE_ARCHITECTURE.md` written 2026-10-14; waiting for DB-1 | DB-1 (DB-2, ARCH-1 can follow) | Approved schema design in `DATABASE_ARCHITECTURE.md`. |
+| 6 | Project/backend foundation | NOT STARTED | DB-1 approval; Payload 3.x vs 4.0 GA decision at start (RISK-08) | Config, DB, migrations, errors/logging, health checks, baseline tests. |
 | 7 | Authentication and authorization | NOT STARTED | Phase 6; OPS-2b; email provider (Phase 2) | Auth flows + permission tests pass. |
-| 8 | Shared frontend foundation | NOT STARTED | Phase 3, 6 | Tokens/components/patterns with tests. |
+| 8 | Shared frontend foundation | NOT STARTED | Phase 3, 6; includes logo variants (D-048) | Tokens/components/patterns with tests. |
 | 9 | Admin CMS framework | NOT STARTED | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
 | 10 | Student route gates | NOT STARTED | Phase 7 | Server-side determination gate + bypass E2E tests. |
 | 11 | Level determination engine | NOT STARTED | Phase 10 | All pass/fail branches, idempotency, race tests pass. |

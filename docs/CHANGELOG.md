@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Phase 3 approved, Phase 4 complete, Phase 5 proposal
+
+- Recorded D-046 (Direction B "Tokyo Transit"), D-047 (tagline "Practice Smart. Pass with Confidence."), D-048 (logo variants).
+- Rewrote `DESIGN_SYSTEM.md` as the approved Direction B specification (tokens, level line colours, type, motion signatures, runner rules, CMS-editable design surface).
+- Added `ARCHITECTURE.md` (context and layer diagrams, routing, auth/authorization, attempt/determination/publish/payment flows, i18n, media, caching, errors/audit, repository structure).
+- Added `API_DOCUMENTATION.md` (conventions, error model, planned v1 endpoint catalogue).
+- Added `DATABASE_ARCHITECTURE.md` (entities, constraints, snapshots, indexes, seed, migrations, retention) for owner approval.
+
 ## 2026-10-14 — Phase 2 approved, Phase 3 proposal
 
 - Recorded the stack approval D-033..D-045 (Payload CMS embedded, Drizzle via Payload, next-intl, Tailwind v4, GSAP + Motion, R2, Resend, Vitest/Playwright, Docker) and the rejected/parked alternatives.

@@ -1,27 +1,27 @@
 # Project State
 
-Current phase / milestone: **Phase 3 — Visual direction: IN REVIEW.** The owner is choosing a direction (DS-2..4). Phases 0–2 are complete.
-Overall status: **NOT STARTED** (no application code; planning and design documents only)
-Last verified commit: see `git log` on branch `docs/planning` (PR to `main`).
+Current phase / milestone: **Phase 5 — Database design: IN REVIEW** (waiting for DB-1). Phases 0–4 are complete.
+Overall status: **NOT STARTED** (no application code; planning, design and architecture documents only)
+Last verified commit: see `git log` on branch `docs/phase-4-5-architecture` (PR to `main`). `main` = `22f6a07` (PR #1 merged).
 
 ## Work status
 
 - **Verified complete (with evidence):**
-  - Phase 0 discovery; Phase 1 product rules (D-001..D-032); Phase 2 stack approval (D-033..D-045). All recorded in `docs/DECISIONS.md`.
-  - Phase 3 deliverables written: `docs/UI_SCREEN_INVENTORY.md`, `docs/DESIGN_SYSTEM.md`, live preview `docs/design/visual-directions.html` (published privately: https://claude.ai/artifact/XNZRmr4e8HoxCs76bUZy9b). Preview script syntax-checked; all EN strings have JA translations.
-  - Development tools present on the owner's machine (checked 2026-10-14): Node v24.15.0, pnpm 12.8.1, Docker 29.8.1, gh CLI logged in as Prashant2525.
-- **Partial / unverified:** the preview was not visually checked in a browser by the agent (no preview tool in this session); the owner reviews it live. D-018 and D-020 remain interpretations the owner may amend.
-- **In progress:** Phase 3 approval (owner).
-- **Remaining:** Phases 4–28.
+  - Phases 0–2 (requirements, decisions D-001..D-045, stack).
+  - Phase 3: Direction B "Tokyo Transit" approved; tagline "Practice Smart. Pass with Confidence."; logo variants approved (D-046..D-048). `docs/DESIGN_SYSTEM.md` finalized.
+  - Phase 4: `docs/ARCHITECTURE.md`, `docs/API_DOCUMENTATION.md`. Payload facts checked against the official docs on 2026-10-14: sessions are on by default and revocable; `verify`, `maxLoginAttempts`/`lockTime`; jobs run with a separate `payload jobs:run` process; `beforeSchemaInit`/`afterSchemaInit` support custom tables and indexes; `payload.db.drizzle` is available.
+- **Partial / unverified:** Phase 5 schema design is written but not approved; nothing has been applied. D-018 and D-020 remain interpretations the owner may amend.
+- **In progress:** DB-1 approval (owner).
+- **Remaining:** Phases 6–28.
 
 ## Changes
 
-- Docs and design preview only. No application code, dependencies or schema.
+- Docs only. No application code, dependencies or migrations.
 
 ## Verification and blockers
 
 - **Tests run:** none (no application code).
-- **Blockers:** DS-2 (direction), DS-3 (tagline), DS-4 (logo variants).
-- **Owner decisions still open (later):** OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Owner action outside the code:** start eSewa / Khalti / connectIPS merchant onboarding; merge the planning PR.
-- **Exact next task:** record the chosen direction in `docs/DECISIONS.md` and `docs/DESIGN_SYSTEM.md` (final tokens), then run Phase 4 (playbook §11.5): architecture, module boundaries, API style, auth flows, `docs/ARCHITECTURE.md` and `docs/API_DOCUMENTATION.md`.
+- **Blockers:** DB-1 (approve the database design).
+- **Owner decisions open:** DB-2 (retention), ARCH-1 (3 s grace), OPS-2b, PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
+- **Owner action outside the code:** merchant onboarding (owner will do it later).
+- **Exact next task:** after DB-1, run Phase 6 (playbook §11.7). Choose the Payload line (3.x stable vs 4.0 if GA); scaffold Next.js 16 + Payload with pnpm; Docker Compose Postgres; env validation; base collections from the approved schema; migrations; error handling; logger; `/healthz` and `/readyz`; Vitest + Playwright setup; GitHub Actions CI; `.gitignore` and `.env.example`; tests for config, health, DB connectivity and errors.
