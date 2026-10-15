@@ -407,3 +407,45 @@ describe('private media links (D-041)', () => {
     expect((await fetchMedia(s.cookie, url)).status).toBe(404)
   })
 })
+
+describe('search and downloads (SM-R07, SM-R08)', () => {
+  it('search narrows the list to matching titles the student may see', async () => {
+    await material('search-n5', 'N5')
+    await material('search-n3', 'N3')
+    const s = await student('N4')
+    expect(await listed(s.cookie, '&q=search')).toEqual([slug('search-n5')])
+    expect(await listed(s.cookie, '&q=nothing-matches-this')).toEqual([])
+  })
+
+  it('files are view-only unless the editor allowed downloading', async () => {
+    const created = await material('downloads', 'N5', { media: [pdf, mp3] })
+    await payload.update({
+      collection: 'study-materials',
+      id: created.id,
+      data: {
+        attachments: [{ media: pdf, allowDownload: true }, { media: mp3 }],
+      },
+      user: editor,
+      overrideAccess: false,
+    })
+    const s = await student('N5')
+    const res = await callWith(detailRoute, '/x', { slug: slug('downloads') }, s.cookie)
+    const body = (await res.json()) as {
+      attachments: { kind: string; allowDownload: boolean; url: string }[]
+    }
+    expect(body.attachments.map((a) => [a.kind, a.allowDownload])).toEqual([
+      ['pdf', true],
+      ['audio', false],
+    ])
+    // Files are always sent for viewing in the page, never as a forced download.
+    const file = await callWith(
+      mediaRoute,
+      body.attachments[0]!.url,
+      {
+        id: body.attachments[0]!.url.split('/').pop()!.split('?')[0]!,
+      },
+      s.cookie,
+    )
+    expect(file.headers.get('content-disposition')).toMatch(/^inline;/)
+  })
+})

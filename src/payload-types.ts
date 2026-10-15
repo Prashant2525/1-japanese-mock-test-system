@@ -247,10 +247,13 @@ export interface Role {
         | 'catalogue.manage'
         | 'materials.manage'
         | 'materials.publish'
+        | 'materials.delete'
         | 'media.manage'
+        | 'media.delete'
         | 'media.upload_svg'
         | 'questions.manage'
         | 'questions.publish'
+        | 'questions.delete'
         | 'questions.import'
         | 'tests.manage'
         | 'tests.publish'
@@ -623,6 +626,10 @@ export interface StudyMaterial {
     | {
         media: number | LearningMedia;
         title?: string | null;
+        /**
+         * Off: students can only view or play it in the app (no download button). It deters copying; it cannot stop screenshots.
+         */
+        allowDownload?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -642,6 +649,10 @@ export interface StudyMaterial {
  */
 export interface LearningMedia {
   id: number;
+  /**
+   * Hidden from the file picker for new attachments. Materials that already use it keep it.
+   */
+  archived?: boolean | null;
   kind?: ('image' | 'audio' | 'pdf') | null;
   /**
    * For images: what the image shows, read aloud to students who cannot see it. Required for images.
@@ -1137,6 +1148,7 @@ export interface StudyMaterialsSelect<T extends boolean = true> {
     | {
         media?: T;
         title?: T;
+        allowDownload?: T;
         id?: T;
       };
   archived?: T;
@@ -1149,6 +1161,7 @@ export interface StudyMaterialsSelect<T extends boolean = true> {
  * via the `definition` "learning-media_select".
  */
 export interface LearningMediaSelect<T extends boolean = true> {
+  archived?: T;
   kind?: T;
   alt?: T;
   caption?: T;
@@ -1886,6 +1899,34 @@ export interface LabelsStudent {
        * Default — EN: “Your browser cannot play this audio.” · JA: “お使いのブラウザではこの音声を再生できません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       audioUnsupported?: string | null;
+      /**
+       * Default — EN: “Download” · JA: “ダウンロード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      download?: string | null;
+      /**
+       * Default — EN: “Loading the PDF…” · JA: “PDFを読み込み中…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      pdfLoading?: string | null;
+      /**
+       * Default — EN: “The PDF could not be shown. Reload the page to try again.” · JA: “PDFを表示できませんでした。ページを再読み込みしてください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      pdfFailed?: string | null;
+      /**
+       * Default — EN: “Pages: {count}” · JA: “{count}ページ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      pdfPages?: string | null;
+      /**
+       * Default — EN: “Search materials” · JA: “教材を検索”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      search?: string | null;
+      /**
+       * Default — EN: “Search” · JA: “検索”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      searchButton?: string | null;
+      /**
+       * Default — EN: “Clear search” · JA: “検索をクリア”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      clearSearch?: string | null;
     };
     mockTests?: {
       /**
@@ -2462,6 +2503,13 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               downloadPdf?: T;
               pdfTitle?: T;
               audioUnsupported?: T;
+              download?: T;
+              pdfLoading?: T;
+              pdfFailed?: T;
+              pdfPages?: T;
+              search?: T;
+              searchButton?: T;
+              clearSearch?: T;
             };
         mockTests?:
           | T

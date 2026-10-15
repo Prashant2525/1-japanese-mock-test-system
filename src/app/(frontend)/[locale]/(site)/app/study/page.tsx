@@ -11,7 +11,7 @@ import { studentPage } from '../student-page'
 
 type Props = {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ level?: string; category?: string }>
+  searchParams: Promise<{ level?: string; category?: string; q?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -31,9 +31,10 @@ export default async function StudyPage({ params, searchParams }: Props) {
     locale: locale === 'ja' ? 'ja' : 'en',
     level: query.level ?? null,
     category: query.category ?? null,
+    q: query.q ?? null,
   })
   const { levels, categories } = result.filters
-  const filtered = Boolean(query.level || query.category)
+  const filtered = Boolean(query.level || query.category || query.q)
 
   const chip = (active: boolean) =>
     cn(
@@ -42,8 +43,8 @@ export default async function StudyPage({ params, searchParams }: Props) {
         ? 'border-night bg-night text-white'
         : 'border-line bg-surface text-ink hover:border-ink/40',
     )
-  const href = (change: { level?: string | null; category?: string | null }) => {
-    const next = { level: query.level, category: query.category, ...change }
+  const href = (change: { level?: string | null; category?: string | null; q?: string | null }) => {
+    const next = { level: query.level, category: query.category, q: query.q, ...change }
     const q = Object.fromEntries(Object.entries(next).filter(([, v]) => v)) as Record<
       string,
       string
@@ -56,6 +57,34 @@ export default async function StudyPage({ params, searchParams }: Props) {
       <Reveal>
         <h1 className="text-3xl font-black sm:text-4xl">{t('nav.study')}</h1>
       </Reveal>
+      <form role="search" action="" method="get" className="flex flex-wrap items-end gap-2">
+        <label className="grid flex-1 basis-60 gap-1 text-sm font-bold">
+          {t('study.search')}
+          <input
+            type="search"
+            name="q"
+            defaultValue={query.q ?? ''}
+            maxLength={100}
+            className="min-h-11 rounded-input border border-line bg-surface px-3 text-base font-normal"
+          />
+        </label>
+        {query.level ? <input type="hidden" name="level" value={query.level} /> : null}
+        {query.category ? <input type="hidden" name="category" value={query.category} /> : null}
+        <button
+          type="submit"
+          className="min-h-11 rounded-full bg-night px-5 text-sm font-bold text-white"
+        >
+          {t('study.searchButton')}
+        </button>
+        {query.q ? (
+          <Link
+            href={href({ q: null })}
+            className="min-h-11 content-center text-sm font-bold underline underline-offset-4"
+          >
+            {t('study.clearSearch')}
+          </Link>
+        ) : null}
+      </form>
       <nav aria-label={t('study.filters')} className="grid gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="w-full text-sm font-bold text-muted sm:w-24">{t('study.level')}</span>

@@ -59,10 +59,11 @@ async function main(action: string | undefined): Promise<void> {
   // `student <email> <password>`: a confirmed UI-test student (skips the email round trip).
   // `level <email> <code|none>`: set that student's level-check state, standing in for the
   // level-check service of Phase 11 (`none` = not started).
-  // `study <slug> <levelCode>`: a published study material with a PDF, an MP3 and an image, and a
-  // body with furigana. Created as the E2E Super Admin (relationship filters use the caller's access).
+  // `study <slug> <levelCode> [download]`: a published study material with a PDF, an MP3 and an
+  // image, and a body with furigana; `download` allows downloading its files (D-097). Created as the
+  // E2E Super Admin (relationship filters use the caller's access).
   if (action === 'study') {
-    const [slug, levelCode] = process.argv.slice(3)
+    const [slug, levelCode, download] = process.argv.slice(3)
     if (!slug?.startsWith('e2e-') || !levelCode)
       throw new Error('usage: study e2e-<slug> <levelCode>')
     const { PDF, MP3, PNG } = await import('../fixtures/files')
@@ -140,7 +141,7 @@ async function main(action: string | undefined): Promise<void> {
             ],
           },
         },
-        attachments: media.map((id) => ({ media: id })),
+        attachments: media.map((id) => ({ media: id, allowDownload: download === 'download' })),
         _status: 'published',
       },
       user,

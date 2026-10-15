@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 12 — Study materials and media: COMPLETE** (2026-10-15). **Reference review done (2026-10-16)**; waiting for the owner's answer to **RV-7 (deletion policy)** before **Phase 12b — content lifecycle corrections**, then Phase 13.
+Current phase / milestone: **Phase 12b — Content lifecycle corrections: COMPLETE** (2026-10-16). Next: **Phase 13 — Examination configuration.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: `77b247f` on `main` (PR #16 merged); review docs on `docs/reference-review`.
+Last verified commit: branch `feature/phase-12b-content-lifecycle` (PR to `main`).
 
 ## Work status
 
@@ -27,6 +27,13 @@ Last verified commit: `77b247f` on `main` (PR #16 merged); review docs on `docs/
   - The admin panel uses Payload's own design (by plan).
   - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Phase 12b (2026-10-16)
+
+- Relationship-aware deletion (D-092, D-100), KI-41 permission fix, media archive + "Used by", per-attachment downloads with the in-app PDF viewer (D-097, D-101), study search (D-102). Owner answers RV-1..RV-14 recorded as D-092..D-099.
+- Tests: unit 182/182, integration 184/184, E2E 128/128 + 1 skipped; sweep reviewed.
+- **Code:** `src/payload/hooks/contentLifecycle.ts`, `src/payload/admin/used-by.tsx`, `src/ui/components/{pdf-viewer,no-save}.tsx`, collections (StudyMaterials, MaterialCategories, LearningMedia, Questions), `permissions.ts` (3 keys), study service/API/pages; dependency `pdfjs-dist` 6.3.289.
+- **Database:** migrations `20261015_200516_content_lifecycle`, `20261015_201010_study_search_labels`, `20261015_201500_super_admin_delete_permissions` (plain SQL).
 
 ## Reference review (2026-10-16)
 

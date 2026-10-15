@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * Study materials for the student's level and below (LD-R02 gate first). Filters: `level` (code),
- * `category` (key), `page`, `limit`, `locale`.
+ * `category` (key), `q` (search), `page`, `limit`, `locale`.
  */
 export const GET = withRoute(async (req) => {
   const student = await requireStudentWithLevel(req.headers)
@@ -16,6 +16,7 @@ export const GET = withRoute(async (req) => {
       locale: q.get('locale') === 'ja' ? 'ja' : 'en',
       level: q.get('level'),
       category: q.get('category'),
+      q: q.get('q'),
       page: Math.max(1, Number(q.get('page')) || 1),
       limit: Math.min(50, Math.max(1, Number(q.get('limit')) || 24)),
     }),

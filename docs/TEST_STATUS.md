@@ -8,7 +8,7 @@ Last updated: 2026-10-15 (Phase 11).
 - Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
 - CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands and latest local results (2026-10-15, Phase 12)
+## Commands and latest local results (2026-10-16, Phase 12b)
 
 | Purpose | Command | Result |
 |---|---|---|
@@ -16,10 +16,17 @@ Last updated: 2026-10-15 (Phase 11).
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
 | Unit tests | `pnpm test:unit` | **182/182** |
-| Integration tests | `pnpm test:int` | **170/170** |
+| Integration tests | `pnpm test:int` | **184/184** |
 | Build | `pnpm build` | Pass |
 | Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
-| E2E | `pnpm test:e2e` | **126/126 + 1 skipped** (full run 124 + 2 outdated "empty library" checks fixed and rerun with the study tests: 20/20) (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **128/128 + 1 skipped**, first try, no retries (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 12b tests prove
+
+- **Integration `content-lifecycle` (12):** a drafter (edit-only role) can save drafts of a published material but cannot unpublish or archive it (403, KI-41 - failed before the fix), can still edit a never-published one; same rule for published questions; an unused file is deleted together with its stored file and audited; a file used by a published material or only by a newer draft is refused (409) with the material named; after deleting the material the file can go; `media.delete` needed (Content Editor 403); an archived file stays valid where already used but cannot be picked by a new material (400); material delete removes its versions and is audited, Content Editor 403; a category in use is refused with the material named, an empty one deleted; a never-published question can be deleted; a once-published question is archive-only (409).
+- **Integration `study` (+2):** search narrows within what the student may see; `allowDownload` per attachment in the detail API; files always served `inline`.
+- **E2E `admin-study` (1, extended):** editor uploads and publishes; N5 student sees it, PDF drawn in the page without links; Super Admin: file delete refused while used ("Used by" panel names the material); Unpublish; the student gets 404 at once; delete material; "Not used by any material"; delete file; gone from the list.
+- **E2E `ui/study` (4 x 2 browsers):** downloads allowed: open/download links and in-page PDF; not allowed: no links, audio `controlslist=nodownload`, PDF still drawn in the page (iPhone WebKit too); search; axe clean.
 
 ## What the Phase 12 tests prove
 

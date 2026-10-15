@@ -5,6 +5,7 @@ import { APIError, type CollectionBeforeOperationHook, type CollectionConfig } f
 import { activeAdmin, hasPermission, never } from '@/payload/access'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 import { auditTrail } from '@/payload/hooks/auditTrail'
+import { mediaDeleteGuard } from '@/payload/hooks/contentLifecycle'
 import { say } from '@/payload/say'
 import { checkLearningFile, LEARNING_MEDIA_TYPES } from '@/server/media/files'
 
@@ -55,7 +56,8 @@ const validateFile: CollectionBeforeOperationHook = ({ args, operation, req }) =
 /**
  * Private learning media (D-041): images, audio and PDFs for study materials. Never public: the
  * admin panel reads files with an admin session; students only through signed, access-checked
- * links (/api/v1/media/:id). Not deleted (materials and history refer to them).
+ * links (/api/v1/media/:id). Deleting is allowed only while no material uses the file (D-092); the
+ * stored file goes with it. Archiving hides a file from the picker but keeps it where it is used.
  */
 export const LearningMedia: CollectionConfig = {
   slug: 'learning-media',
@@ -66,7 +68,7 @@ export const LearningMedia: CollectionConfig = {
   admin: {
     group: ADMIN_GROUPS.study,
     useAsTitle: 'filename',
-    defaultColumns: ['filename', 'kind', 'alt', 'filesize', 'updatedAt'],
+    defaultColumns: ['filename', 'kind', 'alt', 'filesize', 'archived', 'updatedAt'],
     listSearchableFields: ['filename', 'alt', 'caption'],
     description: {
       en: 'Private images, audio and PDFs for study materials. Images up to 5 MB, PDFs up to 20 MB, audio up to 30 MB. Students reach them only through materials they may open.',
@@ -85,9 +87,31 @@ export const LearningMedia: CollectionConfig = {
     read: activeAdmin,
     create: hasPermission('media.manage'),
     update: hasPermission('media.manage'),
-    delete: never,
+    delete: hasPermission('media.delete'),
   },
   fields: [
+    {
+      name: 'usedBy',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '/payload/admin/used-by#UsedBy' },
+      },
+    },
+    {
+      name: 'archived',
+      type: 'checkbox',
+      defaultValue: false,
+      label: { en: 'Archived', ja: 'アーカイブ' },
+      admin: {
+        position: 'sidebar',
+        components: { Cell: '/payload/admin/cells#YesNoCell' },
+        description: {
+          en: 'Hidden from the file picker for new attachments. Materials that already use it keep it.',
+          ja: '新しい添付の選択肢から外します。すでに使用している教材ではそのまま使えます。',
+        },
+      },
+    },
     {
       name: 'kind',
       type: 'select',
@@ -144,6 +168,7 @@ export const LearningMedia: CollectionConfig = {
   ],
   hooks: {
     beforeOperation: [validateFile],
+    beforeDelete: [mediaDeleteGuard],
     beforeChange: [
       ({ data }) => {
         const rule =
