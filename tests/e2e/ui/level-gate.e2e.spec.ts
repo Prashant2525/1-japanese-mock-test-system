@@ -48,7 +48,7 @@ test.describe('level gate (Phase 10)', () => {
     await expect(
       page.getByRole('list', { name: /Level-check route/ }).getByRole('listitem'),
     ).toHaveText(['N5', 'N4', 'N3'])
-    await expect(page.getByRole('button', { name: 'Start the level check' })).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'Start the level check' })).toBeEnabled()
     // No study/test/results tabs before a level exists.
     await expect(page.getByRole('navigation', { name: 'Student area' })).toHaveCount(0)
 

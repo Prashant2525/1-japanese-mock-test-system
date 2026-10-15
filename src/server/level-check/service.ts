@@ -91,7 +91,11 @@ const publicStages = (snapshot: LevelCheckSnapshot) =>
 
 /** GET /determination. A stage attempt past its deadline is finalized first (lazy expiry). */
 export async function levelCheckState(headers: Headers): Promise<LevelCheckState> {
-  const student = await requireStudent(headers)
+  return levelCheckStateFor(await requireStudent(headers))
+}
+
+/** The same, for a page that has already identified the student (see `studentPage`). */
+export async function levelCheckStateFor(student: { id: number }): Promise<LevelCheckState> {
   let session = await currentSession(student.id)
   if (session?.status === 'in_progress') {
     const attempt = await stageAttempt(session.id, session.current_stage_index)
@@ -225,7 +229,21 @@ export type LevelCheckSummary = {
 
 /** GET /determination/summary: the "Your level" screen (D-012). */
 export async function levelCheckSummary(headers: Headers): Promise<LevelCheckSummary> {
-  const student = await requireStudent(headers)
+  return levelCheckSummaryFor(await requireStudent(headers))
+}
+
+/** The same, for a page; null when there is no completed level check (e.g. a level override). */
+export async function levelCheckSummaryOrNull(student: {
+  id: number
+}): Promise<LevelCheckSummary | null> {
+  try {
+    return await levelCheckSummaryFor(student)
+  } catch {
+    return null
+  }
+}
+
+async function levelCheckSummaryFor(student: { id: number }): Promise<LevelCheckSummary> {
   const session = await currentSession(student.id)
   if (!session || session.status !== 'completed') throw new AppError('NOT_FOUND')
   const assignedIndex = assignedStageIndexOf(session)

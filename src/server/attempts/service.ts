@@ -47,7 +47,7 @@ export type AttemptRow = {
 }
 
 const ATTEMPT_COLUMNS = sql`id, student_id, kind, determination_session_id, stage_index::int AS stage_index,
-  status, started_at, deadline_at, submitted_at, submit_reason, session_id, answers, last_seq::int AS last_seq`
+  status, started_at, deadline_at, submitted_at, submit_reason, session_id, answers, last_seq::float8 AS last_seq`
 
 async function rows<T>(db: Runner, query: ReturnType<typeof sql>): Promise<T[]> {
   const result = await db.execute(query)

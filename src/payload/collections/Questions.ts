@@ -111,6 +111,7 @@ export const Questions: CollectionConfig = {
       label: { en: 'Question', ja: '問題文' },
       admin: {
         rows: 4,
+        components: { Cell: '/payload/admin/cells#StemCell' },
         description: {
           en: 'Furigana (optional): write {漢字|かんじ} to show かんじ above 漢字.',
           ja: 'ふりがな（任意）：{漢字|かんじ} と書くと、漢字の上に かんじ が表示されます。',

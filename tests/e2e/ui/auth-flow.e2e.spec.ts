@@ -29,7 +29,7 @@ test.describe('student account pages, end to end', () => {
     // A new student goes straight to the level check (LD-R01).
     await expect(page).toHaveURL(/\/en\/app\/level-check$/)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find your level')
-    await expect(page.getByText('Not started yet.')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Start the level check' })).toBeVisible()
 
     await logOut(page)
     await expect(page).toHaveURL(/\/en\/login\?loggedOut=1$/)

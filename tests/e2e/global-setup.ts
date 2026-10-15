@@ -9,4 +9,6 @@ export default function globalSetup(): void {
   const match = output.match(/^E2E_FIXTURE=(\{.*\})$/m)
   if (!match) throw new Error('E2E setup did not report its fixture')
   process.env.E2E_FIXTURE = match[1]
+  // A published level check with known answers (sample questions; the E2E database only).
+  execSync('pnpm --silent seed:sample-level-check', { stdio: 'inherit', env: process.env })
 }

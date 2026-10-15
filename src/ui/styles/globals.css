@@ -151,6 +151,24 @@
 }
 
 /* Reduced motion: no transitions or animations beyond a near-instant fade (UX-R02). */
+/* "Your level" result: the one celebratory moment (D-012). Reduced motion turns it off below. */
+@keyframes nm-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.6) rotate(-8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+.nm-stamp {
+  animation: nm-stamp 700ms var(--nm-ease-emphasised) 200ms both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

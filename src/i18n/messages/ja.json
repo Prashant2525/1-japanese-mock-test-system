@@ -171,7 +171,10 @@
       "ruleStop": "合格できなかった最初の段階で終了します。合格した最も高い段階があなたのレベルです。{first} に合格しなかった場合は {first} から始めます。",
       "ruleUnlock": "完了すると、学習教材・模擬試験・結果が利用できるようになります。",
       "routeLabel": "レベルチェックの順路：{stops}",
-      "start": "レベルチェックを始める"
+      "start": "レベルチェックを始める",
+      "ready": "全 {count} 段階、合計最大 {minutes} 分。各段階に制限時間があります。",
+      "continue": "レベルチェックを続ける",
+      "inProgress": "レベルチェックの途中です。続きから再開できます。開始した段階のタイマーは止まりません。"
     },
     "home": {
       "levelLabel": "あなたのレベル",
@@ -188,6 +191,53 @@
     },
     "results": {
       "empty": "まだ結果はありません。模擬試験を受けると、ここにスコアが表示されます。"
+    },
+    "yourLevel": {
+      "title": "あなたのレベル",
+      "lead": "{level} から学習を始めましょう。",
+      "beginnerLead": "{level} からスタートします。ここが道のりの出発点です。",
+      "stagesTitle": "レベルチェックの結果",
+      "passed": "合格",
+      "notPassed": "不合格",
+      "score": "{percent}%",
+      "goHome": "マイページへ"
     }
+  },
+  "exam": {
+    "stageLabel": "レベルチェック・{level}",
+    "questionOf": "問題 {current} / {total}",
+    "timeLeft": "残り時間",
+    "timeLeftAria": "残り {minutes} 分 {seconds} 秒",
+    "previous": "前へ",
+    "next": "次へ",
+    "flag": "見直しに印をつける",
+    "unflag": "見直しの印を外す",
+    "palette": "問題一覧",
+    "paletteItem": "問題 {number}",
+    "answered": "解答済み",
+    "unanswered": "未解答",
+    "flaggedState": "見直し",
+    "review": "見直して提出",
+    "reviewTitle": "この段階を提出しますか？",
+    "reviewBody": "{total} 問中 {answered} 問に解答しました。未解答の問題は不正解になります。",
+    "reviewFlagged": "見直しの印：{count}",
+    "reviewUnanswered": "未解答：{count}",
+    "keepWorking": "続ける",
+    "submit": "段階を提出",
+    "saving": "保存中…",
+    "saved": "すべての解答を保存しました",
+    "notSaved": "まだ保存されていません — 再試行中",
+    "timeUp": "時間になりました。解答は提出されました。",
+    "staleTitle": "このテストは別のタブで続いています",
+    "staleBody": "この段階を別の場所で開きました。ここで続けると、もう一方のタブは止まります。",
+    "continueHere": "ここで続ける",
+    "loading": "テストを読み込んでいます…",
+    "loadError": "テストを読み込めませんでした。接続を確認して、もう一度お試しください。",
+    "retry": "もう一度",
+    "stagePassedTitle": "{level} の段階に合格しました",
+    "stagePassedBody": "よくできました。次の段階は {next} です。「開始」を押すとタイマーが始まります。",
+    "startNext": "{level} を開始",
+    "stageInfo": "{questions} 問・{minutes} 分",
+    "answerOption": "解答 {key}"
   }
 }

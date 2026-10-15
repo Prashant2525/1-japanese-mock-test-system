@@ -26,12 +26,15 @@ const STUDENT = [
   '/en/app/study',
   '/en/app/mock-tests',
   '/en/app/results',
+  '/en/app/your-level',
+  '/ja/app/level-check/stage',
+  '/en/app/level-check/stage',
 ]
 
 type Row = { state: string; requested: string; landed: string; h1: string }
 
 async function sweep(page: Page, state: string, paths: string[], project: string) {
-  const dir = path.join('test-results', 'sweep', project)
+  const dir = path.join('sweep-results', project)
   mkdirSync(dir, { recursive: true })
   const rows: Row[] = []
   for (const p of paths) {
@@ -102,6 +105,9 @@ test('admin (Super Admin)', async ({ page }, info) => {
       '/admin/collections/levels',
       '/admin/collections/students',
       '/admin/globals/sign-in-settings',
+      '/admin/collections/questions',
+      '/admin/globals/level-check-settings',
+      '/admin/collections/level-check-versions',
     ],
     info.project.name,
   )

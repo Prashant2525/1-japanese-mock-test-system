@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 10 — Student route gates: COMPLETE** (2026-10-15). Next: **Phase 11 — Level determination engine.**
+Current phase / milestone: **Phase 11 — Level check (N5-first determination): COMPLETE** (2026-10-15). Next: **Phase 12 — Study materials and media.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-10-route-gates` (PR to `main`).
+Last verified commit: branch `feature/phase-11-level-check` (PR to `main`).
 
 ## Work status
 
@@ -19,6 +19,7 @@ Last verified commit: branch `feature/phase-10-route-gates` (PR to `main`).
   - Phase 8b, Continue with Google (D-066): students only, CMS switch, account linking, revocable sessions. Tests: unit 102/102, integration 76/76, E2E 78/78 + 1 skipped. Real Google login waits on the owner's Google Cloud client (steps in `.env`).
   - Phase 9 (D-068..D-071): branded admin, menu groups, role-aware dashboard with live data, reusable audit/validation patterns, exam catalogue end to end (seeded JLPT/NAT/JFT). Tests: unit 119/119, integration 102/102, E2E 82/82 + 1 skipped. Fixed KI-23 (validation messages missing in production admin forms).
   - Phase 10 (D-073, D-074): server level gate on APIs and pages, level-check intro, student home and tabs. Tests: unit 125/125, integration 117/117, E2E 92/92 + 1 skipped.
+  - Phase 11 (D-078..D-083): questions (core), level-check settings and versions, the level-check engine, stage runner, "Your level", admin reset/override, sample content command, separate E2E database. Tests: unit 161/161, integration 149/149, E2E 119/119 + 1 skipped; sweep reviewed.
 - **Partial / unverified:**
   - Real email delivery: waits on a domain (DOM-1, KI-18).
   - The home page is temporary (KI-08).
@@ -57,11 +58,10 @@ Last verified commit: branch `feature/phase-10-route-gates` (PR to `main`).
 
 ## Verification and blockers
 
-- **Blockers for Phase 11:** none (see the sequencing note below).
+- **Blockers for Phase 12:** none. Media storage: local disk in development; Cloudflare R2 needs the owner's account before staging (ENVIRONMENT_REQUIREMENTS).
 - **Owner decisions open:** DOM-1 (domain, later), PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Exact next task:** Phase 11 (playbook §11.12), the N5-first level check:
-  - determination configuration in the CMS (stages = enabled JLPT levels from N5, threshold %, duration, fixed question set, intro/between/summary copy), published as immutable versions (D-009..D-012);
-  - sessions and stage attempts with server deadlines, auto-submit on expiry, idempotent and race-safe finalisation, `level_assignments` history;
-  - "Your level" summary; admin reset (reason, audit) and Super Admin override (D-013);
-  - **sequencing note:** stages need questions before the full question bank (Phase 14). Plan: build the core question model (single-answer multiple choice, EN/JA, explanation) in Phase 11 and extend it in Phase 14 (media, import/export, versioning screens);
-  - tests for every pass/fail branch, bypass, duplicate submission, race, returning login and interrupted attempt.
+- **Exact next task:** Phase 12 (playbook §11.13), study materials and media:
+  - CMS for the N5/N4/N3 study library: categories (Listening, Grammar, Reading, Kanji; more via CMS), materials with text (furigana), images, audio and PDFs, ordering, draft/publish/archive;
+  - media library with upload validation (type, size), private storage for learning media with signed access;
+  - student study pages and `/api/v1/study/materials` returning only published materials of the student's level and below (replacing the Phase 10 placeholder);
+  - tests: draft/unpublished/ineligible content stays inaccessible; a published item appears without deployment.

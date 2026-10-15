@@ -119,6 +119,7 @@ export interface Config {
     'labels-site': LabelsSite;
     'labels-accounts': LabelsAccount;
     'labels-student': LabelsStudent;
+    'labels-exam': LabelsExam;
     'labels-messages': LabelsMessage;
     'sign-in-settings': SignInSetting;
   };
@@ -127,6 +128,7 @@ export interface Config {
     'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
     'labels-student': LabelsStudentSelect<false> | LabelsStudentSelect<true>;
+    'labels-exam': LabelsExamSelect<false> | LabelsExamSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
     'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
   };
@@ -1606,6 +1608,18 @@ export interface LabelsStudent {
        * Default — EN: “Start the level check” · JA: “レベルチェックを始める”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       start?: string | null;
+      /**
+       * Default — EN: “{count} stages, up to {minutes} minutes in total. Each stage is timed separately.” · JA: “全 {count} 段階、合計最大 {minutes} 分。各段階に制限時間があります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ready?: string | null;
+      /**
+       * Default — EN: “Continue the level check” · JA: “レベルチェックを続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      continue?: string | null;
+      /**
+       * Default — EN: “Your level check is in progress. Continue where you left off; the timer of a started stage keeps running.” · JA: “レベルチェックの途中です。続きから再開できます。開始した段階のタイマーは止まりません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      inProgress?: string | null;
     };
     home?: {
       /**
@@ -1647,6 +1661,193 @@ export interface LabelsStudent {
        */
       empty?: string | null;
     };
+    yourLevel?: {
+      /**
+       * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Start your studies at {level}.” · JA: “{level} から学習を始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      lead?: string | null;
+      /**
+       * Default — EN: “You start at {level}, the beginning of the route.” · JA: “{level} からスタートします。ここが道のりの出発点です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      beginnerLead?: string | null;
+      /**
+       * Default — EN: “Your level check” · JA: “レベルチェックの結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      stagesTitle?: string | null;
+      /**
+       * Default — EN: “Passed” · JA: “合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      passed?: string | null;
+      /**
+       * Default — EN: “Not passed” · JA: “不合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      notPassed?: string | null;
+      /**
+       * Default — EN: “{percent}%” · JA: “{percent}%”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      score?: string | null;
+      /**
+       * Default — EN: “Go to my page” · JA: “マイページへ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      goHome?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-exam".
+ */
+export interface LabelsExam {
+  id: number;
+  exam?: {
+    /**
+     * Default — EN: “Level check · {level}” · JA: “レベルチェック・{level}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stageLabel?: string | null;
+    /**
+     * Default — EN: “Question {current} of {total}” · JA: “問題 {current} / {total}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    questionOf?: string | null;
+    /**
+     * Default — EN: “Time left” · JA: “残り時間”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeLeft?: string | null;
+    /**
+     * Default — EN: “{minutes} minutes {seconds} seconds left” · JA: “残り {minutes} 分 {seconds} 秒”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeLeftAria?: string | null;
+    /**
+     * Default — EN: “Previous” · JA: “前へ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    previous?: string | null;
+    /**
+     * Default — EN: “Next” · JA: “次へ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    next?: string | null;
+    /**
+     * Default — EN: “Mark for review” · JA: “見直しに印をつける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    flag?: string | null;
+    /**
+     * Default — EN: “Remove review mark” · JA: “見直しの印を外す”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    unflag?: string | null;
+    /**
+     * Default — EN: “All questions” · JA: “問題一覧”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    palette?: string | null;
+    /**
+     * Default — EN: “Question {number}” · JA: “問題 {number}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    paletteItem?: string | null;
+    /**
+     * Default — EN: “answered” · JA: “解答済み”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    answered?: string | null;
+    /**
+     * Default — EN: “not answered” · JA: “未解答”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    unanswered?: string | null;
+    /**
+     * Default — EN: “marked for review” · JA: “見直し”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    flaggedState?: string | null;
+    /**
+     * Default — EN: “Review and submit” · JA: “見直して提出”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    review?: string | null;
+    /**
+     * Default — EN: “Ready to submit this stage?” · JA: “この段階を提出しますか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewTitle?: string | null;
+    /**
+     * Default — EN: “You answered {answered} of {total} questions. Unanswered questions count as wrong.” · JA: “{total} 問中 {answered} 問に解答しました。未解答の問題は不正解になります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewBody?: string | null;
+    /**
+     * Default — EN: “Marked for review: {count}” · JA: “見直しの印：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewFlagged?: string | null;
+    /**
+     * Default — EN: “Not answered: {count}” · JA: “未解答：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewUnanswered?: string | null;
+    /**
+     * Default — EN: “Keep working” · JA: “続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    keepWorking?: string | null;
+    /**
+     * Default — EN: “Submit stage” · JA: “段階を提出”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    submit?: string | null;
+    /**
+     * Default — EN: “Saving…” · JA: “保存中…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    saving?: string | null;
+    /**
+     * Default — EN: “All answers saved” · JA: “すべての解答を保存しました”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    saved?: string | null;
+    /**
+     * Default — EN: “Not saved yet — retrying” · JA: “まだ保存されていません — 再試行中”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    notSaved?: string | null;
+    /**
+     * Default — EN: “Time is up. Your answers were submitted.” · JA: “時間になりました。解答は提出されました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeUp?: string | null;
+    /**
+     * Default — EN: “This test continues in another tab” · JA: “このテストは別のタブで続いています”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    staleTitle?: string | null;
+    /**
+     * Default — EN: “You opened this stage somewhere else. Continue here to take it back; the other tab will stop.” · JA: “この段階を別の場所で開きました。ここで続けると、もう一方のタブは止まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    staleBody?: string | null;
+    /**
+     * Default — EN: “Continue here” · JA: “ここで続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    continueHere?: string | null;
+    /**
+     * Default — EN: “Loading your test…” · JA: “テストを読み込んでいます…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loading?: string | null;
+    /**
+     * Default — EN: “We couldn't load your test. Check your connection and try again.” · JA: “テストを読み込めませんでした。接続を確認して、もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loadError?: string | null;
+    /**
+     * Default — EN: “Try again” · JA: “もう一度”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    retry?: string | null;
+    /**
+     * Default — EN: “Stage {level} passed” · JA: “{level} の段階に合格しました”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stagePassedTitle?: string | null;
+    /**
+     * Default — EN: “Well done. The next stage is {next}. Its timer starts when you press Start.” · JA: “よくできました。次の段階は {next} です。「開始」を押すとタイマーが始まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stagePassedBody?: string | null;
+    /**
+     * Default — EN: “Start {level}” · JA: “{level} を開始”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    startNext?: string | null;
+    /**
+     * Default — EN: “{questions} questions · {minutes} minutes” · JA: “{questions} 問・{minutes} 分”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stageInfo?: string | null;
+    /**
+     * Default — EN: “Answer {key}” · JA: “解答 {key}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    answerOption?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1991,6 +2192,9 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               ruleUnlock?: T;
               routeLabel?: T;
               start?: T;
+              ready?: T;
+              continue?: T;
+              inProgress?: T;
             };
         home?:
           | T
@@ -2016,6 +2220,66 @@ export interface LabelsStudentSelect<T extends boolean = true> {
           | {
               empty?: T;
             };
+        yourLevel?:
+          | T
+          | {
+              title?: T;
+              lead?: T;
+              beginnerLead?: T;
+              stagesTitle?: T;
+              passed?: T;
+              notPassed?: T;
+              score?: T;
+              goHome?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-exam_select".
+ */
+export interface LabelsExamSelect<T extends boolean = true> {
+  exam?:
+    | T
+    | {
+        stageLabel?: T;
+        questionOf?: T;
+        timeLeft?: T;
+        timeLeftAria?: T;
+        previous?: T;
+        next?: T;
+        flag?: T;
+        unflag?: T;
+        palette?: T;
+        paletteItem?: T;
+        answered?: T;
+        unanswered?: T;
+        flaggedState?: T;
+        review?: T;
+        reviewTitle?: T;
+        reviewBody?: T;
+        reviewFlagged?: T;
+        reviewUnanswered?: T;
+        keepWorking?: T;
+        submit?: T;
+        saving?: T;
+        saved?: T;
+        notSaved?: T;
+        timeUp?: T;
+        staleTitle?: T;
+        staleBody?: T;
+        continueHere?: T;
+        loading?: T;
+        loadError?: T;
+        retry?: T;
+        stagePassedTitle?: T;
+        stagePassedBody?: T;
+        startNext?: T;
+        stageInfo?: T;
+        answerOption?: T;
       };
   updatedAt?: T;
   createdAt?: T;

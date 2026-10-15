@@ -472,6 +472,27 @@ describe('saving answers', () => {
     expect((await json<{ error: { code: string } }>(stale)).error.code).toBe('STALE_SESSION')
   })
 
+  it('accepts timestamp-sized save numbers from the browser (regression: 32-bit overflow)', async () => {
+    const { cookie } = await signedInStudent()
+    const { id, sessionId, keys } = await openStage(cookie)
+    const big = Date.now()
+    for (const [i, key] of keys.entries()) {
+      const res = await callWith(
+        saveRoute,
+        '/x',
+        { id, questionKey: key },
+        {
+          cookie,
+          method: 'PUT',
+          body: { optionKey: 'A', flagged: false, seq: big + i, sessionId },
+        },
+      )
+      expect(res.status).toBe(200)
+    }
+    const view = await callWith(attemptRoute, '/x', { id }, { cookie })
+    expect(view.status).toBe(200)
+  })
+
   it('refuses unknown options, other students and a submitted attempt', async () => {
     const { cookie } = await signedInStudent()
     const { id, sessionId, keys } = await openStage(cookie)

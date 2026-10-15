@@ -8,6 +8,7 @@ import * as migration_20261015_082931_exam_catalogue from './20261015_082931_exa
 import * as migration_20261015_092913_student_level_gate from './20261015_092913_student_level_gate'
 import * as migration_20261015_104002_home_signed_in_labels from './20261015_104002_home_signed_in_labels'
 import * as migration_20261015_142053_level_check from './20261015_142053_level_check'
+import * as migration_20261015_143836_level_check_labels from './20261015_143836_level_check_labels'
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20261015_142053_level_check.up,
     down: migration_20261015_142053_level_check.down,
     name: '20261015_142053_level_check',
+  },
+  {
+    up: migration_20261015_143836_level_check_labels.up,
+    down: migration_20261015_143836_level_check_labels.down,
+    name: '20261015_143836_level_check_labels',
   },
 ]

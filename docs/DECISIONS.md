@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-15 (Phase 10).
+Last updated: 2026-10-15 (Phase 11).
 
 ---
 
@@ -180,6 +180,17 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | ID | Decision | Source |
 |---|---|---|
 | D-077 | Students use their own session cookie, **`nm_student_session`** (HTTP-only, SameSite=Lax, Secure on https, 7 days); Payload's `payload-token` is for admins only. The server reads the student cookie and passes it to Payload as `Authorization: JWT …` (`studentAuthHeaders`), so an admin cookie never counts as a student session and vice versa; both can be signed in in one browser. The cookie counts only on requests from our own site (matching Origin, or Sec-Fetch-Site same-origin/same-site/none), plus top-level page loads from other sites for pages (KI-29); non-browser clients use the Authorization header (D-025). The proxy removes leftover student tokens from `payload-token`. Sessions stay revocable Payload sessions. Supersedes the "one browser, one session" note in ARCHITECTURE §4. | KI-32 (owner report) |
+
+## Phase 11 — the level check (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-078 | Browser tests (E2E and `pnpm sweep`) run on their own database, `nihongo_mock_e2e`, created and migrated automatically by `tests/e2e/prepare-db.ts`; CI keeps its throwaway database. Test accounts, questions and published test level checks never reach the development data. | Phase 11 |
+| D-079 | **Questions (core of the bank, built early for the level check):** single-answer multiple choice; stable key `Q-000001` from a database sequence; exam type and level; question text as plain text with optional furigana `{漢字|かんじ}` (rich text and media arrive in Phase 14); 2–6 lettered options; correct letter must exist; EN/JA explanation; marks; "rights confirmed" required to publish (CON-2); drafts with a Publish step (`questions.manage` for drafts, `questions.publish` to publish); never deleted, `archived` instead. Students never read questions directly, only published snapshots. | D-018, D-024, PB §11.12 |
+| D-080 | **Level-check settings** are a draft-and-publish global (`level-check-settings`): stages = level, pass mark %, time limit, ordered published questions. Publishing (`determination.publish`) checks the D-008 rules (exactly the enabled JLPT levels in order from N5, each with published, rights-confirmed questions of its level) and freezes everything into an immutable numbered `level-check-versions` row with a checksum; identical content creates no new version. Page text (intro, between stages, summary) is edited as UI labels, not in the settings. | D-008..D-012, D-020, DATABASE_ARCHITECTURE §3.6 |
+| D-081 | **Attempts:** server deadline = start + stage time, 3 s grace for saves; answers saved one by one with a sequence number (newer wins) and a tab session ID (latest tab wins, D-027); every request touching an expired attempt submits it first (`timeout`). Submitting locks the attempt and its session in one transaction, scores from the snapshot (unanswered = wrong, exact comparison), writes the result and per-question items, and advances or completes the level check (level assignment history, student level). Repeats and races return the same result. Hot paths are plain SQL. | ARCHITECTURE §5.1–5.2, LD-R08..R13 |
+| D-082 | **Screens:** the stage runner is a calm full-screen page without site navigation (one question at a time, timer, question map, mark for review, review dialog, save status, takeover screen); between stages the student sees "Stage passed" and starts the next stage when ready (its timer starts then); after the last stage, "Your level" shows the level and each stage's score with one celebratory animation (off for reduced motion). Admin: reset (`students.reset_determination`) and level change (`students.override_level`) on the student record, each with a written reason, audit event and level-assignment entry. | D-012, D-013, UI_SCREEN_INVENTORY §3 |
+| D-083 | `pnpm seed:sample-level-check` creates 15 clearly marked 【サンプル】 questions and publishes a sample level check for local trial; it refuses `APP_ENV=production` and is never part of migrations (D-024: real questions come from the owner). | D-024 |
 
 ## Rejected / parked alternatives
 

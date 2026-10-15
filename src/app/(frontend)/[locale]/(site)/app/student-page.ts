@@ -11,6 +11,7 @@ export const AREA_PATHS = {
   study: '/app/study',
   'mock-tests': '/app/mock-tests',
   results: '/app/results',
+  'your-level': '/app/your-level',
 } as const
 
 export type StudentArea = keyof typeof AREA_PATHS

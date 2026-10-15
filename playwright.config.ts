@@ -1,8 +1,23 @@
+import { execSync } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 
 import { defineConfig, devices } from '@playwright/test'
 
 import 'dotenv/config'
+
+/**
+ * Browser tests use their own database (D-078), never the development data in `.env`: test
+ * accounts, questions and published level checks stay out of it. CI already provides a throwaway
+ * database through DATABASE_URL. Prepared once per run, before the app server starts.
+ */
+if (!process.env.CI) {
+  process.env.DATABASE_URL =
+    process.env.E2E_DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5433/nihongo_mock_e2e'
+}
+if (!process.env.E2E_DB_READY) {
+  execSync('pnpm --silent exec tsx tests/e2e/prepare-db.ts', { stdio: 'inherit', env: process.env })
+  process.env.E2E_DB_READY = '1'
+}
 
 // A dedicated port so E2E never reuses a developer's `pnpm dev` server on 3000.
 const PORT = 3100
