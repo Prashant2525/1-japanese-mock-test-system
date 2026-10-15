@@ -40,3 +40,6 @@ npm-debug.log*
 
 # Uploaded media in development (production uses Cloudflare R2, D-041)
 /media/
+
+# Local UI reference images and design documents
+/Reference Design/

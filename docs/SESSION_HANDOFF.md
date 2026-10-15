@@ -2,7 +2,7 @@
 
 **Session date:** 2026-10-15
 **Current phase / milestone:** Phase 12 — Study materials and media. **COMPLETE.** Next: Phase 13 — Examination configuration.
-**Exact task in progress:** none.
+**Exact task in progress:** none. Reference review (2026-10-16) recorded; **waiting for the owner's RV-7 answer** (deletion policy), then Phase 12b (`IMPLEMENTATION_PLAN.md`), then Phase 13. Start 12b by writing the failing tests for KI-39..KI-41.
 
 ## Completed (with evidence)
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-16 — Reference review (documents only)
+
+- Inspected the owner's 24 UI reference screenshots and mapped each to our screens (`UI_SCREEN_INVENTORY.md` §7).
+- Recorded owner instructions D-089 (free/premium/preview access), D-090 (dashboard and reports approved), D-091 (deletion is a requirement); new requirements LC, ACC, PROT, SM-R07, STU-R01, ADM, COM-R05; questions RV-1..RV-14; known issues KI-39..KI-43; proposed Phase 12b.
+
 ## 2026-10-15 — Phase 12: study library and media
 
 - Students with a level get a Study library: their level's and easier levels' published materials, filters by level and category, and a detail page with furigana text, images, an audio player and PDFs (open / download).

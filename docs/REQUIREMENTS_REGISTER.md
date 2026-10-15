@@ -141,12 +141,34 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Proposal | Source |
 |---|---|---|
-| REC-04 | Student dashboard (level and status, eligible materials/tests, recent attempts, CTAs). | PB §4.2 |
+| REC-04 | ~~Student dashboard~~ → approved 2026-10-16 as STU-R01. | PB §4.2 |
 | REC-05 | Profile editing, account security settings, attempt-history filters, account deletion request flow. | PB §4.7 |
 | REC-09 | CMS-managed notices/announcements and email templates. | PB §5.14 |
-| REC-10 | Admin analytics dashboard backed by real data. | PB §5.2 |
+| REC-10 | ~~Admin analytics dashboard~~ → approved 2026-10-16 as ADM-R01. | PB §5.2 |
 
 *Approved since Phase 0:* REC-01 → PUB-R01; REC-02 → COM-R02; REC-03 → COM-R03; REC-06 → LD-R11; REC-07 → CMS-R12; REC-08 → CMS-R14 (reduced role set); REC-11 → MT-R05; REC-12 → RS-R03.
+
+## 10a. Owner requests from the reference review (2026-10-16)
+
+Stated by the owner on 2026-10-16 with the UI references (`UI_SCREEN_INVENTORY.md` §7). Where a detail is still open the RV question is named; nothing marked OPEN is built before the answer.
+
+| ID | Requirement | Source | Status | Acceptance |
+|---|---|---|---|---|
+| LC-R01 | Every CMS module supports its full lifecycle: create, view, edit, publish/unpublish, archive/deactivate, **delete where permitted**, search/filter/sort/paginate, bulk actions where relevant. | Owner 2026-10-16 §7 | CONFIRMED – DETAIL OPEN (RV-7 policy) | Per-module lifecycle tests; Phase 12b covers study/media. |
+| LC-R02 | Deletion is relationship-aware: blocked with a "used by …" list while referenced (published content, drafts, versions, questions, attempts); history-bearing records are archive-only. | Owner 2026-10-16 §7 | CONFIRMED – DETAIL OPEN (RV-7) | Deleting a used file is refused and names the users; deleting an unused one succeeds. |
+| LC-R03 | A deleted file is gone end to end: database record **and** stored object; no URL serves it afterwards. | Owner 2026-10-16 §7 | CONFIRMED | Test: after delete the signed link and the admin file URL return 404 and the file is absent from storage. |
+| LC-R04 | Destructive actions are permission-checked on the server, audited, confirmed in the UI, and report success or the reason for failure. | Owner 2026-10-16 §7; TSR-01 | CONFIRMED | API delete without the permission → 403; audit event written. |
+| ACC-R01 | Admins set access per item: Free, Premium, or Premium with a free preview (which parts/attachments are preview), with its product/entitlement and publication status. | Owner 2026-10-16 §5 | CONFIRMED – DETAIL OPEN (RV-1, RV-2; amends D-019 "study materials free" → free by default) | Students see Free/Premium/Preview labels, preview actions and purchase prompts. |
+| ACC-R02 | Every protected file request re-checks access on the server at request time (level **and** entitlement); old or copied links stop working when access expires or is revoked; private storage, short-lived per-student links. | Owner 2026-10-16 §5 (attachment access) | CONFIRMED | Tests with a free student, an entitled student and an expired/revoked student; each gets exactly what is allowed. |
+| ACC-R03 | The same access rules apply to study attachments, mock-test media, question images/audio and explanations. | Owner 2026-10-16 §5 | CONFIRMED | Covered per phase (12b, 14–17, 19). |
+| ACC-R04 | Changing an item's access class takes effect at once for new requests and does not break completed attempts or authorised previews. | Owner 2026-10-16 §5 | CONFIRMED | Test: switching Free→Premium blocks a non-entitled student's next request; completed results still open. |
+| PROT-R01 | Proportionate content protection: server checks, private storage, short-lived links, no permanent public links to premium files, access logging and rate limits on file requests, optional watermark (RV-8), limited downloads for premium (RV-9), no answers/explanations before disclosure (D-017). The product never claims screenshots, recordings or copying can be fully prevented. | Owner 2026-10-16 §6 | CONFIRMED – DETAIL OPEN (RV-8, RV-9) | Security review in Phase 26; tests per measure. |
+| SM-R07 | Study library search (title and summary, EN/JA). | Owner 2026-10-16 §3B | CONFIRMED | Search returns only items the student may see. |
+| STU-R01 | Student home as a dashboard: greeting and level, continue studying, recommended materials and tests, recent results, shortcuts and approved notices — from real data only. | Owner 2026-10-16 §3A (approves REC-04) | CONFIRMED | Empty states when there is no data; no sample data in production. |
+| ADM-R01 | Admin dashboard and reports from real data, with date ranges, filters and CSV export (students, level checks, attempts, scores, pass rates, exam usage; sales/refunds once those exist). | Owner 2026-10-16 §4A (approves REC-10) | CONFIRMED – DETAIL OPEN (RV-14 dates) | Every figure traceable to records; no fabricated metrics. |
+| ADM-R02 | Student administration: search/filter/paginate, detail with status, level history, attempts and results, sessions with "sign out everywhere", granted access. | Owner 2026-10-16 §4B | CONFIRMED – DETAIL OPEN (RV-13) | Permission tests for each action. |
+| COM-R05 | Sales administration: products/plans, orders with each payment attempt and gateway reference, "check with gateway", reports; coupons and refunds only if approved. | Owner 2026-10-16 §4D | CONFIRMED – DETAIL OPEN (RV-2..RV-5) | Phase 19–23 acceptance. |
+
 
 ## 11. Technical safety rules (cross-cutting)
 
@@ -172,3 +194,5 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 ## 12. Out of scope until approved
 
 Social login other than Google (D-066), SMS/OTP, subscriptions, coupons, refunds, certificates, leaderboards, AI tutoring, forums, mobile apps, offline mode, blog, push notifications, additional question types beyond single-answer MCQ, randomized question blueprints. (PB §2.4; D-018, D-019)
+
+*2026-10-16:* the owner asked to evaluate coupons, refunds and plans from the references; they stay out of scope until RV-2..RV-4 are answered.
