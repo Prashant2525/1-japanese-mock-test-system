@@ -7,6 +7,7 @@ import * as migration_20261014_203352_google_sign_in from './20261014_203352_goo
 import * as migration_20261015_082931_exam_catalogue from './20261015_082931_exam_catalogue'
 import * as migration_20261015_092913_student_level_gate from './20261015_092913_student_level_gate'
 import * as migration_20261015_104002_home_signed_in_labels from './20261015_104002_home_signed_in_labels'
+import * as migration_20261015_142053_level_check from './20261015_142053_level_check'
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20261015_104002_home_signed_in_labels.up,
     down: migration_20261015_104002_home_signed_in_labels.down,
     name: '20261015_104002_home_signed_in_labels',
+  },
+  {
+    up: migration_20261015_142053_level_check.up,
+    down: migration_20261015_142053_level_check.down,
+    name: '20261015_142053_level_check',
   },
 ]

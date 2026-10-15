@@ -13,10 +13,20 @@ import { AuditEvents } from './payload/collections/AuditEvents'
 import { DASHBOARD_WIDGETS } from './payload/admin/dashboard'
 import { EmailTemplates } from './payload/collections/EmailTemplates'
 import { ExamTypes } from './payload/collections/ExamTypes'
+import {
+  Attempts,
+  LevelAssignments,
+  LevelCheckSessions,
+  LevelCheckVersions,
+  Results,
+  ResultItems,
+} from './payload/collections/LevelCheckRecords'
 import { Levels } from './payload/collections/Levels'
+import { Questions } from './payload/collections/Questions'
 import { Roles } from './payload/collections/Roles'
 import { Students } from './payload/collections/Students'
 import { can } from './server/auth/permissions'
+import { LevelCheckSettings } from './payload/globals/LevelCheckSettings'
 import { SignInSettings } from './payload/globals/SignInSettings'
 import { UiLabelGlobals } from './payload/globals/UiLabels'
 import { emailAdapter } from './server/email/adapter'
@@ -59,8 +69,23 @@ export default buildConfig({
   // Payload REST lives under /api/cms so /api/v1 stays free for the domain API (ARCHITECTURE §3).
   routes: { admin: '/admin', api: '/api/cms' },
   graphQL: { disable: true },
-  collections: [Admins, Roles, Students, ExamTypes, Levels, EmailTemplates, AuditEvents],
-  globals: [...UiLabelGlobals, SignInSettings],
+  collections: [
+    Admins,
+    Roles,
+    Students,
+    ExamTypes,
+    Levels,
+    Questions,
+    LevelCheckVersions,
+    LevelCheckSessions,
+    Attempts,
+    Results,
+    ResultItems,
+    LevelAssignments,
+    EmailTemplates,
+    AuditEvents,
+  ],
+  globals: [LevelCheckSettings, ...UiLabelGlobals, SignInSettings],
   email: emailAdapter(),
   // Content locales (D-004, D-028): English default, Japanese with fallback to English.
   localization: {
