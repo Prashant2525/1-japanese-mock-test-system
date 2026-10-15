@@ -169,12 +169,16 @@ describe('bypass attempts', () => {
 })
 
 describe('a student with an assigned level', () => {
-  it('passes the gate; the areas answer with their real (still empty) state', async () => {
+  it('passes the gate; the areas answer with their real state', async () => {
     const { cookie } = await signedIn({ determinationStatus: 'completed', level: 'N4' })
     const api = gated(cookie)
     const materials = await api.materials()
     expect(materials.status).toBe(200)
-    expect(await materials.json()).toEqual({ docs: [], totalDocs: 0, page: 1, totalPages: 0 })
+    // The library itself is covered in study.int.spec.ts; here only the gate and the shape.
+    const body = (await materials.json()) as { docs: unknown[]; page: number; filters: unknown }
+    expect(Array.isArray(body.docs)).toBe(true)
+    expect(body.page).toBe(1)
+    expect(body.filters).toBeDefined()
     expect((await api.results()).status).toBe(200)
     const attempt = await api.attempt()
     expect(attempt.status).toBe(404)

@@ -19,8 +19,8 @@ Last updated: 2026-10-14 (Phase 1).
 | 9 | Admin CMS framework | **COMPLETE** (2026-10-15) — branded admin, menu groups, role-aware dashboard, reusable audit/validation patterns, exam catalogue end to end; unit 119, int 102, E2E 82 (+1 skipped) | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
 | 10 | Student route gates | **COMPLETE** (2026-10-15) — server gate on study/attempts/results APIs and pages, level-check intro, student home and tabs; unit 125, int 117, E2E 92 (+1 skipped) | Phase 7 | Server-side determination gate + bypass E2E tests. |
 | 11 | Level determination engine | **COMPLETE** (2026-10-15) — questions (core), level-check settings with published versions, sessions/attempts/results, stage runner, "Your level", admin reset/override; unit 161/161, int 149/149, E2E 119/119 + 1 skipped | Phase 10 | All pass/fail branches, idempotency, race tests pass. |
-| 12 | Study materials and media | **NEXT** | Phase 9 | N5–N3 CRUD/publish/eligibility verified. |
-| 13 | Examination configuration | NOT STARTED | Phase 9 | Data-driven catalogue with integrity tests. |
+| 12 | Study materials and media | **COMPLETE** (2026-10-15) | Phase 9 | N5–N3 CRUD/publish/eligibility verified (21 int, 7 E2E incl. admin journey). R2 adapter pending owner keys (KI-37). |
+| 13 | Examination configuration | **NEXT** | Phase 9 | Data-driven catalogue with integrity tests. |
 | 14 | Question bank and import/export | NOT STARTED | Phase 13; CON-1b | CRUD, versioning, validated import verified. |
 | 15 | Mock-test builder | NOT STARTED | Phase 14 | Builder validation + version snapshots verified. |
 | 16 | Student test runner | NOT STARTED | Phase 15 | Runner, server deadline, auto-submit E2E pass. |

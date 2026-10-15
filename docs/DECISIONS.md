@@ -192,6 +192,16 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-082 | **Screens:** the stage runner is a calm full-screen page without site navigation (one question at a time, timer, question map, mark for review, review dialog, save status, takeover screen); between stages the student sees "Stage passed" and starts the next stage when ready (its timer starts then); after the last stage, "Your level" shows the level and each stage's score with one celebratory animation (off for reduced motion). Admin: reset (`students.reset_determination`) and level change (`students.override_level`) on the student record, each with a written reason, audit event and level-assignment entry. | D-012, D-013, UI_SCREEN_INVENTORY §3 |
 | D-083 | `pnpm seed:sample-level-check` creates 15 clearly marked 【サンプル】 questions and publishes a sample level check for local trial; it refuses `APP_ENV=production` and is never part of migrations (D-024: real questions come from the owner). | D-024 |
 
+## Phase 12 — study library and media (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-084 | **Study library model:** `material-categories` (stable `key`, symbol, EN/JA name, order, on/off; seeded Kanji & vocabulary 漢, Grammar 文, Reading 読, Listening 聴; new ones added in the CMS) and `study-materials` (EN/JA title and summary, JLPT level limited to levels enabled for study, category, unique address name `slug`, display order, rich-text body with furigana `{漢字|かんじ}`, ordered attachments from the media library, `archived`). Drafts with a Publish step (`materials.manage` for drafts, `materials.publish` to publish); never deleted, archived instead. A published change is live at once (no deployment). | SM-R01..R06, CMS-R06, D-020 |
+| D-085 | **Who sees what:** the server lists only published, non-archived materials of enabled categories whose level is enabled for study and at or below the student's level (pure rule `studyLevelIds`, `src/domain/study.ts`). Anything else — draft, archived, higher level, unknown — answers 404 alike; level/category filters only narrow that set. | SM-R01..R03, D-015 |
+| D-086 | **Media rules:** `learning-media` accepts JPEG/PNG/WebP images up to 5 MB, MP3/M4A/WAV/OGG audio up to 30 MB and PDFs up to 20 MB; the file content must match its type (checked from the bytes); SVG and other types are refused; images need alt text. `media.manage` to upload; never deleted. | SM-R05, SM-R06, PB §4.4 |
+| D-087 | **Private files through signed links:** students never get a storage address. Each attachment URL is `/api/v1/media/{id}?exp&sig`, an HMAC (from `PAYLOAD_SECRET`) bound to the file, the student and a 2-hour expiry; the route also re-checks the session, the level gate and that the file belongs to a material the student may open now (archiving closes it at once). Byte ranges (206) are supported for audio seeking. | D-041, SM-R05 |
+| D-088 | **Storage until R2 exists:** files are stored on local disk (`LEARNING_MEDIA_DIR`, default `./media/learning`, git-ignored) behind `src/server/media/storage.ts`; tests use their own folders. The Cloudflare R2 adapter (D-041) is built and verified as soon as the owner provides the R2 keys — before any production deployment (KI-37). | D-041 |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

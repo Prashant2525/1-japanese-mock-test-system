@@ -96,7 +96,7 @@ Anonymous and student requests get 403. Every change writes `exam_type.*` / `lev
 
 | Method | Path | Before a level is assigned | After |
 |---|---|---|---|
-| GET | `/api/v1/study/materials` | `403 LEVEL_NOT_DETERMINED` | `200 { docs: [], totalDocs: 0, page: 1, totalPages: 0 }` until Phase 12 |
+| GET | `/api/v1/study/materials` | `403 LEVEL_NOT_DETERMINED` | `200` the student's study library (Phase 12, below) |
 | GET | `/api/v1/results` | `403 LEVEL_NOT_DETERMINED` | `200` empty page until Phase 17 |
 | POST | `/api/v1/attempts` `{ mockTestId }` | `403 LEVEL_NOT_DETERMINED` (checked before the body is read) | `400` invalid body; `404` (no mock tests until Phase 16) |
 
@@ -149,8 +149,9 @@ Admin (Payload endpoints, permission-checked, audited): `POST /api/cms/students/
 | GET | `/api/v1/catalogue/exams` | Enabled exam types and levels |
 | GET | `/api/v1/mock-tests` | Published tests; filters `exam`, `level`, `free`; includes the student's entitlement status when logged in |
 | GET | `/api/v1/mock-tests/{slug}` | Test detail (no questions) |
-| GET | `/api/v1/study/materials` | Eligible materials (current and lower levels), filters `level`, `category` |
-| GET | `/api/v1/study/materials/{slug}` | Material with signed media URLs |
+| GET | `/api/v1/study/materials` | **Implemented (Phase 12).** Student with a level. Query `level` (code), `category` (key), `page`, `limit` (≤ 50), `locale`. `200 { docs: [{ slug, title, summary, level { code, name, badgeColor }, category { key, name, symbol }, media { image, audio, pdf } }], totalDocs, page, totalPages, filters { levels[], categories[] } }`. Only published, non-archived materials of enabled categories at or below the student's level (D-085); filters can only narrow this. |
+| GET | `/api/v1/study/materials/{slug}` | **Implemented (Phase 12).** `200 { slug, title, summary, body (Lexical JSON), level, category, attachments: [{ kind, url, filename, mimeType, alt, caption, title, durationSec }] }`; `url` is a signed `/api/v1/media/...` link. Draft, archived, higher-level or unknown → `404 NOT_FOUND`. |
+| GET | `/api/v1/media/{id}?exp=&sig=` | **Implemented (Phase 12).** Streams a learning file (D-087). Needs the student session and a level; `403` if the signature is wrong, expired or for another student; `404` if the file is not attached to a material the student may open now. Supports `Range` (`206`, `Accept-Ranges: bytes`); `Cache-Control: private`. |
 | POST | `/api/v1/contact` | Contact form (rate-limited) |
 
 #### Commerce and payments (Phases 19–23)

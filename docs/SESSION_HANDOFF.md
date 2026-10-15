@@ -1,10 +1,12 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 11 — Level check. **COMPLETE.**
+**Current phase / milestone:** Phase 12 — Study materials and media. **COMPLETE.** Next: Phase 13 — Examination configuration.
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
+
+- Phase 12 on `feature/phase-12-study-library`: unit 182/182, integration 170/170, E2E 126/126 + 1 skipped (incl. the admin journey: an editor uploads a PDF, publishes a material, a student opens it). Screenshots reviewed: study list (filters, EN/JA, iPhone), material detail (furigana, files), admin categories / materials / media library.
 
 - Phase 11 on `feature/phase-11-level-check`: unit 161/161, integration 149/149, E2E 119/119 + 1 skipped. Screenshots reviewed: intro, stage runner (desktop/iPhone, EN/JA), review dialog, between stages, Your level, admin Questions / Level check settings / published versions / student reset.
 
@@ -22,6 +24,12 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- Study media: tests upload into their own folders (integration: temp dir; E2E: `media/e2e-learning`); the dev folder is `media/learning`. Both git-ignored. An empty env value counts as unset (`||`, not `??`).
+- The `/api/v1` session check wants the browser's fetch metadata: in E2E, fetch protected files from the page (`page.evaluate(fetch)`), not with `page.request`.
+- Payload admin selectors: rich text `[data-lexical-editor="true"]`, selects `.rs__option`, save/publish `#action-save`.
+- Integration data accumulates between runs; tests that list things must filter by their run ID, and the study spec clears earlier runs' materials first.
+- Headless Chromium has no PDF viewer and the test MP3 has no audio (KI-38): blank PDF frame / audio "Error" in sweep screenshots are expected.
 
 - Browser tests and `pnpm sweep` use the `nihongo_mock_e2e` database (D-078); global setup publishes the sample level check there.
 - Payload checks relationship `filterOptions` with the caller's access: scripts that publish the level check must pass a real admin `user` (see the seed script).

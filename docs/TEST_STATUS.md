@@ -8,17 +8,24 @@ Last updated: 2026-10-15 (Phase 11).
 - Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
 - CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands and latest local results (2026-10-14)
+## Commands and latest local results (2026-10-15, Phase 12)
 
 | Purpose | Command | Result |
 |---|---|---|
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **161/161** |
-| Integration tests | `pnpm test:int` | **149/149** |
+| Unit tests | `pnpm test:unit` | **182/182** |
+| Integration tests | `pnpm test:int` | **170/170** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **119/119 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
+| E2E | `pnpm test:e2e` | **126/126 + 1 skipped** (full run 124 + 2 outdated "empty library" checks fixed and rerun with the study tests: 20/20) (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 12 tests prove
+
+- **Unit `domain/study` (8):** levels a student may study (own and lower, enabled for study, JLPT only; no level → none; disabled levels skipped). **`media` (13):** file types and size limits, content must match the type (disguised files refused), signed links bound to file + student + expiry, tampering and expiry refused, byte-range parsing.
+- **Integration `study` (21):** uploads (kind set by the server; SVG, disguised and oversized files refused; alt text required for images; Support cannot upload; nothing can be deleted); visibility matrix N5/N4/N3 and a disabled N2 (an N2 material is refused); draft, archived, disabled-category and higher-level items → 404; no level → 403; filters only narrow; publishing is visible at once and a later draft edit keeps the published version; Support cannot write; media streaming with Range 206; tampered, other-student and expired links → 403; archiving closes the files at once; a valid link to a higher-level file → 404.
+- **E2E `ui/study` (3 × 2 browsers):** an N4 student sees N5 + N4 materials, filters by level, opens one: furigana, image with alt text, audio and PDF fetched through signed links with byte ranges; an N5 student does not see N4 even by its address (404); the Japanese page; axe clean. **`admin-study` (1):** a Content Editor uploads a PDF, writes and publishes a material in the admin panel, and an N5 student opens it and its PDF without any deployment.
 
 ## What the Phase 11 tests prove
 

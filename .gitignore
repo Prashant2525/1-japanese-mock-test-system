@@ -37,3 +37,6 @@ npm-debug.log*
 
 # Screenshot sweep output (pnpm sweep)
 /sweep-results/
+
+# Uploaded media in development (production uses Cloudflare R2, D-041)
+/media/

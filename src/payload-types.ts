@@ -80,6 +80,9 @@ export interface Config {
     results: Result;
     'result-items': ResultItem;
     'level-assignments': LevelAssignment;
+    'material-categories': MaterialCategory;
+    'study-materials': StudyMaterial;
+    'learning-media': LearningMedia;
     'email-templates': EmailTemplate;
     'audit-events': AuditEvent;
     'totp-attempts': TotpAttempt;
@@ -102,6 +105,9 @@ export interface Config {
     results: ResultsSelect<false> | ResultsSelect<true>;
     'result-items': ResultItemsSelect<false> | ResultItemsSelect<true>;
     'level-assignments': LevelAssignmentsSelect<false> | LevelAssignmentsSelect<true>;
+    'material-categories': MaterialCategoriesSelect<false> | MaterialCategoriesSelect<true>;
+    'study-materials': StudyMaterialsSelect<false> | StudyMaterialsSelect<true>;
+    'learning-media': LearningMediaSelect<false> | LearningMediaSelect<true>;
     'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
     'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
     'totp-attempts': TotpAttemptsSelect<false> | TotpAttemptsSelect<true>;
@@ -554,6 +560,108 @@ export interface LevelAssignment {
   createdAt: string;
 }
 /**
+ * Categories of the study library. Students see enabled categories only.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "material-categories".
+ */
+export interface MaterialCategory {
+  id: number;
+  /**
+   * Lower-case ID used in links, e.g. grammar. Cannot be changed later.
+   */
+  key: string;
+  /**
+   * One character shown on cards, e.g. 文
+   */
+  symbol?: string | null;
+  name: string;
+  order: number;
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Lessons and reading material for students. Publish to make a material visible at once (no redeploy); archive to hide it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-materials".
+ */
+export interface StudyMaterial {
+  id: number;
+  title: string;
+  level: number | Level;
+  category: number | MaterialCategory;
+  /**
+   * Part of the page address, e.g. n5-particles-wa-ga.
+   */
+  slug: string;
+  order: number;
+  summary?: string | null;
+  /**
+   * Furigana (optional): write {漢字|かんじ}. Add images, audio and PDFs under Attachments below.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Images, audio and PDFs from Learning media, in display order.
+   */
+  attachments?:
+    | {
+        media: number | LearningMedia;
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Archived materials are hidden from students but kept.
+   */
+  archived?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Private images, audio and PDFs for study materials. Images up to 5 MB, PDFs up to 20 MB, audio up to 30 MB. Students reach them only through materials they may open.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-media".
+ */
+export interface LearningMedia {
+  id: number;
+  kind?: ('image' | 'audio' | 'pdf') | null;
+  /**
+   * For images: what the image shows, read aloud to students who cannot see it. Required for images.
+   */
+  alt?: string | null;
+  caption?: string | null;
+  durationSec?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -690,6 +798,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'level-assignments';
         value: number | LevelAssignment;
+      } | null)
+    | ({
+        relationTo: 'material-categories';
+        value: number | MaterialCategory;
+      } | null)
+    | ({
+        relationTo: 'study-materials';
+        value: number | StudyMaterial;
+      } | null)
+    | ({
+        relationTo: 'learning-media';
+        value: number | LearningMedia;
       } | null)
     | ({
         relationTo: 'email-templates';
@@ -986,6 +1106,64 @@ export interface LevelAssignmentsSelect<T extends boolean = true> {
   actor?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "material-categories_select".
+ */
+export interface MaterialCategoriesSelect<T extends boolean = true> {
+  key?: T;
+  symbol?: T;
+  name?: T;
+  order?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-materials_select".
+ */
+export interface StudyMaterialsSelect<T extends boolean = true> {
+  title?: T;
+  level?: T;
+  category?: T;
+  slug?: T;
+  order?: T;
+  summary?: T;
+  body?: T;
+  attachments?:
+    | T
+    | {
+        media?: T;
+        title?: T;
+        id?: T;
+      };
+  archived?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "learning-media_select".
+ */
+export interface LearningMediaSelect<T extends boolean = true> {
+  kind?: T;
+  alt?: T;
+  caption?: T;
+  durationSec?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1648,6 +1826,66 @@ export interface LabelsStudent {
        * Default — EN: “No study materials have been published yet. They'll appear here as soon as they are.” · JA: “まだ公開されている学習教材はありません。公開されるとすぐにここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       empty?: string | null;
+      /**
+       * Default — EN: “Filter materials” · JA: “教材を絞り込む”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      filters?: string | null;
+      /**
+       * Default — EN: “Level” · JA: “レベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      level?: string | null;
+      /**
+       * Default — EN: “Category” · JA: “カテゴリー”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      category?: string | null;
+      /**
+       * Default — EN: “All” · JA: “すべて”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      all?: string | null;
+      /**
+       * Default — EN: “Materials: {count}” · JA: “教材：{count} 件”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      count?: string | null;
+      /**
+       * Default — EN: “No materials match these filters yet.” · JA: “この条件に合う教材はまだありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      noneForFilter?: string | null;
+      /**
+       * Default — EN: “Audio: {count}” · JA: “音声：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      audioCount?: string | null;
+      /**
+       * Default — EN: “PDF: {count}” · JA: “PDF：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      pdfCount?: string | null;
+      /**
+       * Default — EN: “Images: {count}” · JA: “画像：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      imageCount?: string | null;
+      /**
+       * Default — EN: “All study materials” · JA: “学習教材の一覧へ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      back?: string | null;
+      /**
+       * Default — EN: “Files” · JA: “ファイル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      files?: string | null;
+      /**
+       * Default — EN: “Open the PDF” · JA: “PDFを開く”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      openPdf?: string | null;
+      /**
+       * Default — EN: “Download” · JA: “ダウンロード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      downloadPdf?: string | null;
+      /**
+       * Default — EN: “PDF: {name}” · JA: “PDF：{name}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      pdfTitle?: string | null;
+      /**
+       * Default — EN: “Your browser cannot play this audio.” · JA: “お使いのブラウザではこの音声を再生できません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      audioUnsupported?: string | null;
     };
     mockTests?: {
       /**
@@ -2209,6 +2447,21 @@ export interface LabelsStudentSelect<T extends boolean = true> {
           | T
           | {
               empty?: T;
+              filters?: T;
+              level?: T;
+              category?: T;
+              all?: T;
+              count?: T;
+              noneForFilter?: T;
+              audioCount?: T;
+              pdfCount?: T;
+              imageCount?: T;
+              back?: T;
+              files?: T;
+              openPdf?: T;
+              downloadPdf?: T;
+              pdfTitle?: T;
+              audioUnsupported?: T;
             };
         mockTests?:
           | T

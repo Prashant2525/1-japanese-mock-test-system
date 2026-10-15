@@ -9,6 +9,8 @@ import * as migration_20261015_092913_student_level_gate from './20261015_092913
 import * as migration_20261015_104002_home_signed_in_labels from './20261015_104002_home_signed_in_labels'
 import * as migration_20261015_142053_level_check from './20261015_142053_level_check'
 import * as migration_20261015_143836_level_check_labels from './20261015_143836_level_check_labels'
+import * as migration_20261015_155855_study_library from './20261015_155855_study_library'
+import * as migration_20261015_160304_study_labels from './20261015_160304_study_labels'
 
 export const migrations = [
   {
@@ -65,5 +67,15 @@ export const migrations = [
     up: migration_20261015_143836_level_check_labels.up,
     down: migration_20261015_143836_level_check_labels.down,
     name: '20261015_143836_level_check_labels',
+  },
+  {
+    up: migration_20261015_155855_study_library.up,
+    down: migration_20261015_155855_study_library.down,
+    name: '20261015_155855_study_library',
+  },
+  {
+    up: migration_20261015_160304_study_labels.up,
+    down: migration_20261015_160304_study_labels.down,
+    name: '20261015_160304_study_labels',
   },
 ]

@@ -59,6 +59,96 @@ async function main(action: string | undefined): Promise<void> {
   // `student <email> <password>`: a confirmed UI-test student (skips the email round trip).
   // `level <email> <code|none>`: set that student's level-check state, standing in for the
   // level-check service of Phase 11 (`none` = not started).
+  // `study <slug> <levelCode>`: a published study material with a PDF, an MP3 and an image, and a
+  // body with furigana. Created as the E2E Super Admin (relationship filters use the caller's access).
+  if (action === 'study') {
+    const [slug, levelCode] = process.argv.slice(3)
+    if (!slug?.startsWith('e2e-') || !levelCode)
+      throw new Error('usage: study e2e-<slug> <levelCode>')
+    const { PDF, MP3, PNG } = await import('../fixtures/files')
+    const admin = (
+      await payload.find({
+        collection: 'admins',
+        where: { email: { equals: E2E_ADMIN_EMAIL } },
+        depth: 1,
+      })
+    ).docs[0]!
+    const user = { ...admin, collection: 'admins' as const, _strategy: 'totp' }
+    const level = (
+      await payload.find({
+        collection: 'levels',
+        where: { and: [{ code: { equals: levelCode } }, { 'examType.code': { equals: 'JLPT' } }] },
+      })
+    ).docs[0]!
+    const grammar = (
+      await payload.find({
+        collection: 'material-categories',
+        where: { key: { equals: 'grammar' } },
+      })
+    ).docs[0]!
+    const media = []
+    for (const [data, mimetype, name, alt] of [
+      [PDF, 'application/pdf', `${slug}.pdf`, undefined],
+      [MP3, 'audio/mpeg', `${slug}.mp3`, undefined],
+      [PNG, 'image/png', `${slug}.png`, 'A small test picture'],
+    ] as const) {
+      const doc = await payload.create({
+        collection: 'learning-media',
+        data: { alt },
+        file: { data, mimetype, name, size: data.length },
+        user,
+        overrideAccess: false,
+      })
+      media.push(doc.id)
+    }
+    const text = (t: string) => ({
+      type: 'text',
+      text: t,
+      format: 0,
+      style: '',
+      mode: 'normal',
+      detail: 0,
+      version: 1,
+    })
+    await payload.create({
+      collection: 'study-materials',
+      data: {
+        title: `E2E material ${levelCode}`,
+        slug,
+        level: level.id,
+        category: grammar.id,
+        summary: 'A material created by the browser tests.',
+        order: 1,
+        body: {
+          root: {
+            type: 'root',
+            format: '',
+            indent: 0,
+            version: 1,
+            direction: 'ltr',
+            children: [
+              {
+                type: 'paragraph',
+                format: '',
+                indent: 0,
+                version: 1,
+                direction: 'ltr',
+                textFormat: 0,
+                textStyle: '',
+                children: [text('{日本語|にほんご}を勉強しましょう。')],
+              },
+            ],
+          },
+        },
+        attachments: media.map((id) => ({ media: id })),
+        _status: 'published',
+      },
+      user,
+      overrideAccess: false,
+    })
+    return
+  }
+
   if (action === 'student' || action === 'level') {
     const [email, arg] = process.argv.slice(3)
     if (!email?.endsWith(E2E_UI_DOMAIN) || !arg)
@@ -125,6 +215,13 @@ async function main(action: string | undefined): Promise<void> {
       sql`DELETE FROM ${sql.identifier(table)} WHERE student_id IN (${testStudents})`,
     )
   }
+
+  // Study materials and media made by the browser tests (slugs and file names start with e2e-).
+  await payload.db.deleteMany({ collection: 'study-materials', where: { slug: { like: 'e2e-' } } })
+  await payload.db.deleteMany({
+    collection: 'learning-media',
+    where: { filename: { like: 'e2e-' } },
+  })
 
   // Students created through the UI by tests (unique address per run).
   await payload.db.deleteMany({

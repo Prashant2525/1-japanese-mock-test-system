@@ -184,7 +184,22 @@
       "resultsBody": "Your scores and answer reviews."
     },
     "study": {
-      "empty": "No study materials have been published yet. They'll appear here as soon as they are."
+      "empty": "No study materials have been published yet. They'll appear here as soon as they are.",
+      "filters": "Filter materials",
+      "level": "Level",
+      "category": "Category",
+      "all": "All",
+      "count": "Materials: {count}",
+      "noneForFilter": "No materials match these filters yet.",
+      "audioCount": "Audio: {count}",
+      "pdfCount": "PDF: {count}",
+      "imageCount": "Images: {count}",
+      "back": "All study materials",
+      "files": "Files",
+      "openPdf": "Open the PDF",
+      "downloadPdf": "Download",
+      "pdfTitle": "PDF: {name}",
+      "audioUnsupported": "Your browser cannot play this audio."
     },
     "mockTests": {
       "empty": "No mock tests have been published yet. They'll appear here as soon as they are."

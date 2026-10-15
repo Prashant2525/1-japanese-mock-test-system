@@ -21,11 +21,15 @@ import {
   Results,
   ResultItems,
 } from './payload/collections/LevelCheckRecords'
+import { LearningMedia } from './payload/collections/LearningMedia'
 import { Levels } from './payload/collections/Levels'
+import { MaterialCategories } from './payload/collections/MaterialCategories'
 import { Questions } from './payload/collections/Questions'
+import { StudyMaterials } from './payload/collections/StudyMaterials'
 import { Roles } from './payload/collections/Roles'
 import { Students } from './payload/collections/Students'
 import { can } from './server/auth/permissions'
+import { MAX_LEARNING_MEDIA_BYTES } from './server/media/files'
 import { LevelCheckSettings } from './payload/globals/LevelCheckSettings'
 import { SignInSettings } from './payload/globals/SignInSettings'
 import { UiLabelGlobals } from './payload/globals/UiLabels'
@@ -82,6 +86,9 @@ export default buildConfig({
     Results,
     ResultItems,
     LevelAssignments,
+    MaterialCategories,
+    StudyMaterials,
+    LearningMedia,
     EmailTemplates,
     AuditEvents,
   ],
@@ -102,6 +109,8 @@ export default buildConfig({
     fallbackLanguage: 'en',
   },
   editor: lexicalEditor(),
+  // Hard cap for any upload; per-type limits are checked by each upload collection.
+  upload: { limits: { fileSize: MAX_LEARNING_MEDIA_BYTES } },
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: postgresAdapter({
     pool: { connectionString: env.DATABASE_URL, max: env.DATABASE_POOL_MAX },

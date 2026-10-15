@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
+import path from 'node:path'
 
 import { defineConfig, devices } from '@playwright/test'
 
@@ -11,6 +12,8 @@ import 'dotenv/config'
  * database through DATABASE_URL. Prepared once per run, before the app server starts.
  */
 if (!process.env.CI) {
+  // Uploaded files too: their own folder, not the development media folder.
+  process.env.LEARNING_MEDIA_DIR ||= path.resolve('media', 'e2e-learning')
   process.env.DATABASE_URL =
     process.env.E2E_DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5433/nihongo_mock_e2e'
 }

@@ -8,6 +8,7 @@ import { adminLogin } from '../admin-login'
 import { fixture } from '../fixture'
 import {
   createConfirmedStudent,
+  createStudyMaterial,
   setStudentLevel,
   studentLogin,
   uiEmail,
@@ -52,7 +53,7 @@ async function sweep(page: Page, state: string, paths: string[], project: string
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
     await page.waitForTimeout(1200)
     await page.evaluate(() => window.scrollTo(0, 0))
-    const name = `${state}${p.replace(/\//g, '_')}.png`
+    const name = `${state}${p.replace(/[/?=]/g, '_')}.png`
     await page.screenshot({ path: path.join(dir, name), fullPage: true })
     const h1 =
       (await page
@@ -89,8 +90,24 @@ test('student with a level', async ({ page }, info) => {
   const password = uiPassword()
   createConfirmedStudent(email, password)
   setStudentLevel(email, 'N4')
+  // Something in the study library (one set per project: the slugs are unique).
+  const slug = `e2e-sweep-${Date.now().toString(36)}`
+  createStudyMaterial(`${slug}-n5`, 'N5')
+  createStudyMaterial(`${slug}-n4`, 'N4')
   await studentLogin(page, 'en', email, password)
-  await sweep(page, 'level-n4', STUDENT, info.project.name)
+  await sweep(
+    page,
+    'level-n4',
+    [
+      ...STUDENT,
+      '/ja/app/study',
+      '/en/app/study?level=N4',
+      '/en/app/study?category=reading',
+      `/en/app/study/${slug}-n4`,
+      `/ja/app/study/${slug}-n5`,
+    ],
+    info.project.name,
+  )
 })
 
 test('admin (Super Admin)', async ({ page }, info) => {
@@ -108,6 +125,11 @@ test('admin (Super Admin)', async ({ page }, info) => {
       '/admin/collections/questions',
       '/admin/globals/level-check-settings',
       '/admin/collections/level-check-versions',
+      '/admin/collections/material-categories',
+      '/admin/collections/study-materials',
+      '/admin/collections/study-materials/create',
+      '/admin/collections/learning-media',
+      '/admin/collections/learning-media/create',
     ],
     info.project.name,
   )

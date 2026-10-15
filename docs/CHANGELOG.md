@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-15 — Phase 12: study library and media
+
+- Students with a level get a Study library: their level's and easier levels' published materials, filters by level and category, and a detail page with furigana text, images, an audio player and PDFs (open / download).
+- Admin: Study library menu with categories (seeded Kanji & vocabulary, Grammar, Reading, Listening), study materials (draft → publish, archive, furigana rich text, attachments) and a private learning media library (type, size and content checks).
+- Files reach students only through signed, expiring, per-student links that are re-checked on every request; audio seeking supported.
+- Files are on local disk until Cloudflare R2 keys exist (KI-37); `.env` / `.env.example` have the R2 steps.
+- Fixed during the phase: an empty `LEARNING_MEDIA_DIR` would have stored uploads in the project root; integration leftovers could push this run's study items off the first page; mobile filter labels wrapped awkwardly; list order made stable.
+- Tests: unit 182/182, integration 170/170, E2E 126/126 + 1 skipped.
+
 ## 2026-10-15 — Phase 11: the level check
 
 - Students can take the N5-first level check: start, calm timed stage screen (one question at a time, question map, mark for review, review and submit, autosave, takeover by a newer tab, auto-submit at the deadline), "Stage passed" between stages, and "Your level" with each stage's score.
