@@ -8,7 +8,7 @@
 
 | Surface | Base path | Consumers | Auth |
 |---|---|---|---|
-| Domain API | `/api/v1` | Student web UI; future mobile clients (D-025) | Student session cookie (`payload-token`, HTTP-only, SameSite=Lax); future mobile clients send `Authorization: JWT <token>` |
+| Domain API | `/api/v1` | Student web UI; future mobile clients (D-025) | Student session cookie (`nm_student_session`, HTTP-only, SameSite=Lax; D-077); future mobile clients send `Authorization: JWT <token>` |
 | Payload REST | `/api/cms` | Payload admin panel | Admin session. Access functions deny students and the public. Students read catalogue and content only through `/api/v1` (catalogue: Phase 13). |
 | Health | `/healthz`, `/readyz` | Load balancer, uptime monitor | None; returns no secrets |
 
@@ -55,7 +55,7 @@ All bodies are strict JSON objects; unknown fields → `400 VALIDATION_FAILED`. 
 | POST | `/api/v1/auth/register` | `{ name, email, password, preferredLocale?: "en" or "ja" }` | `202 { "status": "accepted" }`, the **same response** whether or not the email already exists. New accounts get a verification email in their language; an existing unverified account gets a fresh link. | 400, 403 (cross-site), 429 | 10/hour per IP; 3 emails/15 min per address |
 | POST | `/api/v1/auth/verify` | `{ token }` | `200 { "status": "verified" }` | `400 INVALID_TOKEN` (unknown or already used) | 30/15 min per IP |
 | POST | `/api/v1/auth/resend-verification` | `{ email }` | `202 { "status": "accepted" }` (always) | 400, 429 | 20/hour per IP; 3/15 min per address |
-| POST | `/api/v1/auth/login` | `{ email, password }` | `200 { "student": PublicStudent }` + `Set-Cookie: payload-token=…; HttpOnly; SameSite=Lax` (+ `Secure` in production). Session valid 7 days and revocable. | `401 INVALID_CREDENTIALS` (same for an unknown email and a wrong password); `403 EMAIL_NOT_VERIFIED` (only after a correct password); `403 ACCOUNT_DISABLED`; `429 RATE_LIMITED` (also for locked accounts: 5 wrong passwords → 15 min) | 20/15 min per IP; 10/15 min per account |
+| POST | `/api/v1/auth/login` | `{ email, password }` | `200 { "student": PublicStudent }` + `Set-Cookie: nm_student_session=…; HttpOnly; SameSite=Lax` (+ `Secure` in production). Session valid 7 days and revocable. | `401 INVALID_CREDENTIALS` (same for an unknown email and a wrong password); `403 EMAIL_NOT_VERIFIED` (only after a correct password); `403 ACCOUNT_DISABLED`; `429 RATE_LIMITED` (also for locked accounts: 5 wrong passwords → 15 min) | 20/15 min per IP; 10/15 min per account |
 | POST | `/api/v1/auth/logout` | `{}` | `204` + expired cookie. The session is deleted server-side, so the old cookie stops working immediately; other devices stay signed in. | — | — |
 | POST | `/api/v1/auth/forgot-password` | `{ email }` | `202 { "status": "accepted" }` (always; nothing is sent for unknown emails) | 400, 429 | 20/hour per IP; 3/15 min per address |
 | POST | `/api/v1/auth/reset-password` | `{ token, password }` | `200 { "status": "password_reset" }`. **All sessions are revoked.** The token is single-use and valid for 60 minutes. | `400 INVALID_TOKEN` | 30/15 min per IP |
@@ -77,7 +77,7 @@ Opened by the browser (links and redirects), not by `fetch`. Both always answer 
 | Method | Path | Query | Result |
 |---|---|---|---|
 | GET | `/api/v1/auth/google` | `locale` (`en` or `ja`), `next` (optional, student-area path only) | Redirect to Google's account chooser (PKCE S256, state, nonce, `prompt=select_account`). Sets `nm_google_flow` (signed, HttpOnly, SameSite=Lax, path `/api/v1/auth/google`, 10 minutes). |
-| GET | `/api/v1/auth/google/callback` | from Google: `state`, `code` or `error` | Success: session cookie (`payload-token`, same as password login) + redirect to `next` or `/{locale}/app`. Failure: redirect to `/{locale}/login?oauth=<reason>` (`cancelled`, `expired`, `failed`, `disabled`, `unavailable`, `rate_limited`). |
+| GET | `/api/v1/auth/google/callback` | from Google: `state`, `code` or `error` | Success: session cookie (`nm_student_session`, same as password login) + redirect to `next` or `/{locale}/app`. Failure: redirect to `/{locale}/login?oauth=<reason>` (`cancelled`, `expired`, `failed`, `disabled`, `unavailable`, `rate_limited`). |
 
 Limit: 30 requests/15 min per IP (start and return both count). Not available (`unavailable`) unless both Google variables are set and Settings → Sign-in options has the switch on. Audit events: `student.registered` / `student.login` (summary "via Google"), `student.google_linked`.
 

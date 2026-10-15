@@ -93,7 +93,7 @@ The Next.js proxy (`proxy.ts`, formerly middleware) handles: locale prefix enfor
 - **Admin MFA:** TOTP addition, if OPS-2b requires it (Phase 7).
 - **Authorization model:** permissions are strings (e.g. `questions.publish`, `students.override_level`, `orders.read`). Roles bundle permissions and are editable by a Super Admin (D-022). Payload `access` functions and service-level checks both call one shared `can(user, permission, resource?)` helper. Students have **no** Payload admin access; their access is ownership-based (`resource.studentId === session.studentId`).
 - **Level gate (LD-R02, implemented Phase 10):** `requireStudentWithLevel(headers)` (`src/server/student/gate.ts`) is the first call of every materials, mock-test and results service. Student pages use `studentPage(locale, area)` (`app/student-page.ts`), which re-reads the session's student on every request. UI tabs are only a convenience.
-- **One browser, one session:** Payload uses one auth cookie per browser. An admin who also tests as a student uses a separate browser profile. This is documented for admins.
+- **Separate sessions (D-077):** admins use Payload's `payload-token`; students use `nm_student_session`, read by `studentAuthHeaders()` and passed to Payload as a JWT header. An admin can be signed in as a student in the same browser.
 
 ## 5. Core runtime flows
 

@@ -175,6 +175,12 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 |---|---|---|
 | D-076 | A signed-in, active student is never offered sign-up or login: the home hero shows "Welcome back" and **Go to my page**; `/login` (respecting a safe `next`) and `/signup` redirect to the student area. The header shows **My page** and **Log out** inline from the `sm` breakpoint; on phones one **Menu** button opens both. Admin lists show checkbox columns as ✓ / – (`YesNoCell`), and Levels are sorted by exam type, then order. Before every report, `pnpm sweep` screenshots every page in every state (signed out, no level, with level, admin; EN/JA; desktop/iPhone) and the screenshots are reviewed. | KI-30 (owner report and feedback) |
 
+## Fix: separate student and admin sessions (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-077 | Students use their own session cookie, **`nm_student_session`** (HTTP-only, SameSite=Lax, Secure on https, 7 days); Payload's `payload-token` is for admins only. The server reads the student cookie and passes it to Payload as `Authorization: JWT …` (`studentAuthHeaders`), so an admin cookie never counts as a student session and vice versa; both can be signed in in one browser. The cookie counts only on requests from our own site (matching Origin, or Sec-Fetch-Site same-origin/same-site/none), plus top-level page loads from other sites for pages (KI-29); non-browser clients use the Authorization header (D-025). The proxy removes leftover student tokens from `payload-token`. Sessions stay revocable Payload sessions. Supersedes the "one browser, one session" note in ARCHITECTURE §4. | KI-32 (owner report) |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |
