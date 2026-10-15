@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   // Standalone output only for Docker images (set NEXT_OUTPUT_STANDALONE=1); `next start` needs the default output.
   output: process.env.NEXT_OUTPUT_STANDALONE === '1' ? 'standalone' : undefined,
   poweredByHeader: false,
+  // Load Payload once from node_modules, as `pnpm dev` already does. Bundled into the production
+  // build, each route got its own copy of Payload's classes while sharing one Payload instance, so
+  // `instanceof` checks inside Payload failed: validation messages vanished from admin forms and
+  // login errors were misclassified (KI-23, D-065).
+  serverExternalPackages: ['payload'],
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]
   },

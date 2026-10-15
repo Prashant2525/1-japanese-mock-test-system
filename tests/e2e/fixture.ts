@@ -6,6 +6,7 @@ export type E2EFixture = {
   admin: { pw: string; totp: string }
   editor: { pw: string; totp: string }
   newAdmin: { pw: string }
+  support: { pw: string; totp: string }
   student: { pw: string }
 }
 

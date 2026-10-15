@@ -2,6 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { hasPermission } from '@/payload/access'
 import { recordAudit } from '@/server/audit/record'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 /**
  * Sign-in options editable in the admin panel (D-030, D-066). Only switches live here; the Google
@@ -11,7 +12,7 @@ export const SignInSettings: GlobalConfig = {
   slug: 'sign-in-settings',
   label: { en: 'Sign-in options', ja: 'ログイン方法' },
   admin: {
-    group: { en: 'Settings', ja: '設定' },
+    group: ADMIN_GROUPS.settings,
     description: {
       en: 'How students can log in. Email and password is always available.',
       ja: '受講者のログイン方法。メールアドレスとパスワードでのログインは常に利用できます。',

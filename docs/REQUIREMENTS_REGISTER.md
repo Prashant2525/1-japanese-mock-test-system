@@ -99,12 +99,12 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
 | CMS-R01 | Full CRUD/workflow/publishing across all approved modules. | PB §5; D-007 | CONFIRMED | PB §16.4. |
-| CMS-R02 | Universal module behaviour (search/filter/paginate, validation, states, confirmations, server-side permissions, audit, versioning). | PB §5.1 | CONFIRMED | PB §16.4. |
+| CMS-R02 | Universal module behaviour (search/filter/paginate, validation, states, confirmations, server-side permissions, audit, versioning). | PB §5.1, D-068 | CONFIRMED · **pattern implemented (Phase 9)**; versioning arrives with questions/tests | PB §16.4. |
 | CMS-R03 | CMS configurability boundary per D-020 (values/toggles/content editable; safety invariants and secrets not). | D-020 | CONFIRMED *(interpretation)* | Invariant-violating configs are rejected server-side; no secret fields appear in the CMS. |
 | CMS-R04 | Student/account management, including determination reset and level override (D-013). | PB §5.3 | CONFIRMED | LD-R11. |
 | CMS-R05 | Level determination configuration (stages, thresholds, durations, question sets, enabled levels, summary copy). | PB §5.4; D-008..D-012 | CONFIRMED | LD-R03, LD-R07, LD-R12. |
 | CMS-R06 | Study content manager and media library. | PB §5.5, §5.12 | CONFIRMED | SM-R02..06. |
-| CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014 | CONFIRMED | MT-R02. |
+| CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014, D-070 | CONFIRMED · **admin side implemented (Phase 9)**; sections and the student API in Phase 13 | MT-R02. |
 | CMS-R08 | Question bank with bilingual explanations, optional furigana, marks, sections, versions, preview. | PB §5.7; D-024 | CONFIRMED | Phase 14 tests. |
 | CMS-R09 | Import: preview → all-or-nothing commit; duplicate detection by normalized text + exam + level; row-level errors. | D-024 | CONFIRMED – DETAIL OPEN (CON-1b template sample) | A file with one bad row commits nothing and reports that row. |
 | CMS-R10 | Mock-test builder (sections, marks, pass mark, section minimums, shuffle, duration, attempt limit, free flag, availability). | PB §5.8; D-017..D-019 | CONFIRMED | Publish validation rejects incoherent tests. |

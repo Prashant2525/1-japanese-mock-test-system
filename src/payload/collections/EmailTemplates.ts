@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { hasPermission } from '@/payload/access'
 import { EMAIL_TEMPLATE_KEYS, TEMPLATE_VARIABLES } from '@/server/email/templates'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 const KEY_LABELS: Record<(typeof EMAIL_TEMPLATE_KEYS)[number], { en: string; ja: string }> = {
   verify_email: { en: 'Email verification', ja: 'メールアドレス確認' },
@@ -25,7 +26,7 @@ export const EmailTemplates: CollectionConfig = {
   admin: {
     useAsTitle: 'key',
     defaultColumns: ['key', 'subject', 'updatedAt'],
-    group: { en: 'Settings', ja: '設定' },
+    group: ADMIN_GROUPS.content,
     description: `Use only these variables. ${variablesHelp}`,
   },
   access: {

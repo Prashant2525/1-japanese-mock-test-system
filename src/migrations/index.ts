@@ -4,6 +4,7 @@ import * as migration_20261014_150800_seed_auth from './20261014_150800_seed_aut
 import * as migration_20261014_162238_admin_totp from './20261014_162238_admin_totp'
 import * as migration_20261014_191843_ui_labels from './20261014_191843_ui_labels'
 import * as migration_20261014_203352_google_sign_in from './20261014_203352_google_sign_in'
+import * as migration_20261015_082931_exam_catalogue from './20261015_082931_exam_catalogue'
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20261014_203352_google_sign_in.up,
     down: migration_20261014_203352_google_sign_in.down,
     name: '20261014_203352_google_sign_in',
+  },
+  {
+    up: migration_20261015_082931_exam_catalogue.up,
+    down: migration_20261015_082931_exam_catalogue.down,
+    name: '20261015_082931_exam_catalogue',
   },
 ]

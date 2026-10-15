@@ -16,6 +16,7 @@ import {
   E2E_EDITOR_EMAIL,
   E2E_NEW_ADMIN_EMAIL,
   E2E_STUDENT_EMAIL,
+  E2E_SUPPORT_EMAIL,
   E2E_UI_DOMAIN,
 } from './admin-account'
 
@@ -63,7 +64,7 @@ async function main(action: string | undefined): Promise<void> {
 
   // Repeated local runs would otherwise hit the per-account login limits (10 per 15 minutes).
   const { clearRateLimits } = await import('../../src/server/rate-limit')
-  const adminEmails = [E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_NEW_ADMIN_EMAIL]
+  const adminEmails = [E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_NEW_ADMIN_EMAIL, E2E_SUPPORT_EMAIL]
   await clearRateLimits(payload, [
     ...adminEmails.flatMap((e) => [`admins:login:acct:${e}`, `admins:forgotPassword:acct:${e}`]),
     `login:acct:${E2E_STUDENT_EMAIL}`,
@@ -73,7 +74,7 @@ async function main(action: string | undefined): Promise<void> {
   // Admins cannot be deleted through the API (by design); the fixture removes them directly.
   await payload.db.deleteMany({
     collection: 'admins',
-    where: { email: { in: [E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_NEW_ADMIN_EMAIL] } },
+    where: { email: { in: adminEmails } },
   })
   await payload.db.deleteMany({
     collection: 'students',
@@ -116,6 +117,7 @@ async function main(action: string | undefined): Promise<void> {
   const superAdmin = await createAdmin('E2E Admin', E2E_ADMIN_EMAIL, 'Super Admin', true)
   const editor = await createAdmin('E2E Editor', E2E_EDITOR_EMAIL, 'Content Editor', true)
   const newcomer = await createAdmin('E2E New Admin', E2E_NEW_ADMIN_EMAIL, 'Support', false)
+  const support = await createAdmin('E2E Support', E2E_SUPPORT_EMAIL, 'Support', true)
 
   const studentPassword = pw()
   const student = await payload.create({
@@ -141,6 +143,7 @@ async function main(action: string | undefined): Promise<void> {
     admin: { pw: superAdmin.password, totp: superAdmin.secret },
     editor: { pw: editor.password, totp: editor.secret },
     newAdmin: { pw: newcomer.password },
+    support: { pw: support.password, totp: support.secret },
     student: { pw: studentPassword },
   }
   console.log(`E2E_FIXTURE=${JSON.stringify(fixture)}`)

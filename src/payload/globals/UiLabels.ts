@@ -7,6 +7,7 @@ import ja from '@/i18n/messages/ja.json'
 import { hasPermission } from '@/payload/access'
 import { recordAudit } from '@/server/audit/record'
 import { invalidateLabelOverrides } from '@/server/i18n/label-overrides'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 const humanize = (key: string) =>
   key
@@ -44,7 +45,7 @@ export const UiLabelGlobals: GlobalConfig[] = LABEL_GROUPS.map((group) => {
     slug: group.slug,
     label: group.label,
     admin: {
-      group: { en: 'Content', ja: 'コンテンツ' },
+      group: ADMIN_GROUPS.content,
       description:
         'Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.',
     },

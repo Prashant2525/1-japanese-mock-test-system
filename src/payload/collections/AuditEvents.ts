@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { hasPermission, never } from '@/payload/access'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 /** Append-only audit trail (ARCHITECTURE §9, TSR-09). Written only by server code; nobody can edit or delete it. */
 export const AuditEvents: CollectionConfig = {
@@ -12,7 +13,7 @@ export const AuditEvents: CollectionConfig = {
   admin: {
     useAsTitle: 'action',
     defaultColumns: ['createdAt', 'action', 'entityType', 'entityId', 'actorType', 'actorId'],
-    group: { en: 'Operations', ja: '運用' },
+    group: ADMIN_GROUPS.operations,
     description: 'Read-only record of sensitive actions.',
   },
   access: {

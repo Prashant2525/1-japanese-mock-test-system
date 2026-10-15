@@ -14,6 +14,7 @@ import { revokeAllSessions } from '@/server/auth/sessions'
 import { renderEmail, type Locale } from '@/server/email/templates'
 import { getEnv } from '@/server/env'
 import { clientIp, userAgent } from '@/server/http/client'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 const RESET_EXPIRATION_MS = 60 * 60 * 1000
 
@@ -47,7 +48,7 @@ export const Admins: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['name', 'email', 'roles', 'status', 'updatedAt'],
-    group: { en: 'People', ja: '利用者' },
+    group: ADMIN_GROUPS.people,
   },
   auth: {
     depth: 1,

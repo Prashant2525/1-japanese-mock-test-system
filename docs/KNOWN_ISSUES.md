@@ -1,6 +1,6 @@
 # Known Issues, Ambiguities and Risks
 
-Last updated: 2026-10-15 (Phase 8).
+Last updated: 2026-10-15 (Phase 9).
 
 ## Repository issues
 
@@ -27,6 +27,9 @@ Last updated: 2026-10-15 (Phase 8).
 | KI-20 | Info | Browser tests run against the dev database (accounts are created and removed by the fixture; UI-test students use `@e2e-ui.nihongo-mock.test`). | `tests/e2e/e2e-admin.ts` | Fine locally; CI uses its own temporary database. |
 | KI-21 | ~~Medium~~ **Fixed (Phase 8)** | Next.js prefetches visible links in the background; prefetching the language switch went through the proxy and changed the remembered language cookie. | CI flaky test (routing) | The proxy ignores prefetch requests for the cookie; the switch links use `prefetch={false}`; regression test added. |
 | KI-22 | ~~Medium~~ **Fixed (Google sign-in)** | The account pages (login, sign-up, verify, reset…) were pre-built as static pages, so CMS label edits never reached them in a production build (only `pnpm dev` showed them). | `pnpm build` route list showed `●` (static) | The `(auth)` layout is rendered per request (`dynamic = 'force-dynamic'`); E2E switches the Google option off and checks the production page changes. |
+| KI-23 | ~~High~~ **Fixed (Phase 9)** | In production builds, validation messages never reached admin forms (only a generic "field is invalid" toast), and Payload errors were misclassified elsewhere (the cause behind D-065). Each route bundled its own copy of Payload while sharing one Payload instance, so `instanceof` checks inside Payload failed. | Admin E2E: the save was refused (400) but the explanation was missing from the REST body | `serverExternalPackages: ['payload']` (D-071). Admin E2E checks the message appears under the field. |
+| KI-24 | Info | Payload's widget dashboard is marked experimental in 3.90.2. | `admin.dashboard` | Version pinned; recheck the dashboard after any Payload upgrade (admin E2E covers it). |
+| KI-25 | Info | The catalogue's Japanese names, descriptions and non-affiliation notices are drafts. | Seed in `src/server/catalogue/seed.ts` | Owner/translator review (PA-6); all editable under Exam catalogue. |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 
 ## Requirement ambiguities

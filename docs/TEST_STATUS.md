@@ -1,6 +1,6 @@
 # Test Status
 
-Last updated: 2026-10-15 (Phase 8b, Google sign-in).
+Last updated: 2026-10-15 (Phase 9).
 
 ## Environment
 
@@ -15,10 +15,16 @@ Last updated: 2026-10-15 (Phase 8b, Google sign-in).
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **102/102** |
-| Integration tests | `pnpm test:int` | **76/76** |
+| Unit tests | `pnpm test:unit` | **119/119** |
+| Integration tests | `pnpm test:int` | **102/102** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **78/78 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **82/82 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 9 tests prove
+
+- **Unit `catalogue` (17):** level-check ladder (accepts N5, N5–N3, all; rejects missing N5 and gaps; uses configured order); colour format and contrast; audit diff (changed fields only, relationships by ID); seed matches D-014/D-008 and passes the same rules.
+- **Integration `catalogue` (26):** seeded catalogue and EN/JA names; pagination, sort and search; Content Editor creates/edits in both languages; Support read-only (403 on write); anonymous 403; delete refused even for Super Admin, and by the database; one code per exam type; malformed code/colours; JLPT-only level check and study; equivalent-level rules; ladder rules incl. reordering; exam type code fixed; audit records actor, changed fields and language, and skips no-op saves; dashboard widgets count from the database, draw the route from CMS switches, refuse unpermitted admins and never show secrets.
+- **E2E `admin-cms` (4):** Super Admin sees branding, all menu groups and live widgets; Content Editor lists/searches/edits levels, sees the level-check message under the field, and edits persist; Support sees no catalogue/setup widgets or Content menu, no create button, and the server refuses PATCH/DELETE; anonymous API reads get 403.
 
 ## What the Phase 8b (Google) tests prove
 

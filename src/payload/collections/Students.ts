@@ -6,6 +6,7 @@ import { recordAudit } from '@/server/audit/record'
 import { revokeAllSessions } from '@/server/auth/sessions'
 import { renderEmail, type Locale } from '@/server/email/templates'
 import { getEnv } from '@/server/env'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 export const STUDENT_RESET_EXPIRATION_MINUTES = 60
 
@@ -28,7 +29,7 @@ export const Students: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['name', 'email', 'status', 'determinationStatus', 'createdAt'],
-    group: { en: 'People', ja: '利用者' },
+    group: ADMIN_GROUPS.people,
   },
   auth: {
     depth: 0,

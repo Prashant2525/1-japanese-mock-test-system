@@ -60,8 +60,8 @@ erDiagram
 
 | Entity | Type | Key fields | Constraints / notes |
 |---|---|---|---|
-| `exam_types` | [P] localized | code (`JLPT`/`NAT`/`JFT`), name, description, order, enabled, defaultSections[] {key, name, order}, nonAffiliationNotice | unique code |
-| `levels` | [P] localized | examType → `exam_types`, code (`N5`, `5Q`, `A2.1`…), name, order (easiest = 1), equivalentJlpt → `levels` (NAT mapping, D-014), lineColor, badgeColor, **enabledForMockTests**, **enabledForDetermination**, **enabledForStudy** | unique (examType, code). The three flags implement D-008 and SM-R02: seed JLPT N5–N3 enabled for determination and study; JLPT N5–N1, NAT 5Q–1Q and JFT tiers enabled for mock tests. A level is shown publicly only if it is enabled **and** has published content. |
+| `exam_types` *(implemented Phase 9 without `defaultSections`, which arrives with sections in Phase 13)* | [P] localized | code (`JLPT`/`NAT`/`JFT`), name, description, order, enabled, defaultSections[] {key, name, order}, nonAffiliationNotice | unique code |
+| `levels` *(implemented Phase 9; colours `lineColor`/`badgeColor` hex; FKs RESTRICT delete)* | [P] localized | examType → `exam_types`, code (`N5`, `5Q`, `A2.1`…), name, order (easiest = 1), equivalentJlpt → `levels` (NAT mapping, D-014), lineColor, badgeColor, **enabledForMockTests**, **enabledForDetermination**, **enabledForStudy** | unique (examType, code). The three flags implement D-008 and SM-R02: seed JLPT N5–N3 enabled for determination and study; JLPT N5–N1, NAT 5Q–1Q and JFT tiers enabled for mock tests. A level is shown publicly only if it is enabled **and** has published content. |
 
 ### 3.3 Study materials and media
 

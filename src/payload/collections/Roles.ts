@@ -3,6 +3,7 @@ import { APIError, type CollectionConfig } from 'payload'
 import { activeAdmin, hasPermission, never } from '@/payload/access'
 import { recordAudit } from '@/server/audit/record'
 import { ALL_PERMISSIONS, PERMISSIONS, SUPER_ADMIN_ROLE } from '@/server/auth/permissions'
+import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
 /** Roles bundle permission keys (D-022). System roles are seeded by migration and cannot be deleted. */
 export const Roles: CollectionConfig = {
@@ -14,7 +15,7 @@ export const Roles: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'description', 'isSystem'],
-    group: { en: 'People', ja: '利用者' },
+    group: ADMIN_GROUPS.people,
   },
   access: {
     read: activeAdmin,

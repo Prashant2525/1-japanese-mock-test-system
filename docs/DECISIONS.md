@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-15 (Google sign-in).
+Last updated: 2026-10-15 (Phase 9).
 
 ---
 
@@ -145,6 +145,15 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 |---|---|---|
 | D-066 | **"Continue with Google" for students** (owner, 2026-10-15: "please add OAuth also"). Students only; admins keep password + authenticator code (D-058). OpenID Connect code flow with PKCE, state and nonce, written without a library; the ID token comes straight from Google's token endpoint over TLS, so its claims are checked (issuer, audience, expiry, nonce, verified email) and its signature is not re-verified (OIDC Core §3.1.3.7). Linking: same Google ID → that student; same email → link (an unconfirmed account is confirmed and its password replaced, against pre-registration takeover); otherwise a new confirmed student with an unusable password ("Forgot password" sets one). Suspended accounts are refused; an email already linked to another Google ID is refused. Sessions are ordinary revocable Payload sessions. Shown only when `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` are set **and** the CMS switch (Settings → Sign-in options) is on; keys never in the CMS (D-020). Other social logins remain out of scope. | Owner request; PB §2.4 |
 | D-067 | An empty line in `.env` (e.g. `GOOGLE_CLIENT_ID=`) means "not set". Previously an empty optional value failed startup validation. | Found while adding D-066 |
+
+## Phase 9 — admin CMS framework (2026-10-15, technical choices within the approved stack)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-068 | **Admin patterns.** Lists, search, sort, filters, pagination, bulk select/edit, confirmations and loading/empty/error/success states come from Payload's own admin views (configured per collection: `defaultColumns`, `listSearchableFields`, `pagination`, `defaultSort`), not rebuilt. Every module adds: a menu group from `ADMIN_GROUPS`; access through `hasPermission()`; `auditTrail()` hooks (records only the changed fields, with old and new values and the content language); validation messages in EN/JA via `say()`; no delete where history depends on the record (switch off instead). Rules that involve other records run as **field validators**, not hooks, so Payload shows each message under its field. | PB §11.10, CMS-R02 |
+| D-069 | **Dashboard** uses Payload's widget dashboard (`admin.dashboard`, marked experimental in Payload 3.90.2, version pinned). Widgets: setup checklist (`settings.manage`), students (`students.read`), exam catalogue (`catalogue.manage`), recent activity (`audit.read`). The default layout includes only the widgets the admin may see; each widget re-checks the permission (saved layouts survive role changes). Admins can rearrange them. | PB §11.10, UI_SCREEN_INVENTORY §5 |
+| D-070 | **Exam catalogue rules.** Exam type codes are fixed after creation. Exam types and levels are never deleted (no delete access; database foreign keys RESTRICT). The level check and the study library use JLPT levels only. The levels enabled for the level check must be the easiest JLPT level plus an unbroken run above it (N5, N5→N4, …); the easiest one cannot be switched off. One code per exam type. NAT/JFT levels may point to an equivalent JLPT level; JLPT levels may not. Level colours are checked for contrast (badge ≥ 4.5:1 with white text, route line ≥ 3:1 on night). Any active admin can read the catalogue; `catalogue.manage` edits it. The student-facing catalogue API comes with Phase 13. Seed: JLPT N5–N1, NAT 5Q–1Q (→ N5–N1), JFT A1, A2.1, A2.2, A2; level check and study N5–N3; mock tests at every level. | D-008, D-014, D-015, D-020 |
+| D-071 | **Payload is loaded once from `node_modules` in production too** (`serverExternalPackages: ['payload']`), as `pnpm dev` already did. Bundled, each route had its own copy of Payload's classes while sharing one Payload instance, so Payload's internal `instanceof` checks failed (KI-23). | Phase 9 finding |
 
 ## Rejected / parked alternatives
 
