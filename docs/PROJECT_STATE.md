@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 11 — Level check (N5-first determination): COMPLETE** (2026-10-15). Next: **Phase 12 — Study materials and media.**
+Current phase / milestone: **Phase 12 — Study materials and media: COMPLETE** (2026-10-15). Next: **Phase 13 — Examination configuration.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-11-level-check` (PR to `main`).
+Last verified commit: branch `feature/phase-12-study-library` (PR to `main`).
 
 ## Work status
 
@@ -20,11 +20,20 @@ Last verified commit: branch `feature/phase-11-level-check` (PR to `main`).
   - Phase 9 (D-068..D-071): branded admin, menu groups, role-aware dashboard with live data, reusable audit/validation patterns, exam catalogue end to end (seeded JLPT/NAT/JFT). Tests: unit 119/119, integration 102/102, E2E 82/82 + 1 skipped. Fixed KI-23 (validation messages missing in production admin forms).
   - Phase 10 (D-073, D-074): server level gate on APIs and pages, level-check intro, student home and tabs. Tests: unit 125/125, integration 117/117, E2E 92/92 + 1 skipped.
   - Phase 11 (D-078..D-083): questions (core), level-check settings and versions, the level-check engine, stage runner, "Your level", admin reset/override, sample content command, separate E2E database. Tests: unit 161/161, integration 149/149, E2E 119/119 + 1 skipped; sweep reviewed.
+  - Phase 12 (D-084..D-088): study categories, study materials (drafts, publish, archive, furigana rich text), private learning media with upload checks and signed links (Range for audio), student study list and detail pages. Tests: unit 182/182, integration 170/170, E2E 126/126 + 1 skipped; sweep reviewed (desktop/iPhone, EN/JA, admin).
 - **Partial / unverified:**
   - Real email delivery: waits on a domain (DOM-1, KI-18).
   - The home page is temporary (KI-08).
   - The admin panel uses Payload's own design (by plan).
+  - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Changes (Phase 12)
+
+- **Code:** `src/domain/study.ts`, `src/server/media/{files,signing,storage}.ts`, `src/server/study/service.ts`, `src/payload/collections/{MaterialCategories,StudyMaterials,LearningMedia}.ts`, `src/app/api/v1/study/materials/**`, `src/app/api/v1/media/[id]/route.ts`, study list and detail pages, `src/ui/components/rich-text.tsx`, `Reveal` `as` prop, upload size limit in `payload.config.ts`; placeholder study list removed from `src/server/student/areas.ts`.
+- **Database:** migrations `20261015_155855_study_library` (tables + seeded categories) and `20261015_160304_study_labels`.
+- **Env files:** "Study media" section in `.env` and `.env.example` (`LEARNING_MEDIA_DIR`, R2 keys with step-by-step instructions; R2 not read yet).
+- **Tests:** `tests/unit/domain/study.test.ts`, `tests/unit/media.test.ts`, `tests/int/study.int.spec.ts`, `tests/e2e/ui/study.e2e.spec.ts`, `tests/e2e/admin-study.e2e.spec.ts`, `tests/fixtures/files.ts`; fixture action `study`; sweep covers study and admin study pages.
 
 ## Changes (Phase 10)
 

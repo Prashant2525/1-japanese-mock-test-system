@@ -43,6 +43,11 @@ export function setStudentLevel(email: string, level: string): void {
   fixtureRun(`level ${email} ${level}`)
 }
 
+/** A published study material (PDF, MP3, image, furigana body) at a JLPT level. */
+export function createStudyMaterial(slug: string, level: string): void {
+  fixtureRun(`study ${slug} ${level}`)
+}
+
 /** Logs a student in through the real login form and waits until the student area opens. */
 export async function studentLogin(
   page: Page,

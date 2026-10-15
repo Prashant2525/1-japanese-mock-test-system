@@ -184,7 +184,22 @@
       "resultsBody": "スコアと解答の振り返りです。"
     },
     "study": {
-      "empty": "まだ公開されている学習教材はありません。公開されるとすぐにここに表示されます。"
+      "empty": "まだ公開されている学習教材はありません。公開されるとすぐにここに表示されます。",
+      "filters": "教材を絞り込む",
+      "level": "レベル",
+      "category": "カテゴリー",
+      "all": "すべて",
+      "count": "教材：{count} 件",
+      "noneForFilter": "この条件に合う教材はまだありません。",
+      "audioCount": "音声：{count}",
+      "pdfCount": "PDF：{count}",
+      "imageCount": "画像：{count}",
+      "back": "学習教材の一覧へ",
+      "files": "ファイル",
+      "openPdf": "PDFを開く",
+      "downloadPdf": "ダウンロード",
+      "pdfTitle": "PDF：{name}",
+      "audioUnsupported": "お使いのブラウザではこの音声を再生できません。"
     },
     "mockTests": {
       "empty": "まだ公開されている模擬試験はありません。公開されるとすぐにここに表示されます。"

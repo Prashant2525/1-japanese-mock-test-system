@@ -98,7 +98,7 @@ test.describe('level gate (Phase 10)', () => {
     await tabs.getByRole('link', { name: 'Study' }).click()
     await expect(page).toHaveURL(/\/en\/app\/study$/)
     await expect(tabs.getByRole('link', { name: 'Study' })).toHaveAttribute('aria-current', 'page')
-    await expect(page.getByText('No study materials have been published yet.')).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Study' })).toBeVisible()
     expect((await apiStatus(page, '/api/v1/study/materials')).status).toBe(200)
 
     await open(page, '/en/app/level-check')

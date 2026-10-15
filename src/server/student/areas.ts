@@ -6,22 +6,15 @@ import { requireStudentWithLevel } from './gate'
 
 /**
  * Student areas behind the level gate (Phase 10). The gate is final here; the data arrives with
- * the phase that creates it: study materials (Phase 12), attempts (Phase 16), results (Phase 17).
- * Until then the honest answers are "nothing published yet" and "no such test" (KI-27: replace
- * each with the real query in its phase). Results are real since Phase 11 (level-check stages).
+ * the phase that creates it. Real since Phase 11: results (level-check stages); since Phase 12:
+ * study materials (src/server/study). Still a placeholder: starting a mock-test attempt (Phase 16,
+ * KI-27).
  */
 export type Page<T> = {
   docs: T[]
   totalDocs: number
   page: number
   totalPages: number
-}
-
-const emptyPage = <T>(): Page<T> => ({ docs: [], totalDocs: 0, page: 1, totalPages: 0 })
-
-export async function listStudyMaterials(headers: Headers): Promise<Page<never>> {
-  await requireStudentWithLevel(headers)
-  return emptyPage()
 }
 
 export type ResultListItem = {

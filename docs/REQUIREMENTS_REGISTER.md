@@ -60,12 +60,12 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
-| SM-R01 | Accessible only after determination. | PB §2.2 | CONFIRMED | Covered by LD-R02. |
-| SM-R02 | Materials only for **enabled** levels (N5, N4, N3 at launch); level availability is data-driven. | PB §2.2; D-008 | CONFIRMED | No N2/N1 material is returned while those levels are disabled. |
-| SM-R03 | Students see current-level and lower-level materials; they cannot change their level. | PB §2.2; D-015 | CONFIRMED | An N4 student gets N4+N5 but not N3; a manipulated level parameter is ignored. |
-| SM-R04 | Categories Listening, Grammar, Reading, Kanji (more can be added through the CMS). | PB §2.2; D-007 | CONFIRMED | A category added in the CMS appears without deployment. |
-| SM-R05 | Text, image, audio and PDF/document content; audio playback for Listening; bilingual titles/descriptions. | PB §2.2; D-004 | CONFIRMED | Each media type is uploaded, published and rendered; the audio player is keyboard-accessible. |
-| SM-R06 | Upload validation; unpublished items hidden; all UI states present. | PB §4.4 | TECHNICAL SAFETY RULE | PB §16.4. |
+| SM-R01 | Accessible only after determination. | PB §2.2 | CONFIRMED · **implemented and tested (Phase 12)** | Covered by LD-R02. |
+| SM-R02 | Materials only for **enabled** levels (N5, N4, N3 at launch); level availability is data-driven. | PB §2.2; D-008 | CONFIRMED · **implemented and tested (Phase 12)** | No N2/N1 material is returned while those levels are disabled. |
+| SM-R03 | Students see current-level and lower-level materials; they cannot change their level. | PB §2.2; D-015 | CONFIRMED · **implemented and tested (Phase 12)** | An N4 student gets N4+N5 but not N3; a manipulated level parameter is ignored. |
+| SM-R04 | Categories Listening, Grammar, Reading, Kanji (more can be added through the CMS). | PB §2.2; D-007 | CONFIRMED · **implemented and tested (Phase 12)** | A category added in the CMS appears without deployment. |
+| SM-R05 | Text, image, audio and PDF/document content; audio playback for Listening; bilingual titles/descriptions. | PB §2.2; D-004 | CONFIRMED · **implemented and tested (Phase 12)** | Each media type is uploaded, published and rendered; the audio player is keyboard-accessible. |
+| SM-R06 | Upload validation; unpublished items hidden; all UI states present. | PB §4.4 | TECHNICAL SAFETY RULE · **implemented and tested (Phase 12)** | PB §16.4. |
 
 ## 5. Mock tests (MT)
 
@@ -103,7 +103,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | CMS-R03 | CMS configurability boundary per D-020 (values/toggles/content editable; safety invariants and secrets not). | D-020 | CONFIRMED *(interpretation)* | Invariant-violating configs are rejected server-side; no secret fields appear in the CMS. |
 | CMS-R04 | Student/account management, including determination reset and level override (D-013). | PB §5.3 | CONFIRMED | LD-R11. |
 | CMS-R05 | Level determination configuration (stages, thresholds, durations, question sets, enabled levels, summary copy). | PB §5.4; D-008..D-012 | CONFIRMED · **implemented (Phase 11); page text via UI labels** | LD-R03, LD-R07, LD-R12. |
-| CMS-R06 | Study content manager and media library. | PB §5.5, §5.12 | CONFIRMED | SM-R02..06. |
+| CMS-R06 | Study content manager and media library. | PB §5.5, §5.12 | CONFIRMED · **implemented and tested (Phase 12)**; R2 storage pending (KI-37) | SM-R02..06. |
 | CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014, D-070 | CONFIRMED · **admin side implemented (Phase 9)**; sections and the student API in Phase 13 | MT-R02. |
 | CMS-R08 | Question bank with bilingual explanations, optional furigana, marks, sections, versions, preview. | PB §5.7; D-024 | CONFIRMED | Phase 14 tests. |
 | CMS-R09 | Import: preview → all-or-nothing commit; duplicate detection by normalized text + exam + level; row-level errors. | D-024 | CONFIRMED – DETAIL OPEN (CON-1b template sample) | A file with one bad row commits nothing and reports that row. |

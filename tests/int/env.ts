@@ -1,4 +1,6 @@
 import { randomBytes } from 'node:crypto'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 
 import 'dotenv/config'
 
@@ -19,3 +21,5 @@ process.env.TRUST_PROXY = 'true'
 // Google sign-in is configured with throwaway values; tests replace Google's token endpoint.
 process.env.GOOGLE_CLIENT_ID = 'int-test.apps.googleusercontent.com'
 process.env.GOOGLE_CLIENT_SECRET = randomBytes(16).toString('hex')
+// Uploaded test files go to a temporary folder, never the development media folder.
+process.env.LEARNING_MEDIA_DIR = path.join(tmpdir(), 'nihongo-mock-int-media')
