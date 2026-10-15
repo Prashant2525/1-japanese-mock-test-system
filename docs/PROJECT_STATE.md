@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 12 — Study materials and media: COMPLETE** (2026-10-15). Next: **Phase 13 — Examination configuration.**
+Current phase / milestone: **Phase 12 — Study materials and media: COMPLETE** (2026-10-15). **Reference review done (2026-10-16)**; waiting for the owner's answer to **RV-7 (deletion policy)** before **Phase 12b — content lifecycle corrections**, then Phase 13.
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-12-study-library` (PR to `main`).
+Last verified commit: `77b247f` on `main` (PR #16 merged); review docs on `docs/reference-review`.
 
 ## Work status
 
@@ -27,6 +27,13 @@ Last verified commit: branch `feature/phase-12-study-library` (PR to `main`).
   - The admin panel uses Payload's own design (by plan).
   - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Reference review (2026-10-16)
+
+- 24 reference screenshots inspected (`UI_SCREEN_INVENTORY.md` §7: mapping, design improvements, omitted items).
+- Found: learning media cannot be removed at all (KI-39); materials/categories/question drafts cannot be deleted (KI-40); unpublish/archive permission to verify (KI-41).
+- Conflicts with approved D-019 (premium study materials, coupons, refunds, plans) recorded as RV-1..RV-5; owner instructions recorded as D-089..D-091; new requirements LC-R01..R04, ACC-R01..R04, PROT-R01, SM-R07, STU-R01, ADM-R01..R02, COM-R05.
+- No code changed.
 
 ## Changes (Phase 12)
 

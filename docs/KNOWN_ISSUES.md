@@ -1,6 +1,6 @@
 # Known Issues, Ambiguities and Risks
 
-Last updated: 2026-10-15 (Phase 12).
+Last updated: 2026-10-16 (reference review).
 
 ## Repository issues
 
@@ -43,6 +43,11 @@ Last updated: 2026-10-15 (Phase 12).
 | KI-36 | Info | In one local full run the integration suite reported 120 of 149 tests passed with no failure shown (29 = the level-check file); the next three runs passed 149/149. The detailed output of that run was not kept. | Phase 11 verification | Watch CI and local runs; if it recurs, keep the full log (`pnpm test:int > log.txt`). |
 | KI-37 | Medium | Study files are stored on the server's local disk until Cloudflare R2 is set up (D-088). Fine on one computer; a production host may lose its disk on redeploy and cannot share it between servers. | `src/server/media/storage.ts`, `LEARNING_MEDIA_DIR` | Owner creates the R2 account and keys (`.env.example` steps); the R2 adapter is then built and verified, and existing files copied. Release blocker for production. |
 | KI-38 | Info | The browser checks run headless: Chromium there has no PDF viewer (the PDF frame shows blank) and the test MP3 has no audio frames (the player shows "Error"). Both are test-file/test-browser limits; links, types and byte ranges are verified by the tests. Real PDF and audio playback should be confirmed once on real devices with real files. | `pnpm sweep` screenshots | Owner (or a later session) opens a real PDF and MP3 on desktop and iPhone. |
+| KI-39 | **High (owner-reported)** | **Learning media can never be removed:** no delete and no archive. A wrong or unused upload stays in the library and in storage forever. | `LearningMedia.ts` `delete: never`, no `archived` field | Phase 12b (RV-7): relationship-aware delete that also removes the stored file; `archived` to hide used files from pickers. |
+| KI-40 | **Medium (owner-reported)** | Study materials, study categories and never-published question drafts cannot be deleted (`delete: never`); only archiving exists. Rule 11 ("archive where history depends on a record") was applied more broadly than needed. | `StudyMaterials.ts`, `MaterialCategories.ts`, `Questions.ts` | Phase 12b (RV-7). |
+| KI-41 | Medium — **UNVERIFIED** | "Unpublish" and the `archived` switch on study materials may need only `materials.manage`, not `materials.publish`: the access rule checks only whether the incoming status is `published`. If so, an editor without publish rights could take published content offline. | `StudyMaterials.ts` `canSave`; same pattern in `Questions.ts` | Phase 12b: prove with an integration test; if confirmed, require the publish permission to unpublish or archive published items. |
+| KI-43 | Info | Signed file responses allow the browser to cache them for 10 minutes (`Cache-Control: private, max-age=600`). Fine for free files; once premium exists (Phase 19) a revoked student could still replay a cached file for up to 10 minutes. | `src/app/api/v1/media/[id]/route.ts` | Phase 19: `no-store` for premium files (ACC-R02). |
+| KI-42 | Info | `Reference Design/Student And Admin UI and Sections Reference.pdf` could not be rendered in this environment (no PDF renderer). It has 24 pages with one image each, matching the 24 PNGs, which were all inspected individually. | Reference review | None unless the PDF has content not in the PNGs — owner to confirm. |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 
 ## Requirement ambiguities

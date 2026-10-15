@@ -202,6 +202,14 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-087 | **Private files through signed links:** students never get a storage address. Each attachment URL is `/api/v1/media/{id}?exp&sig`, an HMAC (from `PAYLOAD_SECRET`) bound to the file, the student and a 2-hour expiry; the route also re-checks the session, the level gate and that the file belongs to a material the student may open now (archiving closes it at once). Byte ranges (206) are supported for audio seeking. | D-041, SM-R05 |
 | D-088 | **Storage until R2 exists:** files are stored on local disk (`LEARNING_MEDIA_DIR`, default `./media/learning`, git-ignored) behind `src/server/media/storage.ts`; tests use their own folders. The Cloudflare R2 adapter (D-041) is built and verified as soon as the owner provides the R2 keys — before any production deployment (KI-37). | D-041 |
 
+## Reference review (2026-10-16)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-089 | **Owner instruction:** content access is managed in the CMS as Free, Premium or Premium with a free preview, enforced on the server for every protected file and item (ACC-R01..R04). This amends D-019's "study materials are free" to "study materials are free by default and can be made premium". How premium is bought (products, plans) and what a preview contains are open (RV-1, RV-2); nothing premium is built before those answers and the entitlement model (Phase 19). | Owner 2026-10-16 |
+| D-090 | **Owner instruction:** the student home becomes a real-data dashboard (REC-04 → STU-R01) and the admin gets real-data reports with filters and CSV export (REC-10 → ADM-R01). | Owner 2026-10-16 |
+| D-091 | **Owner instruction:** content that cannot be deleted is a defect (LC-R01..R04). The earlier blanket "never deleted" for study materials, categories and learning media (D-084, D-086) is under review; the per-module policy is RV-7. Records that history depends on (results, attempts, orders, payments, audit, published question versions) stay archive-only. | Owner 2026-10-16 |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

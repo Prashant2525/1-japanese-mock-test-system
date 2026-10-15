@@ -89,3 +89,41 @@ Last updated: 2026-10-14 (Phase 3 — proposal).
 ## 6. Email templates (CMS-managed copy)
 
 Verify email · Reset password · Contact form notification · Order receipt (after Phase 19).
+
+## 7. Reference review (2026-10-16)
+
+The owner supplied 24 screenshots of another product in `Reference Design/` (git-ignored, local only) plus a 24-page PDF containing the same 24 images (the PDF could not be rendered here; the PNGs were inspected one by one). They guide **structure and workflow**, not exact design; the product, its rules and its brand stay ours. Decisions and requirements arising from them are in `OPEN_QUESTIONS.md` (RV-1..RV-14) and `REQUIREMENTS_REGISTER.md` §10a.
+
+### 7.1 Files inspected and what they map to
+
+| Reference file | Shows | Our equivalent | Status |
+|---|---|---|---|
+| Student - Overview Section | Greeting + level, stats (tests, average, best), recommended materials and tests, recent results | Student home (`/app`) | PARTIAL — level, links and account exist (Phase 10); recommendations and stats need Phases 15–17 data (REC-04) |
+| Student - Study Materials Section | Catalogue with search, category tabs, cards with progress | Study library (`/app/study`) | PARTIAL — level/category filters and cards done (Phase 12); **search missing**; progress tracking not approved (RV-12) |
+| Student - Mock Test Section | Exam-type cards, filters (exam, level, section, difficulty, status), test cards | Mock-test catalogue (`/app/mock-tests`) | PLANNED — Phases 15–16 (placeholder page today) |
+| Student - Results Section | Summary band, results table (test, level, score, outcome, date) | Results (`/app/results`) | PARTIAL — level-check results listed (Phase 11); mock-test results and answer review Phase 17 |
+| Student - Profile Section | Account details, assigned level (system-controlled), activity, password reset | — (header "My page" only) | MISSING — REC-05 (proposed, needs approval) |
+| Admin - Side Panel | Dashboard with student stats, 2FA status, quick links; full sidebar | Payload dashboard widgets (Phase 9) + menu groups | PARTIAL — widgets exist; menu to be regrouped (RV-11) |
+| Admin - Report Section | Period picker, Sales/Students/Learning/Tests tabs, charts, CSV export | — | PLANNED in parts (REC-10 proposed; sales after Phase 19) |
+| Admin - Plans Section (+ new plan, plan detail) | Plans list; bilingual name/description/features, covers, slug, order, highlight, price + sale price + sale window, validity days, publishing | Products/bundles (Phase 19, CMS-R13) | PLANNED — "plans that cover all content incl. new" is new (RV-2); sale prices new (RV-5) |
+| Admin - Coupons Section (+ new coupon) | Codes, % or fixed, max discount, applies-to, window, total/per-student limits, minimum price, sale-price toggle, switch off | — | EXCLUDED by D-019 unless approved (RV-3) |
+| Admin - Orders Section (+ order detail) | Order list with search/status/"needs attention"; detail with items, each payment attempt, gateway reference, "check with gateway", access given | Orders/transactions (Phases 19–23) | PLANNED — the detail layout is a good model for Phase 20 |
+| Admin - Refund Section | Refund requests: approve/reject, record money-back reference | — | EXCLUDED by D-019 unless approved (RV-4) |
+| Admin - Notice Section (+ new notice) | Notices: kind, bilingual title/text, attached PDFs, expiry, pin, push/email | — | MISSING — REC-09 (proposed); push excluded |
+| Admin - Student Section (+ student detail) | Search/status filter; detail: account, signed-in devices, sign out everywhere, suspend, granted access | Students (Payload) + level actions (Phase 11) | PARTIAL — search, status, suspend, level history exist; **sessions list / sign out everywhere button** missing; access panel after Phase 19 |
+| Admin - Staff Section (+ invite) | Staff list with role, 2FA state, last sign-in; invite by email (they set their own password) | Admins (Payload) + required 2FA (D-058) | PARTIAL — no email invitation (RV-13) |
+| Admin - Roles & Permissions Section (+ new role) | Roles as cards; grouped permission checkboxes; cannot grant what you do not hold | Roles + 28 permission keys (D-053) | IMPLEMENTED — grouped/"cannot grant what you lack" presentation could be improved |
+| Admin - System Settings | ~30 setting cards (devices, verification, 2FA scope, purchase channels, question types, app versions, assessment defaults, exam timing, reminders, emails, leaderboards, reviews, challenges, payment methods, VAT, receipts, referrals, mistake notebook, analytics, offline, planner, certificates, maintenance) | Settings globals (sign-in, level check, UI labels) | PARTIAL — only items matching approved features apply (see 7.3) |
+
+### 7.2 Design improvements (keep Direction B "Tokyo Transit", D-050)
+
+- **Signed-in student area:** a left sidebar on desktop (≥1024 px) with the level badge at its foot, and a bottom tab bar on phones, instead of the current top tabs (RV-10). Pages open with an eyebrow label + large heading + one-line purpose, as in the references, but in our type scale and with Japanese-friendly line height.
+- **Home:** hero greeting with the station-badge level, then "Continue studying", "Recommended tests", "Recent results" — each from real data; empty states when there is none (no sample data in production).
+- **Cards:** keep our signal-red top rule and station badges; add duration/file counts and free/premium/preview labels once approved (RV-1).
+- **Tables (results, admin lists):** status pills with text, not colour alone; row links with a visible focus ring.
+- **Admin:** keep Payload, but theme it to Tokyo Transit (light and dark), regroup the menu (Overview · Exams & content · Sales · Communication · People · Configuration · Security), and add custom views where Payload's default is weak: dashboard, reports, order detail, student detail (RV-11). A second, fully custom admin is not recommended (duplicates tested CRUD, versions and access control).
+- **Exam screens stay calm** (UX-R04): no sidebar, no promotions, no animation beyond progress.
+
+### 7.3 Reference items that do not apply (omitted)
+
+Courses/subjects/papers/category types (our model is exam type → level → section, and study categories), live classes, instructors, certificates, course reviews, discussions, question reports, subjective grading, referrals, "interested on iPhone", app versions and store links, purchase channels, device limit, SMS verification, push notifications, leaderboards, daily challenge, mistake notebook, offline lessons, study planner, question types beyond single choice. All are outside the approved scope (Appendix A rule 14, D-018, D-019); any of them can be proposed later.
