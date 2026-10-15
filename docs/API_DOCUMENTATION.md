@@ -90,6 +90,18 @@ Limit: 30 requests/15 min per IP (start and return both count). Not available (`
 
 Anonymous and student requests get 403. Every change writes `exam_type.*` / `level.*` audit events with the changed fields.
 
+### 4.1d Level gate — IMPLEMENTED (Phase 10, D-073)
+
+`GET /api/v1/me` and the login response now include `assignedLevel: { id, code } | null` and `nextStep: "level_check" | "home"`.
+
+| Method | Path | Before a level is assigned | After |
+|---|---|---|---|
+| GET | `/api/v1/study/materials` | `403 LEVEL_NOT_DETERMINED` | `200 { docs: [], totalDocs: 0, page: 1, totalPages: 0 }` until Phase 12 |
+| GET | `/api/v1/results` | `403 LEVEL_NOT_DETERMINED` | `200` empty page until Phase 17 |
+| POST | `/api/v1/attempts` `{ mockTestId }` | `403 LEVEL_NOT_DETERMINED` (checked before the body is read) | `400` invalid body; `404` (no mock tests until Phase 16) |
+
+All answer `401` without a session and `403 ACCOUNT_DISABLED` when suspended. `LEVEL_NOT_DETERMINED` carries `details: { nextStep: "level_check" }`.
+
 ### 4.2 Planned endpoints
 
 #### Level determination (Phases 10–11)

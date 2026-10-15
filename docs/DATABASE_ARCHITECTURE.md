@@ -52,7 +52,7 @@ erDiagram
 |---|---|---|---|
 | `admins` | [P] auth (admin panel user) | email, name, roles → `roles`[], status (`active`/`disabled`), lastLoginAt, mfa fields (if OPS-2b) | unique email (citext); sessions on; lockout |
 | `roles` | [P] | name, description, permissions (multi-select of permission keys), isSystem | `Super Admin` is system-locked: it cannot be deleted or lose `roles.manage` |
-| `students` | [P] auth, `verify: true` | email, name, preferredLocale (`en`/`ja`), status (`active`/`suspended`), **determinationStatus** (`not_started`/`in_progress`/`completed`), **assignedLevel** → `levels`, assignedAt | unique email (citext). `determinationStatus` and `assignedLevel` are changed **only** by services (field-level access denies admin edits; overrides go through the audited action). |
+| `students` *(assignedLevel/assignedAt added Phase 10; FK RESTRICT)* | [P] auth, `verify: true` | email, name, preferredLocale (`en`/`ja`), status (`active`/`suspended`), **determinationStatus** (`not_started`/`in_progress`/`completed`), **assignedLevel** → `levels`, assignedAt | unique email (citext). `determinationStatus` and `assignedLevel` are changed **only** by services (field-level access denies admin edits; overrides go through the audited action). |
 | `rate_limits` | [T] | key, windowStart, count | PK (key, windowStart); pruned by a job |
 | `audit_events` | [P-ro] | at, actorType (`admin`/`student`/`system`), actorId, action, entityType, entityId, summary, before jsonb, after jsonb (redacted), ip, userAgent, requestId | no update/delete access; index (entityType, entityId, at), (actorId, at), (action, at) |
 

@@ -1,6 +1,6 @@
 # Test Status
 
-Last updated: 2026-10-15 (Phase 9).
+Last updated: 2026-10-15 (Phase 10).
 
 ## Environment
 
@@ -15,10 +15,16 @@ Last updated: 2026-10-15 (Phase 9).
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **119/119** |
-| Integration tests | `pnpm test:int` | **102/102** |
+| Unit tests | `pnpm test:unit` | **125/125** |
+| Integration tests | `pnpm test:int` | **117/117** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **82/82 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **92/92 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 10 tests prove
+
+- **Unit `level-gate` (6):** the gate opens only with "completed" plus an assigned level; fails closed otherwise; refusal carries `LEVEL_NOT_DETERMINED` and `nextStep`.
+- **Integration `level-gate` (15):** no session → 401 everywhere; not started / in progress / in progress with a stale level / completed without a level → 403 on materials, results and attempts; forged bodies and preference updates can't open it; students can't edit their own record through the CMS API; even an admin edit can't set the level fields; with a level → real (empty) answers, 400/404 for attempts; suspension and a reset close access on the next request; login and `/me` report `nextStep` and the level code; a level a student holds can't be deleted.
+- **E2E `ui/level-gate` (5 × 2 browsers):** a new student lands on the level check; direct URLs to home, study, mock tests and results send them back; the APIs refuse whatever the body or `localStorage` says; a student with a level goes home, sees the badge and tabs, and can't reopen the level check; an open tab follows a reset and a new level on reload; Japanese pages and axe scans.
 
 ## What the Phase 9 tests prove
 

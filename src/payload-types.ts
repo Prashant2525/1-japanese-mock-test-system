@@ -103,12 +103,14 @@ export interface Config {
   globals: {
     'labels-site': LabelsSite;
     'labels-accounts': LabelsAccount;
+    'labels-student': LabelsStudent;
     'labels-messages': LabelsMessage;
     'sign-in-settings': SignInSetting;
   };
   globalsSelect: {
     'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
+    'labels-student': LabelsStudentSelect<false> | LabelsStudentSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
     'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
   };
@@ -254,6 +256,8 @@ export interface Student {
   preferredLocale: 'en' | 'ja';
   status: 'active' | 'suspended';
   determinationStatus: 'not_started' | 'in_progress' | 'completed';
+  assignedLevel?: (number | null) | Level;
+  assignedAt?: string | null;
   /**
    * Filled in when the student uses “Continue with Google”. Empty = not linked.
    */
@@ -279,29 +283,6 @@ export interface Student {
     | null;
   password?: string | null;
   collection: 'students';
-}
-/**
- * The exams students can practise for. Turn “Enabled” off to hide an exam everywhere; exam types are never deleted because tests and results refer to them.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "exam-types".
- */
-export interface ExamType {
-  id: number;
-  /**
-   * Short ID in capitals, e.g. JLPT. Cannot be changed after creation.
-   */
-  code: string;
-  name: string;
-  description?: string | null;
-  /**
-   * Shown wherever this exam is named, so nobody thinks Nihongo Mock is the official test (TSR-14).
-   */
-  nonAffiliationNotice?: string | null;
-  order: number;
-  enabled?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * Levels of each exam and where they are used. Levels are never deleted because tests and results refer to them; turn their switches off instead.
@@ -342,6 +323,29 @@ export interface Level {
    * Carries white text; must be readable (≥ 4.5:1).
    */
   badgeColor: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The exams students can practise for. Turn “Enabled” off to hide an exam everywhere; exam types are never deleted because tests and results refer to them.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-types".
+ */
+export interface ExamType {
+  id: number;
+  /**
+   * Short ID in capitals, e.g. JLPT. Cannot be changed after creation.
+   */
+  code: string;
+  name: string;
+  description?: string | null;
+  /**
+   * Shown wherever this exam is named, so nobody thinks Nihongo Mock is the official test (TSR-14).
+   */
+  nonAffiliationNotice?: string | null;
+  order: number;
+  enabled?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -565,6 +569,8 @@ export interface StudentsSelect<T extends boolean = true> {
   preferredLocale?: T;
   status?: T;
   determinationStatus?: T;
+  assignedLevel?: T;
+  assignedAt?: T;
   googleSub?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1129,6 +1135,123 @@ export interface LabelsAccount {
  * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
  *
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-student".
+ */
+export interface LabelsStudent {
+  id: number;
+  student?: {
+    nav?: {
+      /**
+       * Default — EN: “Student area” · JA: “受講者メニュー”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      area?: string | null;
+      /**
+       * Default — EN: “Home” · JA: “ホーム”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      home?: string | null;
+      /**
+       * Default — EN: “Study” · JA: “学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      study?: string | null;
+      /**
+       * Default — EN: “Mock tests” · JA: “模擬試験”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      mockTests?: string | null;
+      /**
+       * Default — EN: “Results” · JA: “結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      results?: string | null;
+    };
+    levelCheck?: {
+      /**
+       * Default — EN: “Step 1” · JA: “ステップ1”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      eyebrow?: string | null;
+      /**
+       * Default — EN: “Find your level” · JA: “あなたのレベルを確認しましょう”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Before you study or take mock tests, a short level check finds the right place to start. It's free and runs in stages.” · JA: “学習や模擬試験の前に、短いレベルチェックで最適なスタート地点を確認します。無料で、段階ごとに進みます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      intro?: string | null;
+      /**
+       * Default — EN: “How it works” · JA: “しくみ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      rulesTitle?: string | null;
+      /**
+       * Default — EN: “It always starts at {first}.” · JA: “必ず {first} から始まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ruleStart?: string | null;
+      /**
+       * Default — EN: “Pass a stage to move on to the next one. You can't choose a level or skip one.” · JA: “段階に合格すると次の段階に進みます。レベルを選んだり、飛ばしたりすることはできません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ruleClimb?: string | null;
+      /**
+       * Default — EN: “It stops at the first stage you don't pass. Your level is the highest stage you passed; if you don't pass {first}, you start at {first}.” · JA: “合格できなかった最初の段階で終了します。合格した最も高い段階があなたのレベルです。{first} に合格しなかった場合は {first} から始めます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ruleStop?: string | null;
+      /**
+       * Default — EN: “When it is complete, your study materials, mock tests and results open.” · JA: “完了すると、学習教材・模擬試験・結果が利用できるようになります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ruleUnlock?: string | null;
+      /**
+       * Default — EN: “Level-check route: {stops}” · JA: “レベルチェックの順路：{stops}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      routeLabel?: string | null;
+      /**
+       * Default — EN: “Start the level check” · JA: “レベルチェックを始める”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      start?: string | null;
+    };
+    home?: {
+      /**
+       * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      levelLabel?: string | null;
+      /**
+       * Default — EN: “Where to next?” · JA: “次は何をしますか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      continueTitle?: string | null;
+      /**
+       * Default — EN: “Materials for your level and the levels below it.” · JA: “あなたのレベルとそれ以下のレベルの教材です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      studyBody?: string | null;
+      /**
+       * Default — EN: “Practise under real exam conditions at any level.” · JA: “本番と同じ条件で、どのレベルでも練習できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      mockTestsBody?: string | null;
+      /**
+       * Default — EN: “Your scores and answer reviews.” · JA: “スコアと解答の振り返りです。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      resultsBody?: string | null;
+    };
+    study?: {
+      /**
+       * Default — EN: “No study materials have been published yet. They'll appear here as soon as they are.” · JA: “まだ公開されている学習教材はありません。公開されるとすぐにここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      empty?: string | null;
+    };
+    mockTests?: {
+      /**
+       * Default — EN: “No mock tests have been published yet. They'll appear here as soon as they are.” · JA: “まだ公開されている模擬試験はありません。公開されるとすぐにここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      empty?: string | null;
+    };
+    results?: {
+      /**
+       * Default — EN: “You don't have any results yet. Take a mock test and your score will appear here.” · JA: “まだ結果はありません。模擬試験を受けると、ここにスコアが表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      empty?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "labels-messages".
  */
 export interface LabelsMessage {
@@ -1208,6 +1331,10 @@ export interface LabelsMessage {
      * Default — EN: “Something went wrong on our side. Try again in a moment.” · JA: “問題が発生しました。しばらくしてからもう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
      */
     INTERNAL?: string | null;
+    /**
+     * Default — EN: “Finish the level check to unlock this.” · JA: “レベルチェックを完了すると利用できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    LEVEL_NOT_DETERMINED?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1411,6 +1538,66 @@ export interface LabelsAccountsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-student_select".
+ */
+export interface LabelsStudentSelect<T extends boolean = true> {
+  student?:
+    | T
+    | {
+        nav?:
+          | T
+          | {
+              area?: T;
+              home?: T;
+              study?: T;
+              mockTests?: T;
+              results?: T;
+            };
+        levelCheck?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              intro?: T;
+              rulesTitle?: T;
+              ruleStart?: T;
+              ruleClimb?: T;
+              ruleStop?: T;
+              ruleUnlock?: T;
+              routeLabel?: T;
+              start?: T;
+            };
+        home?:
+          | T
+          | {
+              levelLabel?: T;
+              continueTitle?: T;
+              studyBody?: T;
+              mockTestsBody?: T;
+              resultsBody?: T;
+            };
+        study?:
+          | T
+          | {
+              empty?: T;
+            };
+        mockTests?:
+          | T
+          | {
+              empty?: T;
+            };
+        results?:
+          | T
+          | {
+              empty?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "labels-messages_select".
  */
 export interface LabelsMessagesSelect<T extends boolean = true> {
@@ -1439,6 +1626,7 @@ export interface LabelsMessagesSelect<T extends boolean = true> {
         RATE_LIMITED_SECONDS?: T;
         NETWORK_ERROR?: T;
         INTERNAL?: T;
+        LEVEL_NOT_DETERMINED?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -1,10 +1,12 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 9 — Admin CMS framework. **COMPLETE.**
+**Current phase / milestone:** Phase 10 — Student route gates. **COMPLETE.**
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
+
+- Phase 10 on `feature/phase-10-route-gates`: unit 125/125, integration 117/117, E2E 92/92 (+1 skipped). Screenshots reviewed: level check (desktop), Japanese home and header (iPhone), study empty state.
 
 - Phase 9 on `feature/phase-9-admin-cms`: unit 119/119, integration 102/102, E2E 82/82 (+1 skipped). Admin screenshots reviewed (login, dashboard, levels list, validation message under the field).
 
@@ -18,6 +20,9 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- Student pages: call `studentPage(locale, area)` first; APIs: call `requireStudentWithLevel(headers)` first (before reading the body).
+- E2E: `createConfirmedStudent()` / `setStudentLevel()` stand in for sign-up and the Phase 11 service; `studentLogin()` waits for the student area.
 
 - New admin modules: follow ARCHITECTURE §9a. Put cross-record rules in field validators; a ValidationError thrown from a hook works only because Payload is now external (D-071), and field validators show the message under the field anyway.
 - Seed data in migrations must be plain SQL (KI-26). To check a migration from zero: create an empty database in the Docker Postgres, run `DATABASE_URL=…/that_db pnpm migrate`, compare, drop it.

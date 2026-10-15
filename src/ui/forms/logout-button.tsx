@@ -15,6 +15,7 @@ export function LogoutButton({ label }: { label: string }) {
     <Button
       variant="secondary"
       size="sm"
+      className="whitespace-nowrap"
       loading={busy}
       onClick={async () => {
         setBusy(true)

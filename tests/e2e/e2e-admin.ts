@@ -56,6 +56,64 @@ async function main(action: string | undefined): Promise<void> {
     return
   }
 
+  // `student <email> <password>`: a confirmed UI-test student (skips the email round trip).
+  // `level <email> <code|none>`: set that student's level-check state, standing in for the
+  // level-check service of Phase 11 (`none` = not started).
+  if (action === 'student' || action === 'level') {
+    const [email, arg] = process.argv.slice(3)
+    if (!email?.endsWith(E2E_UI_DOMAIN) || !arg)
+      throw new Error('student/level actions are limited to UI-test students')
+    if (action === 'student') {
+      const student = await payload.create({
+        collection: 'students',
+        disableVerificationEmail: true,
+        data: {
+          name: 'UI Student',
+          email,
+          password: arg,
+          preferredLocale: 'en',
+          status: 'active',
+          determinationStatus: 'not_started',
+        },
+      })
+      await payload.db.updateOne({
+        collection: 'students',
+        id: student.id,
+        data: { _verified: true },
+        returning: false,
+      })
+      return
+    }
+    const found = await payload.find({
+      collection: 'students',
+      where: { email: { equals: email } },
+      limit: 1,
+    })
+    const level =
+      arg === 'none'
+        ? undefined
+        : (
+            await payload.find({
+              collection: 'levels',
+              where: {
+                and: [{ code: { equals: arg } }, { 'examType.code': { equals: 'JLPT' } }],
+              },
+              limit: 1,
+            })
+          ).docs[0]
+    await payload.db.updateOne({
+      collection: 'students',
+      id: found.docs[0]!.id,
+      data: {
+        determinationStatus: level ? 'completed' : 'not_started',
+        assignedLevel: level?.id ?? null,
+        assignedAt: level ? new Date().toISOString() : null,
+      },
+      returning: false,
+    })
+    return
+  }
+
   // Students created through the UI by tests (unique address per run).
   await payload.db.deleteMany({
     collection: 'students',

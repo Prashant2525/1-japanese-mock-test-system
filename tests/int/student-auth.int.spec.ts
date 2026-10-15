@@ -210,6 +210,8 @@ describe('login, session and logout', () => {
       preferredLocale: 'en',
       status: 'active',
       determinationStatus: 'not_started',
+      assignedLevel: null,
+      nextStep: 'level_check',
     })
     expect(JSON.stringify(body)).not.toMatch(/hash|salt|sessions|token/i)
   })

@@ -42,8 +42,8 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
-| LD-R01 | On first login without a determined level, the student is sent straight to Level Determination. | PB §2.2 | CONFIRMED | PB §16.2 #1. |
-| LD-R02 | Study Materials, Mock Tests and Results are denied by the server until determination completes. | PB §2.2, §4.3 | CONFIRMED | PB §16.2 #2–3: direct API calls, edited URLs, forged bodies and local-storage changes are all rejected. |
+| LD-R01 | On first login without a determined level, the student is sent straight to Level Determination. | PB §2.2, D-073 | CONFIRMED · **implemented (Phase 10)**; the check itself in Phase 11 | PB §16.2 #1. |
+| LD-R02 | Study Materials, Mock Tests and Results are denied by the server until determination completes. | PB §2.2, §4.3, D-073 | CONFIRMED · **implemented and tested (Phase 10)** | PB §16.2 #2–3: direct API calls, edited URLs, forged bodies and local-storage changes are all rejected. |
 | LD-R03 | Determination always starts at N5; no level choice or skipping (fixed invariant, not CMS-editable). | PB §2.2; D-020 | CONFIRMED | PB §16.2 #4; the CMS rejects a config whose first stage is not N5 or whose stages have gaps. |
 | LD-R04 | Launch stages N5 → N4 → N3; pass ≥ the stage threshold → next stage; stop at first failure. | D-008, D-009 | CONFIRMED | PB §16.2 #5–6; boundary tests at threshold −ε, exactly the threshold, and above it. |
 | LD-R05 | Assign the highest passed level; fail N5 → N5/Beginner; pass the highest enabled stage → that level. | PB §2.2; D-008 | CONFIRMED | Tests for every branch: fail N5, pass N5 fail N4, pass N4 fail N3, pass all three. |

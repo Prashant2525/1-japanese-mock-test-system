@@ -27,7 +27,7 @@ export async function SiteHeader({ signedIn }: { signedIn: boolean }) {
     <header className="border-b border-line bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="rounded-card">
-          <Logo variant="wordmark" tone="day" className="h-9 sm:h-10" alt={t('meta.siteName')} />
+          <Logo variant="wordmark" tone="day" className="h-8 sm:h-10" alt={t('meta.siteName')} />
         </Link>
         <nav aria-label={t('a11y.mainNavigation')} className="flex items-center gap-2 sm:gap-3">
           <Suspense fallback={null}>

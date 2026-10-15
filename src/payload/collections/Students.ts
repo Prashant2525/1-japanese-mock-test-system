@@ -28,7 +28,14 @@ export const Students: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['name', 'email', 'status', 'determinationStatus', 'createdAt'],
+    defaultColumns: [
+      'name',
+      'email',
+      'status',
+      'determinationStatus',
+      'assignedLevel',
+      'createdAt',
+    ],
     group: ADMIN_GROUPS.people,
   },
   auth: {
@@ -124,6 +131,22 @@ export const Students: CollectionConfig = {
         { value: 'completed', label: { en: 'Completed', ja: '完了' } },
       ],
       // Changed only by the level-check service (LD-R02, D-020); resets go through an audited action.
+      access: { create: never, update: never },
+      admin: { position: 'sidebar', readOnly: true },
+    },
+    {
+      // Set only by the level-check service (Phase 11) or an audited Super Admin override (D-013).
+      name: 'assignedLevel',
+      type: 'relationship',
+      relationTo: 'levels',
+      label: { en: 'Assigned level', ja: '判定レベル' },
+      access: { create: never, update: never },
+      admin: { position: 'sidebar', readOnly: true, allowCreate: false },
+    },
+    {
+      name: 'assignedAt',
+      type: 'date',
+      label: { en: 'Level assigned on', ja: 'レベル判定日' },
       access: { create: never, update: never },
       admin: { position: 'sidebar', readOnly: true },
     },

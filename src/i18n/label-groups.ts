@@ -19,6 +19,11 @@ export const LABEL_GROUPS = [
     namespaces: ['auth', 'app'],
   },
   {
+    slug: 'labels-student',
+    label: { en: 'UI labels: student area', ja: 'UIラベル：受講者エリア' },
+    namespaces: ['student'],
+  },
+  {
     slug: 'labels-messages',
     label: { en: 'UI labels: messages', ja: 'UIラベル：メッセージ' },
     namespaces: ['validation', 'errors'],

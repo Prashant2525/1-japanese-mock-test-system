@@ -42,7 +42,7 @@ export function LanguageToggle({ tone = 'day' }: { tone?: 'day' | 'night' }) {
                 hrefLang={o.lang}
                 aria-current={active ? 'true' : undefined}
                 className={cn(
-                  'inline-flex min-h-9 min-w-11 items-center justify-center rounded-full px-3 transition-colors duration-200',
+                  'inline-flex min-h-9 min-w-11 items-center justify-center rounded-full px-2.5 whitespace-nowrap transition-colors duration-200 sm:px-3',
                   active
                     ? tone === 'night'
                       ? 'bg-on-night text-night'

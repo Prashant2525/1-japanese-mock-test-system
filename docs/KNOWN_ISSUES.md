@@ -1,6 +1,6 @@
 # Known Issues, Ambiguities and Risks
 
-Last updated: 2026-10-15 (Phase 9).
+Last updated: 2026-10-15 (Phase 10).
 
 ## Repository issues
 
@@ -31,6 +31,8 @@ Last updated: 2026-10-15 (Phase 9).
 | KI-24 | Info | Payload's widget dashboard is marked experimental in 3.90.2. | `admin.dashboard` | Version pinned; recheck the dashboard after any Payload upgrade (admin E2E covers it). |
 | KI-25 | Info | The catalogue's Japanese names, descriptions and non-affiliation notices are drafts. | Seed in `src/server/catalogue/seed.ts` | Owner/translator review (PA-6); all editable under Exam catalogue. |
 | KI-26 | ~~High~~ **Fixed (Phase 9)** | Migrations failed on a fresh database: seed migrations wrote data through the Payload API, which uses today's full configuration (tables of later migrations). Local databases were migrated step by step, so only CI noticed. | CI on PR #10: `column exam_types_id does not exist` in the Phase 7 seed | Seed data in migrations is plain SQL against the tables as they exist at that point (`seed_auth`, `exam_catalogue`). Verified by migrating an empty database and comparing all seeded data with the local one. |
+| KI-27 | Info | Placeholders until their phases: the level-check Start button is disabled (Phase 11); `GET /api/v1/study/materials` and `GET /api/v1/results` return empty pages (Phases 12, 17); `POST /api/v1/attempts` answers 404 (Phase 16). Pages show honest empty states. | `src/server/student/areas.ts`, `app/level-check/page.tsx` | Each phase replaces its placeholder; the release audit checks none remain. |
+| KI-28 | Info | Once, in a full local E2E run, the fixture script that creates a test student failed without a visible reason; it did not recur in the next full run. | `tests/e2e/ui/helpers.ts` (`fixtureRun`) | The helper now reports the script's own error output; investigate if it happens again (CI retries once). |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 
 ## Requirement ambiguities
