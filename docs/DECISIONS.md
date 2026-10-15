@@ -163,6 +163,12 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-073 | **Level gate.** A student "has a level" only when `determinationStatus = completed` **and** `assignedLevel` is set (fails closed). `requireStudentWithLevel()` (`src/server/student/gate.ts`) is the first call of every study, mock-test-attempt and results service; refusals are `403 LEVEL_NOT_DETERMINED` with `details.nextStep = "level_check"`. Pages use one server guard (`studentPage()`): no level → `/app/level-check`; level → the level check is closed and sends them to `/app`. The decision uses only the stored student of the session, re-read on every request (stale tabs follow at once). `/api/v1/me` and the login response include `assignedLevel {id, code}` and `nextStep`. `students.assignedLevel` / `assignedAt` are writable only by services (the database refuses deleting a level a student holds). | LD-R01, LD-R02, PB §11.11, §16.2 |
 | D-074 | Until their phases, the gated areas answer with their real current state: no study materials (Phase 12), no mock tests (`POST /api/v1/attempts` → 404, Phase 16), no results (Phase 17); the level-check Start button is disabled until Phase 11 (KI-27). | PB §11.11 |
 
+## Fix: session after arriving from another site (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-075 | Pages read the session with `currentStudentForPage()`, which treats a **top-level document navigation** from another site (`Sec-Fetch-Mode: navigate`, `Sec-Fetch-Dest: document`) as same-site, matching what the SameSite=Lax cookie already allows. Embeds, fetches and cross-site form posts (Origin header) are not affected. API routes keep Payload's strict rule. Page renders must never change data. Login and logout end with a full page load (`window.location.assign`) instead of a client-side transition plus refresh. | KI-29 (owner report) |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

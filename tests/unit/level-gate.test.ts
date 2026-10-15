@@ -39,3 +39,22 @@ describe('level gate (LD-R01, LD-R02)', () => {
     expect(() => requireDeterminedLevel(student('completed', 1))).not.toThrow()
   })
 })
+
+describe('page session headers (KI-29)', () => {
+  const nav = (site: string, mode = 'navigate', dest = 'document') =>
+    new Headers({ 'sec-fetch-site': site, 'sec-fetch-mode': mode, 'sec-fetch-dest': dest })
+
+  it('lets a top-level page load from another site read the session', async () => {
+    const { pageRequestHeaders } = await import('@/server/auth/session')
+    expect(pageRequestHeaders(nav('cross-site')).get('sec-fetch-site')).toBe('same-site')
+  })
+
+  it.each([
+    ['a cross-site fetch', nav('cross-site', 'cors', 'empty')],
+    ['a cross-site iframe', nav('cross-site', 'navigate', 'iframe')],
+    ['a same-origin request (unchanged)', nav('same-origin')],
+  ])('leaves %s alone', async (_label, headers) => {
+    const { pageRequestHeaders } = await import('@/server/auth/session')
+    expect(pageRequestHeaders(headers).get('sec-fetch-site')).toBe(headers.get('sec-fetch-site'))
+  })
+})

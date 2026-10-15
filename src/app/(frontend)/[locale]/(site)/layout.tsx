@@ -2,7 +2,7 @@ import { setRequestLocale } from 'next-intl/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 
-import { currentStudent } from '@/server/auth/session'
+import { currentStudentForPage } from '@/server/auth/session'
 import { SiteFooter, SiteHeader } from '@/ui/components/site-chrome'
 
 /** Public and student pages: header, main landmark, footer. */
@@ -14,7 +14,7 @@ export default async function SiteLayout({
   params: Promise<{ locale: string }>
 }) {
   setRequestLocale((await params).locale)
-  const student = await currentStudent(await headers())
+  const student = await currentStudentForPage(await headers())
   return (
     <div className="flex min-h-dvh flex-col">
       <SiteHeader signedIn={Boolean(student)} />

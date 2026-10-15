@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocale } from 'next-intl'
-import { useRouter as useAbsoluteRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -34,8 +34,8 @@ export function LoginForm({ google = false }: { google?: boolean }) {
   const { t, fieldError, apiError } = useMessages()
   const locale = useLocale()
   const search = useSearchParams()
-  const router = useAbsoluteRouter()
   const [error, setError] = useState<ApiErrorInfo | null>(null)
+  const [leaving, setLeaving] = useState(false)
   const oauth = search.get('oauth')
   const {
     register,
@@ -48,8 +48,10 @@ export function LoginForm({ google = false }: { google?: boolean }) {
     setError(null)
     const res = await apiRequest('/api/v1/auth/login', { body: values })
     if (!res.ok) return setError(res.error)
-    router.replace(safeNextPath(search.get('next'), locale))
-    router.refresh()
+    // A full page load, not a client-side transition: the whole page (header included) is rendered
+    // with the new session, and a refresh can't race the navigation and leave the visitor here.
+    setLeaving(true)
+    window.location.assign(safeNextPath(search.get('next'), locale))
   })
 
   // The not-verified notice holds its own form, so it sits outside the login form (no nested forms).
@@ -110,7 +112,7 @@ export function LoginForm({ google = false }: { google?: boolean }) {
           }
           {...register('password')}
         />
-        <Button type="submit" size="lg" loading={isSubmitting}>
+        <Button type="submit" size="lg" loading={isSubmitting || leaving}>
           {t('auth.login.submit')}
         </Button>
         <p className="text-sm text-muted">
