@@ -142,11 +142,49 @@
     "RATE_LIMITED": "Too many attempts. Wait a few minutes and try again.",
     "RATE_LIMITED_SECONDS": "Too many attempts. Try again in {seconds} seconds.",
     "NETWORK_ERROR": "We couldn't reach the server. Check your connection and try again.",
-    "INTERNAL": "Something went wrong on our side. Try again in a moment."
+    "INTERNAL": "Something went wrong on our side. Try again in a moment.",
+    "LEVEL_NOT_DETERMINED": "Finish the level check to unlock this."
   },
   "notFound": {
     "title": "This page isn't on the route map",
     "body": "The page you're looking for doesn't exist or has moved.",
     "home": "Go to the home page"
+  },
+  "student": {
+    "nav": {
+      "area": "Student area",
+      "home": "Home",
+      "study": "Study",
+      "mockTests": "Mock tests",
+      "results": "Results"
+    },
+    "levelCheck": {
+      "eyebrow": "Step 1",
+      "title": "Find your level",
+      "intro": "Before you study or take mock tests, a short level check finds the right place to start. It's free and runs in stages.",
+      "rulesTitle": "How it works",
+      "ruleStart": "It always starts at {first}.",
+      "ruleClimb": "Pass a stage to move on to the next one. You can't choose a level or skip one.",
+      "ruleStop": "It stops at the first stage you don't pass. Your level is the highest stage you passed; if you don't pass {first}, you start at {first}.",
+      "ruleUnlock": "When it is complete, your study materials, mock tests and results open.",
+      "routeLabel": "Level-check route: {stops}",
+      "start": "Start the level check"
+    },
+    "home": {
+      "levelLabel": "Your level",
+      "continueTitle": "Where to next?",
+      "studyBody": "Materials for your level and the levels below it.",
+      "mockTestsBody": "Practise under real exam conditions at any level.",
+      "resultsBody": "Your scores and answer reviews."
+    },
+    "study": {
+      "empty": "No study materials have been published yet. They'll appear here as soon as they are."
+    },
+    "mockTests": {
+      "empty": "No mock tests have been published yet. They'll appear here as soon as they are."
+    },
+    "results": {
+      "empty": "You don't have any results yet. Take a mock test and your score will appear here."
+    }
   }
 }

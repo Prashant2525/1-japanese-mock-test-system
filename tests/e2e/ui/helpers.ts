@@ -20,6 +20,43 @@ export function emailedToken(kind: 'verify' | 'reset', email: string): string {
   return match[1]
 }
 
+function fixtureRun(args: string): void {
+  try {
+    execSync(`pnpm --silent exec tsx tests/e2e/e2e-admin.ts ${args}`, {
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+  } catch (err) {
+    const stderr = String((err as { stderr?: Buffer }).stderr ?? '').slice(-2000)
+    throw new Error(`fixture "${args.split(' ')[0]}" failed:
+${stderr}`)
+  }
+}
+
+/** A confirmed UI-test student (no email round trip). */
+export function createConfirmedStudent(email: string, password: string): void {
+  fixtureRun(`student ${email} ${password}`)
+}
+
+/** Sets a UI-test student's level-check state: a JLPT level code, or `none` (not started). */
+export function setStudentLevel(email: string, level: string): void {
+  fixtureRun(`level ${email} ${level}`)
+}
+
+/** Logs a student in through the real login form and waits until the student area opens. */
+export async function studentLogin(
+  page: Page,
+  locale: 'en' | 'ja',
+  email: string,
+  password: string,
+) {
+  await open(page, `/${locale}/login`)
+  await page.getByLabel(locale === 'ja' ? 'メールアドレス' : 'Email').fill(email)
+  await page.getByLabel(locale === 'ja' ? 'パスワード' : 'Password', { exact: true }).fill(password)
+  await page.getByRole('button', { name: locale === 'ja' ? 'ログイン' : 'Log in' }).click()
+  await page.waitForURL(new RegExp(`/${locale}/app(/|$)`))
+}
+
 /** Flips the CMS switch for "Continue with Google" (Settings → Sign-in options). */
 export function setGoogleSignIn(state: 'on' | 'off'): void {
   execSync(`pnpm --silent exec tsx tests/e2e/e2e-admin.ts google ${state}`, { env: process.env })

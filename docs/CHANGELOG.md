@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-15 — Phase 10: student route gates
+
+- Server level gate (D-073): study materials, mock-test attempts and results APIs refuse students without a level (`403 LEVEL_NOT_DETERMINED`); `/me` and login report `assignedLevel` and `nextStep`.
+- Student area: level-check intro (stages and colours from the CMS), student home with the level badge, tabs, and Study / Mock tests / Results pages with honest empty states; every page guarded on the server.
+- Students: `assignedLevel`, `assignedAt` (service-only); migration `student_level_gate` (also a "UI labels: student area" group and the new error label).
+- Fixed: on phones in Japanese, the header's language switch and log-out button wrapped onto two lines.
+- Tests: unit 125, integration 117, E2E 92 + 1 skipped (bypass tests: direct URLs, API calls, forged bodies, browser storage, stale tabs; EN/JA; axe).
+
 ## 2026-10-15 — Phase 9: admin CMS framework
 
 - Admin shell: Nihongo Mock logo (light/dark) and icon, tab title and favicon; menu groups People → Exam catalogue → Content → Operations → Settings.

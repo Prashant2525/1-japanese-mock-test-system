@@ -3,7 +3,7 @@
 Only owner-approved decisions are recorded here. Pending choices live in `docs/OPEN_QUESTIONS.md`.
 Where a decision is an agent **interpretation** of an owner answer, it is marked *(interpretation — owner may amend)*.
 
-Last updated: 2026-10-15 (Phase 9).
+Last updated: 2026-10-15 (Phase 10).
 
 ---
 
@@ -155,6 +155,13 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-070 | **Exam catalogue rules.** Exam type codes are fixed after creation. Exam types and levels are never deleted (no delete access; database foreign keys RESTRICT). The level check and the study library use JLPT levels only. The levels enabled for the level check must be the easiest JLPT level plus an unbroken run above it (N5, N5→N4, …); the easiest one cannot be switched off. One code per exam type. NAT/JFT levels may point to an equivalent JLPT level; JLPT levels may not. Level colours are checked for contrast (badge ≥ 4.5:1 with white text, route line ≥ 3:1 on night). Any active admin can read the catalogue; `catalogue.manage` edits it. The student-facing catalogue API comes with Phase 13. Seed: JLPT N5–N1, NAT 5Q–1Q (→ N5–N1), JFT A1, A2.1, A2.2, A2; level check and study N5–N3; mock tests at every level. | D-008, D-014, D-015, D-020 |
 | D-072 | Seed data inside migrations is written in plain SQL, never through the Payload API (which always uses the latest configuration). Values outside a migration's enums are skipped. | KI-26 |
 | D-071 | **Payload is loaded once from `node_modules` in production too** (`serverExternalPackages: ['payload']`), as `pnpm dev` already did. Bundled, each route had its own copy of Payload's classes while sharing one Payload instance, so Payload's internal `instanceof` checks failed (KI-23). | Phase 9 finding |
+
+## Phase 10 — student route gates (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-073 | **Level gate.** A student "has a level" only when `determinationStatus = completed` **and** `assignedLevel` is set (fails closed). `requireStudentWithLevel()` (`src/server/student/gate.ts`) is the first call of every study, mock-test-attempt and results service; refusals are `403 LEVEL_NOT_DETERMINED` with `details.nextStep = "level_check"`. Pages use one server guard (`studentPage()`): no level → `/app/level-check`; level → the level check is closed and sends them to `/app`. The decision uses only the stored student of the session, re-read on every request (stale tabs follow at once). `/api/v1/me` and the login response include `assignedLevel {id, code}` and `nextStep`. `students.assignedLevel` / `assignedAt` are writable only by services (the database refuses deleting a level a student holds). | LD-R01, LD-R02, PB §11.11, §16.2 |
+| D-074 | Until their phases, the gated areas answer with their real current state: no study materials (Phase 12), no mock tests (`POST /api/v1/attempts` → 404, Phase 16), no results (Phase 17); the level-check Start button is disabled until Phase 11 (KI-27). | PB §11.11 |
 
 ## Rejected / parked alternatives
 

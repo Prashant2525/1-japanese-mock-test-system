@@ -37,11 +37,11 @@ Last updated: 2026-10-14 (Phase 3 — proposal).
 
 | Screen | Data | Gate / notes |
 |---|---|---|
-| Level check intro | Rules, number of stages (enabled levels), time per stage | Shown on first login until determination completes (LD-R01) |
+| Level check intro | Rules, number of stages (enabled levels), time per stage | Shown on first login until determination completes (LD-R01). **Implemented Phase 10** (stages from the CMS; Start enabled in Phase 11) |
 | Stage runner (N5 → N4 → N3) | Same runner component as mock tests, in determination mode | **Calm screen** (UX-R04); server deadline; auto-submit |
 | Stage complete (between stages) | "Stage complete — next stage" | Copy from CMS; never offers a skip |
 | "Your level" summary | Assigned level, per-stage scores | D-012; one celebratory animation is allowed here |
-| Student home | Assigned level, continue links to materials/tests, latest result | Minimal required landing; richer dashboard widgets = REC-04 (pending) |
+| Student home | Assigned level, continue links to materials/tests, latest result | Minimal required landing (**implemented Phase 10**: level badge in CMS colour, links, account); latest result after Phase 17; richer widgets = REC-04 (pending) |
 | Study library | Levels (current and lower), categories, published materials | SM-R03 server-enforced |
 | Material detail | Rich text with furigana, images, audio player, PDF viewer/download | Private media via signed URL |
 | Mock-test catalogue (student) | Published tests at any enabled level, with entitlement status (Free / Owned until … / Buy) | D-015 |

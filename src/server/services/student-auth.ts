@@ -24,6 +24,7 @@ import { renderEmail, type Locale } from '../email/templates'
 import { getEnv } from '../env'
 import { AppError } from '../http/errors'
 import { enforce, RATE_LIMITS } from '../rate-limit'
+import { nextStepFor, type NextStep } from '../student/gate'
 
 /** Request facts passed from route handlers (never trusted for identity). */
 export type RequestMeta = { ip: string | null; userAgent: string | null; requestId: string }
@@ -44,9 +45,24 @@ export type PublicStudent = {
   preferredLocale: Locale
   status: Student['status']
   determinationStatus: Student['determinationStatus']
+  /** The level the level check assigned, or null until it is complete. */
+  assignedLevel: { id: number; code: string } | null
+  /** Where the student belongs now: the level check until a level is assigned (LD-R01). */
+  nextStep: NextStep
 }
 
-export function toPublicStudent(s: Student): PublicStudent {
+/** The student as clients see it: no hashes, tokens or sessions; the level code resolved. */
+export async function toPublicStudent(s: Student): Promise<PublicStudent> {
+  let assignedLevel: PublicStudent['assignedLevel'] = null
+  if (s.assignedLevel != null) {
+    const level =
+      typeof s.assignedLevel === 'object'
+        ? s.assignedLevel
+        : await (
+            await payloadClient()
+          ).findByID({ collection: 'levels', id: s.assignedLevel, depth: 0, overrideAccess: true })
+    assignedLevel = { id: level.id, code: level.code }
+  }
   return {
     id: s.id,
     name: s.name,
@@ -54,6 +70,8 @@ export function toPublicStudent(s: Student): PublicStudent {
     preferredLocale: s.preferredLocale,
     status: s.status,
     determinationStatus: s.determinationStatus,
+    assignedLevel,
+    nextStep: nextStepFor(s),
   }
 }
 
@@ -248,7 +266,7 @@ export async function login(
     requestId: meta.requestId,
   })
   return {
-    student: toPublicStudent(result.user as Student),
+    student: await toPublicStudent(result.user as Student),
     setCookie: cookieFor(payload, result.token),
   }
 }

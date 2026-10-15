@@ -5,6 +5,7 @@ import * as migration_20261014_162238_admin_totp from './20261014_162238_admin_t
 import * as migration_20261014_191843_ui_labels from './20261014_191843_ui_labels'
 import * as migration_20261014_203352_google_sign_in from './20261014_203352_google_sign_in'
 import * as migration_20261015_082931_exam_catalogue from './20261015_082931_exam_catalogue'
+import * as migration_20261015_092913_student_level_gate from './20261015_092913_student_level_gate'
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20261015_082931_exam_catalogue.up,
     down: migration_20261015_082931_exam_catalogue.down,
     name: '20261015_082931_exam_catalogue',
+  },
+  {
+    up: migration_20261015_092913_student_level_gate.up,
+    down: migration_20261015_092913_student_level_gate.down,
+    name: '20261015_092913_student_level_gate',
   },
 ]

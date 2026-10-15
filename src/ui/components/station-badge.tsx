@@ -10,11 +10,21 @@ const LEVEL_CLASSES: Record<string, string> = {
 
 /**
  * "Station" badge for a level (DESIGN_SYSTEM §2): the level code is always written out,
- * so the colour never carries meaning on its own. Colours become CMS-editable per level later.
+ * so the colour never carries meaning on its own. Pass the CMS colour when it is known.
  */
-export function StationBadge({ level, className }: { level: string; className?: string }) {
+export function StationBadge({
+  level,
+  color,
+  className,
+}: {
+  level: string
+  /** The level's badge colour from the CMS (validated for contrast with white text). */
+  color?: string
+  className?: string
+}) {
   return (
     <span
+      style={color ? { backgroundColor: color } : undefined}
       className={cn(
         'inline-flex min-w-11 items-center justify-center rounded-full px-2.5 py-0.5 font-sign text-lg font-bold leading-none text-white',
         LEVEL_CLASSES[level] ?? 'bg-night',

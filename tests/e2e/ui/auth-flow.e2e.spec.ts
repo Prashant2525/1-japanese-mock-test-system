@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 import { emailedToken, open, uiEmail, uiPassword } from './helpers'
 
 test.describe('student account pages, end to end', () => {
-  test('sign up → check email → verify → log in → student home → log out', async ({ page }) => {
+  test('sign up → check email → verify → log in → level check → log out', async ({ page }) => {
     const email = uiEmail('flow')
     const password = uiPassword()
 
@@ -26,8 +26,9 @@ test.describe('student account pages, end to end', () => {
     await page.getByLabel('Password', { exact: true }).fill(password)
     await page.getByRole('button', { name: 'Log in' }).click()
 
-    await expect(page).toHaveURL(/\/en\/app$/)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome, Aarav Sharma')
+    // A new student goes straight to the level check (LD-R01).
+    await expect(page).toHaveURL(/\/en\/app\/level-check$/)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find your level')
     await expect(page.getByText('Not started yet.')).toBeVisible()
 
     await page.getByRole('button', { name: 'Log out' }).click()
@@ -113,7 +114,7 @@ test.describe('student account pages, end to end', () => {
     await page.getByLabel('Email').fill(email)
     await page.getByLabel('Password', { exact: true }).fill(newPassword)
     await page.getByRole('button', { name: 'Log in' }).click()
-    await expect(page).toHaveURL(/\/en\/app$/)
+    await expect(page).toHaveURL(/\/en\/app\/level-check$/)
   })
 
   test('a reset link without a token explains what to do', async ({ page }) => {
