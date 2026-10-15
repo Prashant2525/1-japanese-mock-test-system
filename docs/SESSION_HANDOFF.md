@@ -21,6 +21,10 @@
 
 ## Known gotchas (new this phase)
 
+- Before every report: `pnpm build && pnpm sweep`, then review `test-results/sweep/<browser>/*.png` and the `*.json` landing lists (owner requirement, D-076).
+- E2E URL checks: compare the exact pathname (`new URL(page.url()).pathname`); a regex ending in `/en/app$` also matches `/en/en/app`.
+- Logging out in E2E: use `logOut(page)` / `openMyPage(page)` (they open the phone Menu when needed).
+
 - Pages: read the session with `currentStudentForPage(await headers())`, never `currentStudent` (KI-29). APIs: `requireStudent` / `requireStudentWithLevel`.
 - The dev server can show "Couldn't find next-intl config file" after many files change at once (e.g. a branch switch); restart `pnpm dev`.
 

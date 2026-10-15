@@ -30,7 +30,8 @@
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test",
     "prepare": "husky",
     "admin:create": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/create-super-admin.ts",
-    "email:check": "tsx scripts/email-check.ts"
+    "email:check": "tsx scripts/email-check.ts",
+    "sweep": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test -c playwright.sweep.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",

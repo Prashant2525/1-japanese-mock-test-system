@@ -18,7 +18,7 @@ Last updated: 2026-10-15 (Phase 10).
 | Unit tests | `pnpm test:unit` | **129/129** |
 | Integration tests | `pnpm test:int` | **120/120** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **96/96 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **104/104 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
 
 ## What the Phase 10 tests prove
 

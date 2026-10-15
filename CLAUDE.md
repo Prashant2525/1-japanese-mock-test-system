@@ -55,7 +55,7 @@ Work-item status: `COMPLETE` / `PARTIAL` / `MISSING` / `BROKEN` / `BLOCKED` / `U
 13a. **CMS configurability boundary (D-020):** values, toggles, catalogue, bilingual content and roles are CMS-editable; safety invariants (N5-first sequential determination, server authority, no answer exposure during attempts, server payment verification, audit, non-editable results) and secrets are not. Scoring-affecting config is versioned and applies to new attempts only.
 13b. **Bilingual (D-004):** no hard-coded single-language UI strings; every CMS-managed user-facing text field stores EN and JA.
 14. Do not add unapproved features (social login other than the approved Google sign-in, SMS/OTP, subscriptions, coupons, refunds, certificates, leaderboards, AI tutoring, forums, mobile apps, offline mode, blog, push notifications, etc.). Propose them in the requirements register and ask.
-15. Run relevant tests and report actual output before claiming work is complete.
+15. Run relevant tests and report actual output before claiming work is complete. Also run `pnpm build && pnpm sweep` and look at the screenshots of every page in every user state (signed out, no level, with level, admin; EN/JA; desktop/iPhone) before reporting (D-076).
 16. Update `docs/PROJECT_STATE.md`, `docs/SESSION_HANDOFF.md`, `docs/TEST_STATUS.md`, `docs/KNOWN_ISSUES.md`, `docs/CHANGELOG.md` (and requirements/decisions/questions when they change) at every safe stopping point.
 
 ## Repository notes

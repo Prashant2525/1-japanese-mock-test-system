@@ -226,7 +226,8 @@ export const Levels: CollectionConfig = {
       ja: '各試験のレベルと、その利用範囲です。模擬試験や結果が参照するため削除はできません。代わりにスイッチをオフにしてください。',
     },
   },
-  defaultSort: 'order',
+  // Grouped by exam type, then easiest first.
+  defaultSort: ['examType', 'order'],
   indexes: [{ fields: ['examType', 'code'], unique: true }],
   access: {
     read: activeAdmin,
@@ -315,6 +316,7 @@ export const Levels: CollectionConfig = {
           defaultValue: false,
           label: { en: 'Mock tests', ja: '模擬試験' },
           admin: {
+            components: { Cell: '/payload/admin/cells#YesNoCell' },
             description: {
               en: 'Students can take mock tests at this level (D-015).',
               ja: '受講者はこのレベルの模擬試験を受験できます（D-015）。',
@@ -328,6 +330,7 @@ export const Levels: CollectionConfig = {
           validate: crossRecord('enabledForDetermination'),
           label: { en: 'Level check', ja: 'レベルチェック' },
           admin: {
+            components: { Cell: '/payload/admin/cells#YesNoCell' },
             description: {
               en: 'A stage of the level check. JLPT only; always starts at the easiest level and climbs without gaps (D-008).',
               ja: 'レベルチェックの段階です。JLPT のみ。常に最も易しいレベルから始まり、途中を飛ばさずに進みます（D-008）。',
@@ -341,6 +344,7 @@ export const Levels: CollectionConfig = {
           validate: crossRecord('enabledForStudy'),
           label: { en: 'Study library', ja: '学習教材' },
           admin: {
+            components: { Cell: '/payload/admin/cells#YesNoCell' },
             description: {
               en: 'Study materials are offered for this level. JLPT only.',
               ja: 'このレベルの学習教材を提供します。JLPT のみ。',

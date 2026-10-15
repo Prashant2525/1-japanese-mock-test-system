@@ -177,3 +177,20 @@ html[data-theme='dark'] .nm-admin-logo {
     font-size: 0.85rem;
   }
 }
+
+// Yes/no list cells (src/payload/admin/cells.tsx)
+.nm-yes {
+  color: var(--theme-success-600);
+  font-weight: 700;
+}
+.nm-no {
+  color: var(--theme-elevation-400);
+}
+.nm-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -19,7 +19,8 @@
     "login": "ログイン",
     "signup": "新規登録",
     "myPage": "マイページ",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "menu": "メニュー"
   },
   "footer": {
     "rights": "© {year} Nihongo Mock",
@@ -31,7 +32,9 @@
     "titleStation": "N5",
     "underConstruction": "サイトは現在準備中です。アカウントはすでに作成できます。",
     "ctaSignup": "無料でアカウントを作成",
-    "ctaLogin": "ログイン"
+    "ctaLogin": "ログイン",
+    "signedInLead": "{name} さん、おかえりなさい。続きから始めましょう。",
+    "ctaMyPage": "マイページへ"
   },
   "authPanel": {
     "title": "日本への道は、N5から始まる。",

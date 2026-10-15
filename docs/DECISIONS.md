@@ -169,6 +169,12 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 |---|---|---|
 | D-075 | Pages read the session with `currentStudentForPage()`, which treats a **top-level document navigation** from another site (`Sec-Fetch-Mode: navigate`, `Sec-Fetch-Dest: document`) as same-site, matching what the SameSite=Lax cookie already allows. Embeds, fetches and cross-site form posts (Origin header) are not affected. API routes keep Payload's strict rule. Page renders must never change data. Login and logout end with a full page load (`window.location.assign`) instead of a client-side transition plus refresh. | KI-29 (owner report) |
 
+## Fix: signed-in states (2026-10-15)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-076 | A signed-in, active student is never offered sign-up or login: the home hero shows "Welcome back" and **Go to my page**; `/login` (respecting a safe `next`) and `/signup` redirect to the student area. The header shows **My page** and **Log out** inline from the `sm` breakpoint; on phones one **Menu** button opens both. Admin lists show checkbox columns as ✓ / – (`YesNoCell`), and Levels are sorted by exam type, then order. Before every report, `pnpm sweep` screenshots every page in every state (signed out, no level, with level, admin; EN/JA; desktop/iPhone) and the screenshots are reviewed. | KI-30 (owner report and feedback) |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

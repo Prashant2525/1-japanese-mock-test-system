@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createConfirmedStudent,
   expectAccessible,
+  logOut,
   open,
   setStudentLevel,
   studentLogin,
@@ -148,12 +149,12 @@ test.describe('level gate (Phase 10)', () => {
     await page.goto('http://other-site.test/')
     await page.click('#go')
     await expect(page).toHaveURL(/\/en\/app\/study$/)
-    await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible()
+    await expect(page.getByRole('banner').getByRole('link', { name: 'Log in' })).toHaveCount(0)
   })
 
   test('log out ends on the login page, signed out', async ({ page }) => {
     await newStudent(page, 'N5')
-    await page.getByRole('button', { name: 'Log out' }).click()
+    await logOut(page)
     await expect(page).toHaveURL(/\/en\/login\?loggedOut=1$/)
     await expect(page.getByText("You've been logged out.")).toBeVisible()
     await open(page, '/en/app')

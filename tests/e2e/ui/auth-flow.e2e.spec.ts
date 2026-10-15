@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { emailedToken, open, uiEmail, uiPassword } from './helpers'
+import { emailedToken, logOut, open, uiEmail, uiPassword } from './helpers'
 
 test.describe('student account pages, end to end', () => {
   test('sign up → check email → verify → log in → level check → log out', async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('student account pages, end to end', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find your level')
     await expect(page.getByText('Not started yet.')).toBeVisible()
 
-    await page.getByRole('button', { name: 'Log out' }).click()
+    await logOut(page)
     await expect(page).toHaveURL(/\/en\/login\?loggedOut=1$/)
     await expect(page.getByText("You've been logged out.")).toBeVisible()
     await open(page, '/en/app')

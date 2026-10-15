@@ -3,10 +3,10 @@ import { Suspense } from 'react'
 
 import { Link } from '@/i18n/navigation'
 
+import { AccountMenu } from './account-menu'
 import { Button } from './button'
 import { LanguageToggle } from './language-toggle'
 import { Logo } from './logo'
-import { LogoutButton } from '../forms/logout-button'
 
 export async function SkipLink() {
   const t = await getTranslations('a11y')
@@ -24,7 +24,7 @@ export async function SkipLink() {
 export async function SiteHeader({ signedIn }: { signedIn: boolean }) {
   const t = await getTranslations()
   return (
-    <header className="border-b border-line bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
+    <header className="relative z-30 border-b border-line bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="rounded-card">
           <Logo variant="wordmark" tone="day" className="h-8 sm:h-10" alt={t('meta.siteName')} />
@@ -34,12 +34,11 @@ export async function SiteHeader({ signedIn }: { signedIn: boolean }) {
             <LanguageToggle />
           </Suspense>
           {signedIn ? (
-            <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/app">{t('nav.myPage')}</Link>
-              </Button>
-              <LogoutButton label={t('nav.logout')} />
-            </>
+            <AccountMenu
+              myPageLabel={t('nav.myPage')}
+              logoutLabel={t('nav.logout')}
+              menuLabel={t('nav.menu')}
+            />
           ) : (
             <>
               <Button asChild variant="ghost" size="sm">
