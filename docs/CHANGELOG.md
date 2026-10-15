@@ -7,6 +7,7 @@
 - Reusable patterns: `ADMIN_GROUPS`, `auditTrail()` (changed fields only), `say()` for EN/JA messages, cross-record rules as field validators; module checklist in ARCHITECTURE §9a.
 - Exam catalogue: `exam-types` and `levels` collections with EN/JA fields, search, sort, pagination, bulk edit, permission checks, the D-070 rules, audit; migration `exam_catalogue` seeds JLPT, NAT and JFT.
 - Fixed KI-23: Payload is loaded once in production (`serverExternalPackages`), so validation messages appear in admin forms.
+- Fixed KI-26: seed migrations rewritten in plain SQL, so a fresh database migrates (found by CI).
 - E2E fixture: a Support admin with an authenticator.
 - Tests: unit 119, integration 102, E2E 82 + 1 skipped.
 

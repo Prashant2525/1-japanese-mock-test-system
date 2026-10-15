@@ -8,7 +8,7 @@ import { SEED_EXAM_TYPES, SEED_LEVELS } from '../server/catalogue/seed'
  * RESTRICT deletion at the database level too, instead of Payload's default SET NULL.
  */
 
-export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TABLE "exam_types" (
   	"id" serial PRIMARY KEY NOT NULL,
@@ -71,62 +71,51 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_exam_types_id_idx" ON "payload_locked_documents_rels" USING btree ("exam_types_id");
   CREATE INDEX "payload_locked_documents_rels_levels_id_idx" ON "payload_locked_documents_rels" USING btree ("levels_id");`)
 
-  const typeIds = new Map<string, number>()
+  // Seed with plain SQL against the tables created above (not the Payload API, which would use
+  // the configuration of later phases and fail on a fresh database, KI-26).
   for (const type of SEED_EXAM_TYPES) {
-    const created = await payload.create({
-      collection: 'exam-types',
-      locale: 'en',
-      data: {
-        code: type.code,
-        order: type.order,
-        enabled: true,
-        name: type.name.en,
-        description: type.description.en,
-        nonAffiliationNotice: type.nonAffiliationNotice.en,
-      },
-      req,
-    })
-    await payload.update({
-      collection: 'exam-types',
-      id: created.id,
-      locale: 'ja',
-      data: {
-        name: type.name.ja,
-        description: type.description.ja,
-        nonAffiliationNotice: type.nonAffiliationNotice.ja,
-      },
-      req,
-    })
-    typeIds.set(type.code, created.id)
+    await db.execute(sql`
+      WITH inserted AS (
+        INSERT INTO "exam_types" ("code", "order", "enabled")
+        VALUES (${type.code}, ${type.order}, true)
+        RETURNING "id"
+      )
+      INSERT INTO "exam_types_locales"
+        ("name", "description", "non_affiliation_notice", "_locale", "_parent_id")
+      SELECT ${type.name.en}, ${type.description.en}, ${type.nonAffiliationNotice.en}, 'en'::"_locales", "id"
+      FROM inserted
+      UNION ALL
+      SELECT ${type.name.ja}, ${type.description.ja}, ${type.nonAffiliationNotice.ja}, 'ja'::"_locales", "id"
+      FROM inserted;
+    `)
   }
 
-  const jlptIds = new Map<string, number>()
+  // JLPT levels come first in SEED_LEVELS, so equivalents always exist when NAT/JFT rows are added.
   for (const level of SEED_LEVELS) {
-    const created = await payload.create({
-      collection: 'levels',
-      locale: 'en',
-      data: {
-        examType: typeIds.get(level.examType)!,
-        code: level.code,
-        order: level.order,
-        name: level.name.en,
-        equivalentJlpt: level.equivalentJlpt ? jlptIds.get(level.equivalentJlpt) : undefined,
-        lineColor: level.lineColor,
-        badgeColor: level.badgeColor,
-        enabledForMockTests: level.enabledForMockTests,
-        enabledForDetermination: level.enabledForDetermination,
-        enabledForStudy: level.enabledForStudy,
-      },
-      req,
-    })
-    await payload.update({
-      collection: 'levels',
-      id: created.id,
-      locale: 'ja',
-      data: { name: level.name.ja },
-      req,
-    })
-    if (level.examType === 'JLPT') jlptIds.set(level.code, created.id)
+    const equivalent = level.equivalentJlpt
+      ? sql`(SELECT l."id" FROM "levels" l JOIN "exam_types" t ON t."id" = l."exam_type_id"
+             WHERE t."code" = 'JLPT' AND l."code" = ${level.equivalentJlpt})`
+      : sql`NULL`
+    await db.execute(sql`
+      WITH inserted AS (
+        INSERT INTO "levels" (
+          "exam_type_id", "code", "order", "equivalent_jlpt_id",
+          "enabled_for_mock_tests", "enabled_for_determination", "enabled_for_study",
+          "line_color", "badge_color"
+        )
+        VALUES (
+          (SELECT "id" FROM "exam_types" WHERE "code" = ${level.examType}),
+          ${level.code}, ${level.order}, ${equivalent},
+          ${level.enabledForMockTests}, ${level.enabledForDetermination}, ${level.enabledForStudy},
+          ${level.lineColor}, ${level.badgeColor}
+        )
+        RETURNING "id"
+      )
+      INSERT INTO "levels_locales" ("name", "_locale", "_parent_id")
+      SELECT ${level.name.en}, 'en'::"_locales", "id" FROM inserted
+      UNION ALL
+      SELECT ${level.name.ja}, 'ja'::"_locales", "id" FROM inserted;
+    `)
   }
 }
 

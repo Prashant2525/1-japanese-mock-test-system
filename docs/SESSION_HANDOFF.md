@@ -20,6 +20,7 @@
 ## Known gotchas (new this phase)
 
 - New admin modules: follow ARCHITECTURE §9a. Put cross-record rules in field validators; a ValidationError thrown from a hook works only because Payload is now external (D-071), and field validators show the message under the field anyway.
+- Seed data in migrations must be plain SQL (KI-26). To check a migration from zero: create an empty database in the Docker Postgres, run `DATABASE_URL=…/that_db pnpm migrate`, compare, drop it.
 - If Docker Desktop is closed, `pnpm db:up` fails with a pipe error: start Docker Desktop first (it was closed once this session).
 - The admin E2E uses four fixture admins (Super Admin, Content Editor, Support, an un-enrolled Support).
 
