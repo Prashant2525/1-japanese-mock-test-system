@@ -1,6 +1,6 @@
 # Known Issues, Ambiguities and Risks
 
-Last updated: 2026-10-16 (Phase 12b).
+Last updated: 2026-10-16 (Phase 13).
 
 ## Repository issues
 
@@ -49,6 +49,7 @@ Last updated: 2026-10-16 (Phase 12b).
 | KI-43 | Info | Signed file responses allow the browser to cache them for 10 minutes (`Cache-Control: private, max-age=600`). Fine for free files; once premium exists (Phase 19) a revoked student could still replay a cached file for up to 10 minutes. | `src/app/api/v1/media/[id]/route.ts` | Phase 19: `no-store` for premium files (ACC-R02). |
 | KI-44 | Info | Without "Allow download" a determined user can still get the file (developer tools, the network panel, screenshots); the in-app viewer and hidden download controls are deterrents (D-097). Screen-reader users get each PDF page's text, but not its layout or images. | `src/ui/components/pdf-viewer.tsx` | Allow downloads for files that need an accessible original; watermark premium files in Phase 19. |
 | KI-45 | Info | Browser-test clean-up removes test materials and media rows directly (`e2e-admin.ts delete`), so their files stay in `media/e2e-learning/` (a git-ignored test folder). | `tests/e2e/e2e-admin.ts` | Harmless; empty the folder when it grows. |
+| KI-46 | Info | The level-check settings global and draft-version tables still use Payload's default ON DELETE SET NULL towards levels (D-104 changed the live tables only). Harmless while levels are never deleted. | `_level_check_settings_v_version_stages`, `_questions_v`, `_study_materials_v` | Leave unless levels ever become deletable. |
 | KI-42 | Info | `Reference Design/Student And Admin UI and Sections Reference.pdf` could not be rendered in this environment (no PDF renderer). It has 24 pages with one image each, matching the 24 PNGs, which were all inspected individually. | Reference review | None unless the PDF has content not in the PNGs — owner to confirm. |
 | KI-04 | Info | The owner's master prompt names the file `Japanese_Mock_Test_System_Production_Build_Playbook.md`; on disk it is upper-case `JAPANESE_MOCK_TEST_SYSTEM_PRODUCTION_BUILD_PLAYBOOK.md`. Same document. | Directory listing. | No action; `CLAUDE.md` uses the real filename. |
 

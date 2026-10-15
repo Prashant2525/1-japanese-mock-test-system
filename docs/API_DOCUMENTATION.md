@@ -146,7 +146,7 @@ Admin (Payload endpoints, permission-checked, audited): `POST /api/cms/students/
 #### Catalogue and study (Phases 12–13, 18)
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/api/v1/catalogue/exams` | Enabled exam types and levels |
+| GET | `/api/v1/catalogue/exams` | **Implemented (Phase 13).** Public, no sign-in. Query `locale` (`en`/`ja`). `200 { exams: [{ code, name, description, nonAffiliationNotice, levels: [{ id, code, name, lineColor, badgeColor, sections: [{ key, name }] }] }] }` — enabled exam types in order, levels with `enabledForMockTests`, enabled sections that apply to each level. `Cache-Control: public, max-age=60`. The CMS REST endpoints for the catalogue stay admin-only (403 for visitors). |
 | GET | `/api/v1/mock-tests` | Published tests; filters `exam`, `level`, `free`; includes the student's entitlement status when logged in |
 | GET | `/api/v1/mock-tests/{slug}` | Test detail (no questions) |
 | GET | `/api/v1/study/materials` | **Implemented (Phase 12).** Student with a level. Query `level` (code), `category` (key), `q` (search in title, summary and address name, ≤ 100 characters; Phase 12b), `page`, `limit` (≤ 50), `locale`. `200 { docs: [{ slug, title, summary, level { code, name, badgeColor }, category { key, name, symbol }, media { image, audio, pdf } }], totalDocs, page, totalPages, filters { levels[], categories[] } }`. Only published, non-archived materials of enabled categories at or below the student's level (D-085); filters can only narrow this. |

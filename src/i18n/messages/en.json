@@ -209,7 +209,12 @@
       "clearSearch": "Clear search"
     },
     "mockTests": {
-      "empty": "No mock tests have been published yet. They'll appear here as soon as they are."
+      "empty": "No mock tests have been published yet. They'll appear here as soon as they are.",
+      "intro": "Practise for the exam you are aiming for. Tests appear here as soon as they are published.",
+      "examsTitle": "Exams",
+      "sectionsByLevel": "Sections by level",
+      "sectionsFor": "Sections for {levels}",
+      "noSections": "Sections will be announced."
     },
     "results": {
       "empty": "You don't have any results yet. Take a mock test and your score will appear here."

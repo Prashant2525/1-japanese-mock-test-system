@@ -60,7 +60,8 @@ erDiagram
 
 | Entity | Type | Key fields | Constraints / notes |
 |---|---|---|---|
-| `exam_types` *(implemented Phase 9 without `defaultSections`, which arrives with sections in Phase 13)* | [P] localized | code (`JLPT`/`NAT`/`JFT`), name, description, order, enabled, defaultSections[] {key, name, order}, nonAffiliationNotice | unique code |
+| `exam_types` *(implemented Phase 9; Phase 13: sections are a separate table, D-103 — `defaultSections[]` below is superseded)* | [P] localized | code (`JLPT`/`NAT`/`JFT`), name, description, order, enabled, defaultSections[] {key, name, order}, nonAffiliationNotice | unique code |
+| `exam_sections` *(implemented Phase 13, D-103)* | [P] localized | examType → `exam_types` (RESTRICT, fixed after creation), key, name, description, order, levels → `levels`[] (empty = all levels of the exam), enabled | unique (examType, key); never deleted; seeded from the official guides
 | `levels` *(implemented Phase 9; colours `lineColor`/`badgeColor` hex; FKs RESTRICT delete)* | [P] localized | examType → `exam_types`, code (`N5`, `5Q`, `A2.1`…), name, order (easiest = 1), equivalentJlpt → `levels` (NAT mapping, D-014), lineColor, badgeColor, **enabledForMockTests**, **enabledForDetermination**, **enabledForStudy** | unique (examType, code). The three flags implement D-008 and SM-R02: seed JLPT N5–N3 enabled for determination and study; JLPT N5–N1, NAT 5Q–1Q and JFT tiers enabled for mock tests. A level is shown publicly only if it is enabled **and** has published content. |
 
 ### 3.3 Study materials and media

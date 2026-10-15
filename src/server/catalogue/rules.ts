@@ -51,3 +51,15 @@ export function ladderProblem(levels: LadderLevel[]): LadderProblem | null {
   const laterOn = sorted.slice(firstOff + 1).find((l) => l.enabled)
   return laterOn ? { reason: 'gap', level: laterOn.code, missing: sorted[firstOff]!.code } : null
 }
+
+export type DependentLevel = { code: string; determination: boolean; study: boolean }
+
+/**
+ * An exam type cannot be switched off while any of its levels is used by the level check or the
+ * study library (in practice JLPT): students would lose a running level check or their materials.
+ * Switch those levels off first. Returns the blocking level codes.
+ */
+export function examTypeOffProblem(levels: DependentLevel[]): { levels: string[] } | null {
+  const blocking = levels.filter((l) => l.determination || l.study).map((l) => l.code)
+  return blocking.length ? { levels: blocking } : null
+}

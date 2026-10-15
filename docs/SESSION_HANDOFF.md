@@ -1,8 +1,8 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 12b — Content lifecycle corrections. **COMPLETE.** Next: Phase 13 — Examination configuration.
-**Exact task in progress:** none. Start Phase 13 (exam types, levels, sections configuration) from playbook §11; follow the D-092/D-100 lifecycle rules for every new module (delete guards, `guardLiveChanges` for anything with drafts).
+**Current phase / milestone:** Phase 13 — Examination configuration. **COMPLETE.** Next: Phase 13b — Student shell (D-106).
+**Exact task in progress:** none. Start Phase 13b (`IMPLEMENTATION_PLAN.md`): student layout with desktop sidebar + phone bottom tab bar, profile page, dashboard home from real data; keep exam screens unchanged; then Phase 14 (question bank: questions get a section from `exam-sections`).
 
 ## Completed (with evidence)
 
@@ -24,6 +24,9 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- **Phase 13:** Payload relationships default to ON DELETE SET NULL; history/content links to the catalogue were switched to RESTRICT by migration (the config still says set null, so no drift). Tests that create catalogue records must remove them (sections → levels → exam) — `tests/int/exam-config.int.spec.ts` shows how.
+- Payload `join` fields (exam type → sections) need no column and no migration.
 
 - **Phase 12b:** Payload's draft save (`draft: true`) only writes a version; a non-draft save with `_status: 'draft'` is "Unpublish" and changes the live doc: guard with `guardLiveChanges`. In Payload 3.90 "Unpublish" and "Delete" are in the document menu (three dots).
 - New enum values (permission keys) cannot be used in the migration that adds them: seed them in a later migration (plain SQL).

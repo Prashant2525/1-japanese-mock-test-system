@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-16 — Phase 13: examination configuration
+
+- Exam sections in the CMS (Exam catalogue → Exam sections): per exam, optionally per level, EN/JA, ordered, on/off; seeded from the official JLPT, JFT-Basic and NAT-TEST structures; shown on each exam type's page.
+- Integrity: sections only for levels of their exam; JLPT cannot be switched off while the level check or study uses it; nothing in the catalogue is deleted; history and content tables now refuse catalogue deletes at the database level (six links changed from SET NULL to RESTRICT).
+- Public catalogue API and a real Mock tests page: each exam with its level groups and sections, from the CMS.
+- Fixed during the phase: six history/content links that would have been blanked by a catalogue delete (now RESTRICT); my own new admin browser test could rename the wrong section when it clicked before the search had filtered (caught by the screenshot review; it now waits and restores the original name).
+- Tests: unit 184/184, integration 193/193, E2E 131/131 + 1 skipped, first try, no retries.
+
 ## 2026-10-16 — Phase 12b: content lifecycle, downloads and search
 
 - Deleting now works where it is safe (D-092): unused learning media (stored file removed too), study materials, empty categories, never-published questions. Things still in use are refused with a clear "used by" message; history-bearing records stay archive-only. New permissions `materials.delete`, `media.delete`, `questions.delete` (Super Admin by default).

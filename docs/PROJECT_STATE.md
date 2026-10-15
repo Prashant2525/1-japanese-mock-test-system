@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 12b — Content lifecycle corrections: COMPLETE** (2026-10-16). Next: **Phase 13 — Examination configuration.**
+Current phase / milestone: **Phase 13 — Examination configuration: COMPLETE** (2026-10-16). Next: **Phase 13b — Student shell** (sidebar, bottom tab bar, profile, dashboard layout; D-106).
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-12b-content-lifecycle` (PR to `main`).
+Last verified commit: branch `feature/phase-13-exam-config` (PR to `main`).
 
 ## Work status
 
@@ -27,6 +27,13 @@ Last verified commit: branch `feature/phase-12b-content-lifecycle` (PR to `main`
   - The admin panel uses Payload's own design (by plan).
   - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Phase 13 (2026-10-16)
+
+- Exam sections collection with seeds from the official guides (D-103), integrity rules and RESTRICT links (D-104), public catalogue API and Mock tests page (D-105). EX-1 asks the owner to confirm NAT 1Q/2Q sections.
+- Tests: unit 184/184, integration 193/193, E2E 131/131 + 1 skipped, first try, no retries; sweep reviewed.
+- **Code:** `src/payload/collections/ExamSections.ts`, `ExamTypes.ts` (sections list, switch-off rule), `src/server/catalogue/{rules,queries}.ts`, `src/app/api/v1/catalogue/exams/route.ts`, Mock tests page.
+- **Database:** migrations `20261015_211508_exam_sections` (table + seed, plain SQL), `20261015_212439_mock_tests_catalogue_labels`, `20261015_213000_catalogue_fk_restrict`.
 
 ## Phase 12b (2026-10-16)
 
