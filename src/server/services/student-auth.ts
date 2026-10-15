@@ -1,15 +1,10 @@
 import { randomBytes } from 'node:crypto'
 
-import {
-  createLocalReq,
-  generateExpiredPayloadCookie,
-  generatePayloadCookie,
-  logoutOperation,
-  type Payload,
-} from 'payload'
+import { createLocalReq, logoutOperation, type Payload } from 'payload'
 import type { z } from 'zod'
 
 import type { Student } from '@/payload-types'
+import { STUDENT_COOKIE } from '@/shared/session-cookies'
 import type {
   loginSchema,
   preferencesSchema,
@@ -18,7 +13,7 @@ import type {
 } from '@/shared/auth-schemas'
 
 import { recordAudit } from '../audit/record'
-import { payloadClient, requireStudent, type SessionStudent } from '../auth/session'
+import { currentStudent, payloadClient, requireStudent, type SessionStudent } from '../auth/session'
 import { revokeAllSessions } from '../auth/sessions'
 import { renderEmail, type Locale } from '../email/templates'
 import { getEnv } from '../env'
@@ -77,20 +72,27 @@ export async function toPublicStudent(s: Student): Promise<PublicStudent> {
 
 type HiddenAuthFields = { _verified?: boolean | null }
 
-/** Session cookie for a student token (shared by password and Google sign-in). */
-export function cookieFor(payload: Payload, token: string): string {
-  return generatePayloadCookie({
-    collectionAuthConfig: payload.collections.students.config.auth,
-    cookiePrefix: payload.config.cookiePrefix,
-    token,
-  })
+/**
+ * The student session cookie (shared by password and Google sign-in). Its own name, not Payload's
+ * `payload-token`, which belongs to admins (KI-32, D-077). HTTP-only, SameSite=Lax, Secure on https.
+ */
+function studentCookie(value: string, maxAgeSeconds: number): string {
+  return [
+    `${STUDENT_COOKIE}=${value}`,
+    'Path=/',
+    `Max-Age=${maxAgeSeconds}`,
+    'HttpOnly',
+    'SameSite=Lax',
+    ...(getEnv().APP_URL.startsWith('https://') ? ['Secure'] : []),
+  ].join('; ')
 }
 
-export function expiredCookie(payload: Payload): string {
-  return generateExpiredPayloadCookie({
-    collectionAuthConfig: payload.collections.students.config.auth,
-    cookiePrefix: payload.config.cookiePrefix,
-  })
+export function cookieFor(payload: Payload, token: string): string {
+  return studentCookie(token, payload.collections.students.config.auth.tokenExpiration)
+}
+
+export function expiredCookie(): string {
+  return studentCookie('', 0)
 }
 
 async function findByEmail(payload: Payload, address: string) {
@@ -274,8 +276,8 @@ export async function login(
 /** Ends the current session (it stops working everywhere immediately). Idempotent. */
 export async function logout(headers: Headers, meta: RequestMeta): Promise<string> {
   const payload = await payloadClient()
-  const { user } = await payload.auth({ headers })
-  if (user && user.collection === 'students') {
+  const user = await currentStudent(headers)
+  if (user) {
     const req = await createLocalReq({ user }, payload)
     await logoutOperation({ collection: payload.collections.students, req })
     await recordAudit(payload, {
@@ -288,7 +290,7 @@ export async function logout(headers: Headers, meta: RequestMeta): Promise<strin
       requestId: meta.requestId,
     })
   }
-  return expiredCookie(payload)
+  return expiredCookie()
 }
 
 /** Always resolves the same way (no account enumeration). */

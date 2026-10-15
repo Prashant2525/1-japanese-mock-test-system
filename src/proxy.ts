@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE } from './i18n/routing'
+import { ADMIN_COOKIE, STUDENT_COOKIE, tokenCollection } from './shared/session-cookies'
 
 /**
  * Request gatekeeper (runs before every matched request). Responsibilities, in order:
@@ -26,10 +27,19 @@ const BLOCKED_STUDENT_ACTIONS = new Set([
   'access',
 ])
 
-const SESSION_COOKIE = 'payload-token'
 const ONE_YEAR = 60 * 60 * 24 * 365
 
 export function proxy(request: NextRequest) {
+  const response = route(request)
+  // Before D-077 students also used Payload's cookie. A leftover student token there would make the
+  // admin panel treat the student as its user (KI-32), so it is removed on sight.
+  if (tokenCollection(request.cookies.get(ADMIN_COOKIE)?.value) === 'students') {
+    response.cookies.set(ADMIN_COOKIE, '', { path: '/', maxAge: 0 })
+  }
+  return response
+}
+
+function route(request: NextRequest): NextResponse {
   const { pathname, search } = request.nextUrl
 
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {
@@ -64,7 +74,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (second === 'app' && !request.cookies.has(SESSION_COOKIE)) {
+  if (second === 'app' && !request.cookies.has(STUDENT_COOKIE)) {
     const url = request.nextUrl.clone()
     url.pathname = `/${first}/login`
     url.search = `?next=${encodeURIComponent(pathname + search)}`

@@ -134,7 +134,7 @@ describe('Continue with Google', () => {
     )
     // The flow cookie is cleared; a session cookie is set and works.
     expect(setCookieLine(res, 'nm_google_flow')).toContain('Max-Age=0')
-    const session = cookieNamed(res, 'payload-token')!
+    const session = cookieNamed(res, 'nm_student_session')!
     const profile = (await (await me(session)).json()) as { student: Record<string, unknown> }
     expect(profile.student).toMatchObject({ name: '山田 花子', email, preferredLocale: 'ja' })
 
@@ -168,7 +168,7 @@ describe('Continue with Google', () => {
     fakeGoogle({ sub: googleId(), email: email.toUpperCase() }, flow.nonce)
     const res = await finish(flow)
     expect(res.headers.get('location')).toBe(`${APP}/en/app`)
-    const session = cookieNamed(res, 'payload-token')!
+    const session = cookieNamed(res, 'nm_student_session')!
     const profile = (await (await me(session)).json()) as { student: { id: number } }
     expect(profile.student.id).toBe(student.id)
     const login = await call(loginRoute, '/api/v1/auth/login', {
@@ -204,7 +204,7 @@ describe('Continue with Google', () => {
     fakeGoogle({ sub: googleId(), email }, flow.nonce)
     const res = await finish(flow)
     expect(res.headers.get('location')).toBe(`${APP}/en/login?oauth=disabled`)
-    expect(cookieNamed(res, 'payload-token')).toBeUndefined()
+    expect(cookieNamed(res, 'nm_student_session')).toBeUndefined()
   })
 
   it('refuses an email already linked to a different Google account', async () => {
@@ -221,7 +221,7 @@ describe('Continue with Google', () => {
   it('Google sessions are revocable like password sessions (logout ends them)', async () => {
     const flow = await start()
     fakeGoogle({ sub: googleId(), email: uniqueEmail('google-logout') }, flow.nonce)
-    const session = cookieNamed(await finish(flow), 'payload-token')!
+    const session = cookieNamed(await finish(flow), 'nm_student_session')!
     expect((await me(session)).status).toBe(200)
     await call(logoutRoute, '/api/v1/auth/logout', { cookie: session, method: 'POST' })
     expect((await me(session)).status).toBe(401)
@@ -245,7 +245,7 @@ describe('Continue with Google', () => {
       fakeGoogle({ sub: googleId(), email: uniqueEmail('google-nonce') }, 'other-nonce')
       const res = await finish(flow)
       expect(res.headers.get('location')).toBe(`${APP}/en/login?oauth=failed`)
-      expect(cookieNamed(res, 'payload-token')).toBeUndefined()
+      expect(cookieNamed(res, 'nm_student_session')).toBeUndefined()
     })
 
     it('an email Google has not verified', async () => {

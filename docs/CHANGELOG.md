@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-15 — Fix: separate student and admin sessions (KI-32)
+
+- Students get their own session cookie (`nm_student_session`); the admin panel no longer sees a signed-in student (no authenticator setup screen for students).
+- An admin and a student can be signed in in the same browser.
+- Leftover student tokens in the admin cookie are removed automatically.
+- Tests: unit 133, integration 120, E2E 107 + 1 skipped (new `separate-sessions`; it fails against the old code).
+
 ## 2026-10-15 — Fix: what signed-in students see (KI-30)
 
 - Home page: signed-in students see "Welcome back" and "Go to my page" instead of "Create a free account / Log in".

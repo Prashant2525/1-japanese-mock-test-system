@@ -52,11 +52,11 @@ test.describe('student session in a real browser', () => {
     expect(login.status).toBe(200)
     expect(login.body.student.email).toBe(E2E_STUDENT_EMAIL)
 
-    const cookie = (await context.cookies()).find((c) => c.name === 'payload-token')
+    const cookie = (await context.cookies()).find((c) => c.name === 'nm_student_session')
     expect(cookie?.httpOnly).toBe(true)
     expect(cookie?.sameSite).toBe('Lax')
     // JavaScript on the page cannot read the session cookie.
-    expect(await page.evaluate(() => document.cookie)).not.toContain('payload-token')
+    expect(await page.evaluate(() => document.cookie)).not.toContain('nm_student_session')
 
     const me = await browserFetch(page, '/api/v1/me')
     expect(me.status).toBe(200)
