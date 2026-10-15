@@ -71,8 +71,10 @@ export interface Config {
     admins: Admin;
     roles: Role;
     students: Student;
-    'audit-events': AuditEvent;
+    'exam-types': ExamType;
+    levels: Level;
     'email-templates': EmailTemplate;
+    'audit-events': AuditEvent;
     'totp-attempts': TotpAttempt;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -84,8 +86,10 @@ export interface Config {
     admins: AdminsSelect<false> | AdminsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     students: StudentsSelect<false> | StudentsSelect<true>;
-    'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
+    'exam-types': ExamTypesSelect<false> | ExamTypesSelect<true>;
+    levels: LevelsSelect<false> | LevelsSelect<true>;
     'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
+    'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
     'totp-attempts': TotpAttemptsSelect<false> | TotpAttemptsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -110,6 +114,10 @@ export interface Config {
   };
   locale: 'en' | 'ja';
   widgets: {
+    'nm-setup': NmSetupWidget;
+    'nm-students': NmStudentsWidget;
+    'nm-catalogue': NmCatalogueWidget;
+    'nm-activity': NmActivityWidget;
     collections: CollectionsWidget;
   };
   user: Admin | Student;
@@ -273,6 +281,90 @@ export interface Student {
   collection: 'students';
 }
 /**
+ * The exams students can practise for. Turn “Enabled” off to hide an exam everywhere; exam types are never deleted because tests and results refer to them.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-types".
+ */
+export interface ExamType {
+  id: number;
+  /**
+   * Short ID in capitals, e.g. JLPT. Cannot be changed after creation.
+   */
+  code: string;
+  name: string;
+  description?: string | null;
+  /**
+   * Shown wherever this exam is named, so nobody thinks Nihongo Mock is the official test (TSR-14).
+   */
+  nonAffiliationNotice?: string | null;
+  order: number;
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Levels of each exam and where they are used. Levels are never deleted because tests and results refer to them; turn their switches off instead.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "levels".
+ */
+export interface Level {
+  id: number;
+  examType: number | ExamType;
+  /**
+   * e.g. N5, 5Q, A2.1
+   */
+  code: string;
+  name: string;
+  order: number;
+  /**
+   * For NAT and JFT levels: the JLPT level it corresponds to (e.g. 5Q ≈ N5).
+   */
+  equivalentJlpt?: (number | null) | Level;
+  /**
+   * Students can take mock tests at this level (D-015).
+   */
+  enabledForMockTests?: boolean | null;
+  /**
+   * A stage of the level check. JLPT only; always starts at the easiest level and climbs without gaps (D-008).
+   */
+  enabledForDetermination?: boolean | null;
+  /**
+   * Study materials are offered for this level. JLPT only.
+   */
+  enabledForStudy?: boolean | null;
+  /**
+   * Drawn on the night background; must be visible (≥ 3:1).
+   */
+  lineColor: string;
+  /**
+   * Carries white text; must be readable (≥ 4.5:1).
+   */
+  badgeColor: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-templates".
+ */
+export interface EmailTemplate {
+  id: number;
+  key: 'verify_email' | 'reset_password' | 'admin_reset_password' | 'contact_notification' | 'order_receipt';
+  subject: string;
+  /**
+   * Plain text. A blank line starts a new paragraph.
+   */
+  body: string;
+  buttonLabel?: string | null;
+  footer?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Read-only record of sensitive actions.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -307,25 +399,6 @@ export interface AuditEvent {
   ip?: string | null;
   userAgent?: string | null;
   requestId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "email-templates".
- */
-export interface EmailTemplate {
-  id: number;
-  key: 'verify_email' | 'reset_password' | 'admin_reset_password' | 'contact_notification' | 'order_receipt';
-  subject: string;
-  /**
-   * Plain text. A blank line starts a new paragraph.
-   */
-  body: string;
-  buttonLabel?: string | null;
-  footer?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -375,12 +448,20 @@ export interface PayloadLockedDocument {
         value: number | Student;
       } | null)
     | ({
-        relationTo: 'audit-events';
-        value: number | AuditEvent;
+        relationTo: 'exam-types';
+        value: number | ExamType;
+      } | null)
+    | ({
+        relationTo: 'levels';
+        value: number | Level;
       } | null)
     | ({
         relationTo: 'email-templates';
         value: number | EmailTemplate;
+      } | null)
+    | ({
+        relationTo: 'audit-events';
+        value: number | AuditEvent;
       } | null);
   globalSlug?: string | null;
   user:
@@ -507,6 +588,51 @@ export interface StudentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-types_select".
+ */
+export interface ExamTypesSelect<T extends boolean = true> {
+  code?: T;
+  name?: T;
+  description?: T;
+  nonAffiliationNotice?: T;
+  order?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "levels_select".
+ */
+export interface LevelsSelect<T extends boolean = true> {
+  examType?: T;
+  code?: T;
+  name?: T;
+  order?: T;
+  equivalentJlpt?: T;
+  enabledForMockTests?: T;
+  enabledForDetermination?: T;
+  enabledForStudy?: T;
+  lineColor?: T;
+  badgeColor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-templates_select".
+ */
+export interface EmailTemplatesSelect<T extends boolean = true> {
+  key?: T;
+  subject?: T;
+  body?: T;
+  buttonLabel?: T;
+  footer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "audit-events_select".
  */
 export interface AuditEventsSelect<T extends boolean = true> {
@@ -521,19 +647,6 @@ export interface AuditEventsSelect<T extends boolean = true> {
   ip?: T;
   userAgent?: T;
   requestId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "email-templates_select".
- */
-export interface EmailTemplatesSelect<T extends boolean = true> {
-  key?: T;
-  subject?: T;
-  body?: T;
-  buttonLabel?: T;
-  footer?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1340,6 +1453,46 @@ export interface SignInSettingsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nm-setup_widget".
+ */
+export interface NmSetupWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nm-students_widget".
+ */
+export interface NmStudentsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nm-catalogue_widget".
+ */
+export interface NmCatalogueWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nm-activity_widget".
+ */
+export interface NmActivityWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'small' | 'medium' | 'large' | 'x-large' | 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

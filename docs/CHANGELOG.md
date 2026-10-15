@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-15 — Phase 9: admin CMS framework
+
+- Admin shell: Nihongo Mock logo (light/dark) and icon, tab title and favicon; menu groups People → Exam catalogue → Content → Operations → Settings.
+- Dashboard widgets with live data, shown by permission: setup checklist, students, exam catalogue (level-check route in level colours), recent activity.
+- Reusable patterns: `ADMIN_GROUPS`, `auditTrail()` (changed fields only), `say()` for EN/JA messages, cross-record rules as field validators; module checklist in ARCHITECTURE §9a.
+- Exam catalogue: `exam-types` and `levels` collections with EN/JA fields, search, sort, pagination, bulk edit, permission checks, the D-070 rules, audit; migration `exam_catalogue` seeds JLPT, NAT and JFT.
+- Fixed KI-23: Payload is loaded once in production (`serverExternalPackages`), so validation messages appear in admin forms.
+- Fixed KI-26: seed migrations rewritten in plain SQL, so a fresh database migrates (found by CI).
+- E2E fixture: a Support admin with an authenticator.
+- Tests: unit 119, integration 102, E2E 82 + 1 skipped.
+
 ## 2026-10-15 — Continue with Google (owner-approved, D-066)
 
 - "Continue with Google" on the login and sign-up pages (EN/JA, Google branding), shown when `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are set and the CMS switch (Settings → Sign-in options) is on.

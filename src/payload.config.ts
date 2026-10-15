@@ -10,9 +10,13 @@ import { fileURLToPath } from 'url'
 
 import { Admins } from './payload/collections/Admins'
 import { AuditEvents } from './payload/collections/AuditEvents'
+import { DASHBOARD_WIDGETS } from './payload/admin/dashboard'
 import { EmailTemplates } from './payload/collections/EmailTemplates'
+import { ExamTypes } from './payload/collections/ExamTypes'
+import { Levels } from './payload/collections/Levels'
 import { Roles } from './payload/collections/Roles'
 import { Students } from './payload/collections/Students'
+import { can } from './server/auth/permissions'
 import { SignInSettings } from './payload/globals/SignInSettings'
 import { UiLabelGlobals } from './payload/globals/UiLabels'
 import { emailAdapter } from './server/email/adapter'
@@ -29,12 +33,33 @@ export default buildConfig({
   admin: {
     user: Admins.slug,
     importMap: { baseDir: path.resolve(dirname) },
-    meta: { titleSuffix: ' · Nihongo Mock Admin' },
+    meta: {
+      titleSuffix: ' · Nihongo Mock Admin',
+      icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/brand/nihongo-mock-icon.svg' }],
+    },
+    components: {
+      graphics: {
+        Logo: '/payload/admin/graphics#Logo',
+        Icon: '/payload/admin/graphics#Icon',
+      },
+    },
+    // Dashboard widgets (Phase 9): real numbers, shown only to admins with the matching permission.
+    // Admins can rearrange or add widgets; each widget also checks the permission itself.
+    dashboard: {
+      widgets: DASHBOARD_WIDGETS.map(({ permission: _permission, ...widget }) => widget),
+      defaultLayout: ({ req }) => [
+        ...DASHBOARD_WIDGETS.filter((w) => can(req.user, w.permission)).map((w) => ({
+          widgetSlug: w.slug,
+          width: w.width,
+        })),
+        { widgetSlug: 'collections', width: 'full' as const },
+      ],
+    },
   },
   // Payload REST lives under /api/cms so /api/v1 stays free for the domain API (ARCHITECTURE §3).
   routes: { admin: '/admin', api: '/api/cms' },
   graphQL: { disable: true },
-  collections: [Admins, Roles, Students, AuditEvents, EmailTemplates],
+  collections: [Admins, Roles, Students, ExamTypes, Levels, EmailTemplates, AuditEvents],
   globals: [...UiLabelGlobals, SignInSettings],
   email: emailAdapter(),
   // Content locales (D-004, D-028): English default, Japanese with fallback to English.

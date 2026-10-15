@@ -71,9 +71,9 @@ Last updated: 2026-10-14 (Phase 3 — proposal).
 | Area | Screens | Type |
 |---|---|---|
 | Access | Login (+ MFA if OPS-2b), forgot password | Payload |
-| Home | Admin home with shortcuts and pending items | Payload + small custom widgets; analytics = REC-10 (pending) |
+| Home | Admin home with shortcuts and pending items | Payload widget dashboard: setup checklist, students, exam catalogue, recent activity (**implemented Phase 9**); analytics = REC-10 (pending) |
 | People | Students (status, level, determination history, reset, override), Admins, Roles & permissions | Payload + custom actions |
-| Catalogue | Exam types, Levels (enabled flag, N-level mapping), Sections | Payload |
+| Catalogue | Exam types, Levels (enabled flag, N-level mapping), Sections | Payload (**exam types and levels implemented Phase 9**; sections Phase 13) |
 | Level determination | Stage configuration (order fixed N5-first, threshold, duration, question set, versions), summary copy | **Custom view** with invariant validation |
 | Question bank | Questions (bilingual explanations, furigana, media, marks, versions), preview | Payload + custom preview |
 | Import | Upload → validation preview → commit (all-or-nothing) → summary | **Custom view** |

@@ -9,7 +9,7 @@
 | Surface | Base path | Consumers | Auth |
 |---|---|---|---|
 | Domain API | `/api/v1` | Student web UI; future mobile clients (D-025) | Student session cookie (`payload-token`, HTTP-only, SameSite=Lax); future mobile clients send `Authorization: JWT <token>` |
-| Payload REST | `/api/cms` | Payload admin panel | Admin session. Access functions deny students and the public except explicitly public read endpoints (published pages, catalogue, labels). |
+| Payload REST | `/api/cms` | Payload admin panel | Admin session. Access functions deny students and the public. Students read catalogue and content only through `/api/v1` (catalogue: Phase 13). |
 | Health | `/healthz`, `/readyz` | Load balancer, uptime monitor | None; returns no secrets |
 
 ## 2. Conventions
@@ -80,6 +80,15 @@ Opened by the browser (links and redirects), not by `fetch`. Both always answer 
 | GET | `/api/v1/auth/google/callback` | from Google: `state`, `code` or `error` | Success: session cookie (`payload-token`, same as password login) + redirect to `next` or `/{locale}/app`. Failure: redirect to `/{locale}/login?oauth=<reason>` (`cancelled`, `expired`, `failed`, `disabled`, `unavailable`, `rate_limited`). |
 
 Limit: 30 requests/15 min per IP (start and return both count). Not available (`unavailable`) unless both Google variables are set and Settings → Sign-in options has the switch on. Audit events: `student.registered` / `student.login` (summary "via Google"), `student.google_linked`.
+
+### 4.1c Admin catalogue (Payload REST) — IMPLEMENTED (Phase 9)
+
+| Path | Read | Create / update | Delete |
+|---|---|---|---|
+| `/api/cms/exam-types` | any active admin (two-factor verified) | `catalogue.manage` (code fixed after creation) | nobody (403) |
+| `/api/cms/levels` | any active admin | `catalogue.manage`, with the D-070 rules (400 with a message per field) | nobody (403) |
+
+Anonymous and student requests get 403. Every change writes `exam_type.*` / `level.*` audit events with the changed fields.
 
 ### 4.2 Planned endpoints
 

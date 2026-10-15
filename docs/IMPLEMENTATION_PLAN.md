@@ -16,8 +16,8 @@ Last updated: 2026-10-14 (Phase 1).
 | 7 | Authentication and authorization | **COMPLETE** (2026-10-14) — roles/permissions, admins with required authenticator codes, students, `/api/v1/auth`, rate limits, audit, bilingual emails; unit 36, int 55, E2E 19 | Resend domain verification (owner) before staging | Auth flows + permission tests pass. |
 | 8 | Shared frontend foundation | **COMPLETE** (2026-10-15) — design tokens, fonts, logo variants, EN/JA routing + toggle, CMS label overrides, components, auth pages, student home; unit 78, int 59, E2E 66 (+1 skipped) on Chrome and iPhone Safari | — | Tokens/components/patterns with tests. |
 | 8b | Continue with Google (owner request, D-066) | **COMPLETE** (2026-10-15) | Students only; CMS switch; KI-22 fixed |
-| 9 | Admin CMS framework | **NEXT** | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
-| 10 | Student route gates | NOT STARTED | Phase 7 | Server-side determination gate + bypass E2E tests. |
+| 9 | Admin CMS framework | **COMPLETE** (2026-10-15) — branded admin, menu groups, role-aware dashboard, reusable audit/validation patterns, exam catalogue end to end; unit 119, int 102, E2E 82 (+1 skipped) | Phase 7–8 | Admin shell + one verified E2E CRUD slice. |
+| 10 | Student route gates | **NEXT** | Phase 7 | Server-side determination gate + bypass E2E tests. |
 | 11 | Level determination engine | NOT STARTED | Phase 10 | All pass/fail branches, idempotency, race tests pass. |
 | 12 | Study materials and media | NOT STARTED | Phase 9 | N5–N3 CRUD/publish/eligibility verified. |
 | 13 | Examination configuration | NOT STARTED | Phase 9 | Data-driven catalogue with integrity tests. |

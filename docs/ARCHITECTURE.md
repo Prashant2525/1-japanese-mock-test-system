@@ -185,6 +185,16 @@ Two upload collections *(technical default)*: `site-media` → **public** bucket
 - **Audit (`audit_events`, append-only):** admin logins/failures, role and permission changes, determination reset/override, config publishes (determination, mock tests, theme), question publish/archive, import commits, product/price changes, order and payment state transitions, entitlement grants, result views by admins (RS-R07). Written by services and Payload hooks with actor, action, entity, before/after (redacted), IP and request ID.
 - **Sentry** for web and worker; environment tags; PII scrubbing on.
 
+### 9a. Admin module checklist (Phase 9, D-068)
+
+Every new admin collection or global:
+1. `admin.group` from `ADMIN_GROUPS` (`src/payload/admin/groups.ts`); EN/JA labels and descriptions.
+2. List settings: `defaultColumns`, `listSearchableFields`, `pagination`, `defaultSort`.
+3. Access with `hasPermission(...)`; no `delete` where history depends on the record.
+4. `auditTrail({ entityType, action, summary })` hooks (`src/payload/hooks/auditTrail.ts`).
+5. Rules that involve other records as field validators (messages via `say(req, en, ja)`), never thrown from hooks.
+6. Integration tests for CRUD, validation, pagination, access denial and audit; an admin E2E for the main flow.
+
 ## 10. Configuration
 
 - Environment variables are validated at startup with Zod (`src/server/env.ts`); the process exits with a clear message if any are missing (TSR-10). Names are listed in `docs/ENVIRONMENT_REQUIREMENTS.md` (finalized in Phase 6).

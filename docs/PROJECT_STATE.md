@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 8b — Continue with Google: COMPLETE** (2026-10-15, after Phase 8). Next: **Phase 9 — Admin CMS framework.**
+Current phase / milestone: **Phase 9 — Admin CMS framework: COMPLETE** (2026-10-15). Next: **Phase 10 — Student route gates.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/google-sign-in` (PR to `main`).
+Last verified commit: branch `feature/phase-9-admin-cms` (PR to `main`).
 
 ## Work status
 
@@ -17,11 +17,18 @@ Last verified commit: branch `feature/google-sign-in` (PR to `main`).
     - Pages: home (temporary), sign up, check email, verify, log in, forgot/reset, protected student home, log out.
     - Tests: unit 82/82, integration 59/59, E2E 68/68 + 1 intentionally skipped (two clean runs in a row), on desktop Chrome and iPhone Safari; axe scans pass in EN and JA. Lint, typecheck, format and build are clean.
   - Phase 8b, Continue with Google (D-066): students only, CMS switch, account linking, revocable sessions. Tests: unit 102/102, integration 76/76, E2E 78/78 + 1 skipped. Real Google login waits on the owner's Google Cloud client (steps in `.env`).
+  - Phase 9 (D-068..D-071): branded admin, menu groups, role-aware dashboard with live data, reusable audit/validation patterns, exam catalogue end to end (seeded JLPT/NAT/JFT). Tests: unit 119/119, integration 102/102, E2E 82/82 + 1 skipped. Fixed KI-23 (validation messages missing in production admin forms).
 - **Partial / unverified:**
   - Real email delivery: waits on a domain (DOM-1, KI-18).
   - The home page is temporary (KI-08).
   - The admin panel uses Payload's own design (by plan).
 - **Remaining:** Phases 9–28.
+
+## Changes (Phase 9)
+
+- **Code:** `src/payload/admin/*` (groups, graphics, dashboard, widgets), `src/payload/hooks/auditTrail.ts`, `src/payload/say.ts`, `src/payload/collections/ExamTypes.ts`, `Levels.ts`, `src/server/catalogue/*` (rules, seed), `src/app/(payload)/custom.scss`, `payload.config.ts` (admin branding, dashboard, collections), `next.config.ts` (KI-23), menu groups on existing collections (email templates moved to Content).
+- **Database:** migration `20261015_082931_exam_catalogue` (tables + seed).
+- **Tests:** `tests/unit/catalogue.test.ts`, `tests/int/catalogue.int.spec.ts`, `tests/e2e/admin-cms.e2e.spec.ts`; fixture adds a Support admin.
 
 ## Changes (Phase 8b)
 
@@ -43,10 +50,9 @@ Last verified commit: branch `feature/google-sign-in` (PR to `main`).
 
 ## Verification and blockers
 
-- **Blockers for Phase 9:** none.
+- **Blockers for Phase 10:** none.
 - **Owner decisions open:** DOM-1 (domain, later), PA-6, PAY-3b, PAY-4b, CON-1b, TECH-5.
-- **Exact next task:** Phase 9 (playbook §11.10):
-  - Admin CMS shell: Nihongo Mock branding in the Payload admin, navigation groups, dashboard widgets backed by real data;
-  - reusable CRUD/audit patterns;
-  - one representative module end to end. Proposal: the exam catalogue (exam types + levels with the three enable flags, D-014) — it is needed by Phases 11–15 and exercises CRUD, EN/JA fields, permissions and audit;
-  - tests for CRUD, validation, pagination, access denial and persistence.
+- **Exact next task:** Phase 10 (playbook §11.11), student route gates:
+  - after login, route by the stored `determinationStatus`: not completed → the level-check area (its content arrives in Phase 11);
+  - server-side guards so Study materials, Mock tests and Results (pages and `/api/v1` endpoints) are refused until the level check is complete;
+  - bypass tests: direct URLs, API calls, stale tabs, manipulated requests; returning students with a level enter the normal student area.
