@@ -33,7 +33,7 @@ test.describe('student account pages, end to end', () => {
 
     await logOut(page)
     await expect(page).toHaveURL(/\/en\/login\?loggedOut=1$/)
-    await expect(page.getByText("You've been logged out.")).toBeVisible()
+    await expect(page.getByRole('main').getByText("You've been logged out.")).toBeVisible()
     await open(page, '/en/app')
     await expect(page).toHaveURL(/\/en\/login/)
   })
