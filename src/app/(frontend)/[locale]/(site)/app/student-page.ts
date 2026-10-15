@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 
 import { redirect } from '@/i18n/navigation'
-import { currentStudent, type SessionStudent } from '@/server/auth/session'
+import { currentStudentForPage, type SessionStudent } from '@/server/auth/session'
 import { hasDeterminedLevel } from '@/server/student/gate'
 
 /** Student-area pages and their paths under /{locale}/app. */
@@ -23,7 +23,7 @@ export type StudentArea = keyof typeof AREA_PATHS
  * Decided only from the session's stored student, never from the URL, query or browser storage.
  */
 export async function studentPage(locale: string, area: StudentArea): Promise<SessionStudent> {
-  const student = await currentStudent(await headers())
+  const student = await currentStudentForPage(await headers())
   if (!student || student.status === 'suspended') {
     redirect({
       href: { pathname: '/login', query: { next: `/${locale}${AREA_PATHS[area]}` } },

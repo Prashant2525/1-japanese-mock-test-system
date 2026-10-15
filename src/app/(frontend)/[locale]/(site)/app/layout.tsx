@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 
-import { currentStudent } from '@/server/auth/session'
+import { currentStudentForPage } from '@/server/auth/session'
 import { hasDeterminedLevel } from '@/server/student/gate'
 import { StudentNav } from '@/ui/components/student-nav'
 
@@ -15,7 +15,7 @@ export default async function StudentLayout({
   params: Promise<{ locale: string }>
 }) {
   setRequestLocale((await params).locale)
-  const student = await currentStudent(await headers())
+  const student = await currentStudentForPage(await headers())
   const t = await getTranslations('student.nav')
   return (
     <>

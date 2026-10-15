@@ -21,6 +21,9 @@
 
 ## Known gotchas (new this phase)
 
+- Pages: read the session with `currentStudentForPage(await headers())`, never `currentStudent` (KI-29). APIs: `requireStudent` / `requireStudentWithLevel`.
+- The dev server can show "Couldn't find next-intl config file" after many files change at once (e.g. a branch switch); restart `pnpm dev`.
+
 - Student pages: call `studentPage(locale, area)` first; APIs: call `requireStudentWithLevel(headers)` first (before reading the body).
 - E2E: `createConfirmedStudent()` / `setStudentLevel()` stand in for sign-up and the Phase 11 service; `studentLogin()` waits for the student area.
 

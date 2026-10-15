@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-15 — Fix: signed-in students sent back to the login page (KI-29)
+
+- After "Continue with Google" or a link from another site, pages now recognise the signed-in student (D-075). The API rules are unchanged.
+- Login and logout finish with a full page load, so the destination and header always reflect the new session.
+- Tests: unit 129, integration 120, E2E 96 + 1 skipped (new: arriving from another site; logout).
+
 ## 2026-10-15 — Phase 10: student route gates
 
 - Server level gate (D-073): study materials, mock-test attempts and results APIs refuse students without a level (`403 LEVEL_NOT_DETERMINED`); `/me` and login report `assignedLevel` and `nextStep`.

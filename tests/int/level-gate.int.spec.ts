@@ -8,6 +8,7 @@ import { GET as meRoute } from '@/app/api/v1/me/route'
 import { GET as resultsRoute } from '@/app/api/v1/results/route'
 import { GET as materialsRoute } from '@/app/api/v1/study/materials/route'
 import type { Student } from '@/payload-types'
+import { currentStudentForPage, requireStudent } from '@/server/auth/session'
 
 import {
   asUser,
@@ -227,5 +228,39 @@ describe('database integrity', () => {
       payload.delete({ collection: 'levels', id: levelIds.get('N2')!, overrideAccess: true }),
     ).rejects.toThrow()
     await setGate(student, { determinationStatus: 'not_started' })
+  })
+})
+
+describe('arriving from another site (KI-29: the return from Google, links in emails)', () => {
+  const crossSite = (cookie: string, mode: string, dest: string) =>
+    new Headers({
+      cookie,
+      'sec-fetch-site': 'cross-site',
+      'sec-fetch-mode': mode,
+      'sec-fetch-dest': dest,
+    })
+
+  it('a page load from another site still knows the signed-in student', async () => {
+    const { student, cookie } = await signedIn({ determinationStatus: 'not_started' })
+    const found = await currentStudentForPage(crossSite(cookie, 'navigate', 'document'))
+    expect(found?.id).toBe(student.id)
+  })
+
+  it('the API stays strict: a cross-site request is not signed in', async () => {
+    const { cookie } = await signedIn({ determinationStatus: 'not_started' })
+    await expect(requireStudent(crossSite(cookie, 'cors', 'empty'))).rejects.toMatchObject({
+      code: 'UNAUTHENTICATED',
+    })
+    await expect(requireStudent(crossSite(cookie, 'navigate', 'document'))).rejects.toMatchObject({
+      code: 'UNAUTHENTICATED',
+    })
+  })
+
+  it('a cross-site embed or form post does not get the session either', async () => {
+    const { cookie } = await signedIn({ determinationStatus: 'not_started' })
+    expect(await currentStudentForPage(crossSite(cookie, 'navigate', 'iframe'))).toBeNull()
+    const post = crossSite(cookie, 'navigate', 'document')
+    post.set('origin', 'https://evil.example')
+    expect(await currentStudentForPage(post)).toBeNull()
   })
 })
