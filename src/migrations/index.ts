@@ -14,6 +14,9 @@ import * as migration_20261015_160304_study_labels from './20261015_160304_study
 import * as migration_20261015_200516_content_lifecycle from './20261015_200516_content_lifecycle'
 import * as migration_20261015_201010_study_search_labels from './20261015_201010_study_search_labels'
 import * as migration_20261015_201500_super_admin_delete_permissions from './20261015_201500_super_admin_delete_permissions'
+import * as migration_20261015_211508_exam_sections from './20261015_211508_exam_sections'
+import * as migration_20261015_212439_mock_tests_catalogue_labels from './20261015_212439_mock_tests_catalogue_labels'
+import * as migration_20261015_213000_catalogue_fk_restrict from './20261015_213000_catalogue_fk_restrict'
 
 export const migrations = [
   {
@@ -95,5 +98,20 @@ export const migrations = [
     up: migration_20261015_201500_super_admin_delete_permissions.up,
     down: migration_20261015_201500_super_admin_delete_permissions.down,
     name: '20261015_201500_super_admin_delete_permissions',
+  },
+  {
+    up: migration_20261015_211508_exam_sections.up,
+    down: migration_20261015_211508_exam_sections.down,
+    name: '20261015_211508_exam_sections',
+  },
+  {
+    up: migration_20261015_212439_mock_tests_catalogue_labels.up,
+    down: migration_20261015_212439_mock_tests_catalogue_labels.down,
+    name: '20261015_212439_mock_tests_catalogue_labels',
+  },
+  {
+    up: migration_20261015_213000_catalogue_fk_restrict.up,
+    down: migration_20261015_213000_catalogue_fk_restrict.down,
+    name: '20261015_213000_catalogue_fk_restrict',
   },
 ]

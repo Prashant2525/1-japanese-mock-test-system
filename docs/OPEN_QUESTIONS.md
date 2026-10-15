@@ -5,7 +5,7 @@ Owner decisions that block or shape later phases. Answer by ID (e.g. "MT-4: acce
 **Priority key:** **P1** blocks the next phase · **P2** needed by Phases 3–5 · **P3** needed later (phase named).
 "Suggested default" values are **PROPOSED - APPROVAL REQUIRED** until accepted.
 
-Last updated: 2026-10-16 (RV-1..RV-14, PA-6, PAY-4b answered).
+Last updated: 2026-10-16 (Phase 13: EX-1 added).
 
 ---
 
@@ -13,6 +13,7 @@ Last updated: 2026-10-16 (RV-1..RV-14, PA-6, PAY-4b answered).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
+| EX-1 | P3 | **Exam sections:** the defaults were seeded from the official guides (D-103). For NAT-TEST I could confirm the 5Q layout (文字・語彙 / 文法・読解 / 聴解) but not whether 1Q/2Q combine sections as JLPT N1/N2 do. Please check Admin → Exam catalogue → Exam sections and correct anything (all editable). | Phase 15 (mock-test builder) | Keep the seeded sections; NAT uses the same three for every level until you change it. | |
 | PAY-3b | P3 | Merchant onboarding: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts? | Phase 20 (live) | Use the provider sandboxes until then. | Owner 2026-10-16: "For now use test sandbox and later i will provide the details" |
 | CON-1b | P3 | Please share a sample of existing question content (any format), if any exists, to shape the import template. | Phase 14 | — | |
 | DOM-1 | P3 | Domain name: the owner will buy it later (2026-10-15). It is needed for the Resend sender domain, `APP_URL` and hosting. The guide is in `.env` / `.env.example` ("WHEN YOU BUY YOUR DOMAIN"). | Before staging | — | Owner: "For now I haven't bought domain … when I buy domain I will add required keys." |

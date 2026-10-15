@@ -73,6 +73,7 @@ export interface Config {
     students: Student;
     'exam-types': ExamType;
     levels: Level;
+    'exam-sections': ExamSection;
     questions: Question;
     'level-check-versions': LevelCheckVersion;
     'level-check-sessions': LevelCheckSession;
@@ -91,13 +92,18 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'exam-types': {
+      sections: 'exam-sections';
+    };
+  };
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     students: StudentsSelect<false> | StudentsSelect<true>;
     'exam-types': ExamTypesSelect<false> | ExamTypesSelect<true>;
     levels: LevelsSelect<false> | LevelsSelect<true>;
+    'exam-sections': ExamSectionsSelect<false> | ExamSectionsSelect<true>;
     questions: QuestionsSelect<false> | QuestionsSelect<true>;
     'level-check-versions': LevelCheckVersionsSelect<false> | LevelCheckVersionsSelect<true>;
     'level-check-sessions': LevelCheckSessionsSelect<false> | LevelCheckSessionsSelect<true>;
@@ -371,6 +377,38 @@ export interface ExamType {
    * Shown wherever this exam is named, so nobody thinks Nihongo Mock is the official test (TSR-14).
    */
   nonAffiliationNotice?: string | null;
+  order: number;
+  enabled?: boolean | null;
+  /**
+   * Managed under Exam catalogue → Exam sections.
+   */
+  sections?: {
+    docs?: (number | ExamSection)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The sections of each exam, in order (for example Vocabulary, Grammar・Reading, Listening). Leave “Levels” empty when a section applies to every level of the exam. Sections are never deleted: switch “Enabled” off instead.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-sections".
+ */
+export interface ExamSection {
+  id: number;
+  examType: number | ExamType;
+  /**
+   * Short ID, e.g. listening. Unique within the exam; cannot be changed later.
+   */
+  key: string;
+  name: string;
+  description?: string | null;
+  /**
+   * Only these levels have this section. Empty = every level of the exam.
+   */
+  levels?: (number | Level)[] | null;
   order: number;
   enabled?: boolean | null;
   updatedAt: string;
@@ -783,6 +821,10 @@ export interface PayloadLockedDocument {
         value: number | Level;
       } | null)
     | ({
+        relationTo: 'exam-sections';
+        value: number | ExamSection;
+      } | null)
+    | ({
         relationTo: 'questions';
         value: number | Question;
       } | null)
@@ -966,6 +1008,7 @@ export interface ExamTypesSelect<T extends boolean = true> {
   nonAffiliationNotice?: T;
   order?: T;
   enabled?: T;
+  sections?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -984,6 +1027,21 @@ export interface LevelsSelect<T extends boolean = true> {
   enabledForStudy?: T;
   lineColor?: T;
   badgeColor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-sections_select".
+ */
+export interface ExamSectionsSelect<T extends boolean = true> {
+  examType?: T;
+  key?: T;
+  name?: T;
+  description?: T;
+  levels?: T;
+  order?: T;
+  enabled?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1933,6 +1991,26 @@ export interface LabelsStudent {
        * Default — EN: “No mock tests have been published yet. They'll appear here as soon as they are.” · JA: “まだ公開されている模擬試験はありません。公開されるとすぐにここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       empty?: string | null;
+      /**
+       * Default — EN: “Practise for the exam you are aiming for. Tests appear here as soon as they are published.” · JA: “目標の試験に合わせて練習しましょう。模擬試験は公開されしだいここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      intro?: string | null;
+      /**
+       * Default — EN: “Exams” · JA: “試験”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      examsTitle?: string | null;
+      /**
+       * Default — EN: “Sections by level” · JA: “レベル別の試験科目”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      sectionsByLevel?: string | null;
+      /**
+       * Default — EN: “Sections for {levels}” · JA: “{levels} の試験科目”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      sectionsFor?: string | null;
+      /**
+       * Default — EN: “Sections will be announced.” · JA: “試験科目は追ってお知らせします。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      noSections?: string | null;
     };
     results?: {
       /**
@@ -2515,6 +2593,11 @@ export interface LabelsStudentSelect<T extends boolean = true> {
           | T
           | {
               empty?: T;
+              intro?: T;
+              examsTitle?: T;
+              sectionsByLevel?: T;
+              sectionsFor?: T;
+              noSections?: T;
             };
         results?:
           | T

@@ -1,9 +1,10 @@
-import type { CollectionConfig, PayloadRequest } from 'payload'
+import { APIError, type CollectionConfig, type PayloadRequest } from 'payload'
 
 import { activeAdmin, hasPermission, never } from '@/payload/access'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 import { auditTrail } from '@/payload/hooks/auditTrail'
 import { say } from '@/payload/say'
+import { examTypeOffProblem } from '@/server/catalogue/rules'
 
 const audit = auditTrail({
   entityType: 'exam-types',
@@ -114,8 +115,58 @@ export const ExamTypes: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'sections',
+      type: 'join',
+      collection: 'exam-sections',
+      on: 'examType',
+      defaultSort: 'order',
+      label: { en: 'Sections', ja: '試験科目' },
+      admin: {
+        defaultColumns: ['name', 'levels', 'order', 'enabled'],
+        description: {
+          en: 'Managed under Exam catalogue → Exam sections.',
+          ja: '「試験カタログ → 試験科目」で管理します。',
+        },
+      },
+    },
   ],
   hooks: {
+    beforeChange: [
+      async ({ data, originalDoc, req }) => {
+        // Switching an exam off must not pull levels out from under the level check or study.
+        if (data.enabled === false && originalDoc?.enabled !== false && originalDoc?.id) {
+          const levels = await req.payload.find({
+            collection: 'levels',
+            where: { examType: { equals: originalDoc.id } },
+            pagination: false,
+            depth: 0,
+            overrideAccess: true,
+            req,
+          })
+          const problem = examTypeOffProblem(
+            levels.docs.map((l) => ({
+              code: l.code,
+              determination: l.enabledForDetermination === true,
+              study: l.enabledForStudy === true,
+            })),
+          )
+          if (problem) {
+            throw new APIError(
+              say(
+                req,
+                `This exam cannot be switched off while the level check or study library uses its levels (${problem.levels.join(', ')}). Switch those off first.`,
+                `レベルチェックまたは学習教材がこの試験のレベル（${problem.levels.join('、')}）を使用しているため、無効にできません。先にそれらを無効にしてください。`,
+              ),
+              400,
+              null,
+              true,
+            )
+          }
+        }
+        return data
+      },
+    ],
     afterChange: [audit.afterChange],
     afterDelete: [audit.afterDelete],
   },

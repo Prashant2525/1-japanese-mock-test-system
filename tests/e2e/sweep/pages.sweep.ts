@@ -101,6 +101,7 @@ test('student with a level', async ({ page }, info) => {
     [
       ...STUDENT,
       '/ja/app/study',
+      '/ja/app/mock-tests',
       '/en/app/study?level=N4',
       '/en/app/study?category=reading',
       `/en/app/study/${slug}-n4`,
@@ -125,6 +126,7 @@ test('admin (Super Admin)', async ({ page }, info) => {
       '/admin/collections/questions',
       '/admin/globals/level-check-settings',
       '/admin/collections/level-check-versions',
+      '/admin/collections/exam-sections',
       '/admin/collections/material-categories',
       '/admin/collections/study-materials',
       '/admin/collections/study-materials/create',

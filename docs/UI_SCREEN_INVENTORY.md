@@ -44,7 +44,7 @@ Last updated: 2026-10-14 (Phase 3 — proposal).
 | Student home | Assigned level, continue links to materials/tests, latest result | Minimal required landing (**implemented Phase 10**: level badge in CMS colour, links, account); latest result after Phase 17; richer widgets = REC-04 (pending) |
 | Study library *(implemented Phase 12)* | Levels (current and lower), categories, published materials | SM-R03 server-enforced. Level and category filter chips (links, work without JS), cards with category symbol, level badge, title, summary and file counts; states: empty library, nothing for this filter |
 | Material detail *(implemented Phase 12)* | Rich text with furigana, images, audio player, PDF viewer/download | Private media via signed URL. PDF: open/download links; inline frame on tablet/desktop only (phones show just the first page in frames). Unavailable → 404 |
-| Mock-test catalogue (student) | Published tests at any enabled level, with entitlement status (Free / Owned until … / Buy) | D-015 |
+| Mock-test catalogue (student) *(Phase 13: exam catalogue — exams, level groups and their sections as a route line; tests from Phase 15)* | Published tests at any enabled level, with entitlement status (Free / Owned until … / Buy) | D-015 |
 | Test intro | Instructions, sections, duration, attempts used/limit | "Start" creates the attempt server-side |
 | Mock-test runner | One question at a time, progress, timer, mark for review, question palette, previous/next | **Calm screen**; autosave with retry and offline indicator |
 | Review-before-submit | Answered / unanswered / flagged counts, jump to a question | |

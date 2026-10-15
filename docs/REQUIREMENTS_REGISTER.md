@@ -72,7 +72,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
 | MT-R01 | Mock tests are separate from Level Determination. | PB §2.2 | CONFIRMED | Separate config and attempt records. |
-| MT-R02 | CMS-managed catalogue: JLPT N5–N1; NAT 5Q–1Q mapped to N-levels; JFT A1, A2.1, A2.2, A2 (owner-editable). Only enabled levels are shown. | D-014 | CONFIRMED | Catalogue edits appear without deployment; disabled levels are hidden. |
+| MT-R02 | CMS-managed catalogue: JLPT N5–N1; NAT 5Q–1Q mapped to N-levels; JFT A1, A2.1, A2.2, A2 (owner-editable). Only enabled levels are shown. | D-014 | CONFIRMED · **catalogue implemented and tested (Phase 13)**; tests themselves Phases 15–16 | Catalogue edits appear without deployment; disabled levels are hidden. |
 | MT-R03 | After determination, students may take tests at any enabled level. | D-015 | CONFIRMED | An N5 student can open a published N3 test, subject to entitlement. |
 | MT-R04 | One question at a time; text/image/audio prompts; single-answer MCQ only at launch. | PB §2.2; D-018 | CONFIRMED | PB §16.3 #2. |
 | MT-R05 | Free back/forward navigation; answers editable until submission; "mark for review" flag; progress indicator. | D-016 | CONFIRMED | Answer changes persist across reload; flagged questions are listed before submission. |
@@ -104,7 +104,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | CMS-R04 | Student/account management, including determination reset and level override (D-013). | PB §5.3 | CONFIRMED | LD-R11. |
 | CMS-R05 | Level determination configuration (stages, thresholds, durations, question sets, enabled levels, summary copy). | PB §5.4; D-008..D-012 | CONFIRMED · **implemented (Phase 11); page text via UI labels** | LD-R03, LD-R07, LD-R12. |
 | CMS-R06 | Study content manager and media library. | PB §5.5, §5.12 | CONFIRMED · **implemented and tested (Phase 12)**; R2 storage pending (KI-37) | SM-R02..06. |
-| CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014, D-070 | CONFIRMED · **admin side implemented (Phase 9)**; sections and the student API in Phase 13 | MT-R02. |
+| CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014, D-070 | CONFIRMED · **implemented and tested (Phases 9, 13)** — exam types, levels, sections, public catalogue | MT-R02. |
 | CMS-R08 | Question bank with bilingual explanations, optional furigana, marks, sections, versions, preview. | PB §5.7; D-024 | CONFIRMED | Phase 14 tests. |
 | CMS-R09 | Import: preview → all-or-nothing commit; duplicate detection by normalized text + exam + level; row-level errors. | D-024 | CONFIRMED – DETAIL OPEN (CON-1b template sample) | A file with one bad row commits nothing and reports that row. |
 | CMS-R10 | Mock-test builder (sections, marks, pass mark, section minimums, shuffle, duration, attempt limit, free flag, availability). | PB §5.8; D-017..D-019 | CONFIRMED | Publish validation rejects incoherent tests. |

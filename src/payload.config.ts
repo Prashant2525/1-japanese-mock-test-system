@@ -13,6 +13,7 @@ import { AuditEvents } from './payload/collections/AuditEvents'
 import { DASHBOARD_WIDGETS } from './payload/admin/dashboard'
 import { EmailTemplates } from './payload/collections/EmailTemplates'
 import { ExamTypes } from './payload/collections/ExamTypes'
+import { ExamSections } from './payload/collections/ExamSections'
 import {
   Attempts,
   LevelAssignments,
@@ -79,6 +80,7 @@ export default buildConfig({
     Students,
     ExamTypes,
     Levels,
+    ExamSections,
     Questions,
     LevelCheckVersions,
     LevelCheckSessions,

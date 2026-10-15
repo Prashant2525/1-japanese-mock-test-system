@@ -3,6 +3,13 @@ import { expect, test, type Page } from '@playwright/test'
 import { E2E_ADMIN_EMAIL, E2E_EDITOR_EMAIL, E2E_SUPPORT_EMAIL } from './admin-account'
 import { adminLogin } from './admin-login'
 import { fixture } from './fixture'
+import {
+  createConfirmedStudent,
+  setStudentLevel,
+  studentLogin,
+  uiEmail,
+  uiPassword,
+} from './ui/helpers'
 
 /**
  * Phase 9: the admin shell (branding, role-aware navigation and dashboard) and the exam catalogue
@@ -102,8 +109,56 @@ test.describe('admin panel shell and exam catalogue (Phase 9)', () => {
     expect(await apiStatus(page, `/api/cms/levels/${id}`, { method: 'DELETE' })).toBe(403)
   })
 
+  test('Phase 13: an editor renames a section and students see it without a deploy', async ({
+    page,
+    browser,
+  }) => {
+    const { editor } = fixture()
+    await adminLogin(page, E2E_EDITOR_EMAIL, editor.pw, editor.totp)
+    await page.goto('/admin/collections/exam-sections')
+    await page.locator('#search-filter-input').fill('Listening')
+    // Wait until the search has filtered the list, so the NAT row is the Listening section.
+    await expect(page.locator('tbody tr').filter({ hasNotText: 'Listening' })).toHaveCount(0)
+    await page.locator('tbody tr', { hasText: 'NAT-TEST' }).locator('a').first().click()
+    await page.waitForURL(/\/admin\/collections\/exam-sections\/\d+/)
+    const name = page.locator('#field-name')
+    const original = await name.inputValue()
+    expect(original).toBe('Listening')
+    await name.fill('Listening (edited by E2E)')
+    await page.locator('#action-save').click()
+    await expect(page.getByText(/successfully/i).first()).toBeVisible()
+
+    try {
+      const context = await browser.newContext()
+      const student = await context.newPage()
+      const email = uiEmail('catalogue-cms')
+      const password = uiPassword()
+      createConfirmedStudent(email, password)
+      setStudentLevel(email, 'N5')
+      await studentLogin(student, 'en', email, password)
+      await student.goto('/en/app/mock-tests')
+      await expect(
+        student
+          .getByRole('article', { name: 'NAT-TEST' })
+          .getByText('Listening (edited by E2E)')
+          .first(),
+      ).toBeVisible()
+      await context.close()
+    } finally {
+      await name.fill(original)
+      await page.locator('#action-save').click()
+      await expect(page.getByText(/successfully/i).first()).toBeVisible()
+    }
+  })
+
   test('visitors cannot read the catalogue through the CMS API', async ({ request }) => {
     expect((await request.get('/api/cms/levels')).status()).toBe(403)
     expect((await request.get('/api/cms/exam-types')).status()).toBe(403)
+    expect((await request.get('/api/cms/exam-sections')).status()).toBe(403)
+    // The public catalogue is served by our own API, with only what is switched on.
+    const res = await request.get('/api/v1/catalogue/exams?locale=en')
+    expect(res.status()).toBe(200)
+    const body = (await res.json()) as { exams: { code: string }[] }
+    expect(body.exams.map((e) => e.code)).toEqual(expect.arrayContaining(['JLPT', 'NAT', 'JFT']))
   })
 })

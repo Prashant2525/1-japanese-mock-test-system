@@ -8,18 +8,24 @@ Last updated: 2026-10-15 (Phase 11).
 - Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
 - CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands and latest local results (2026-10-16, Phase 12b)
+## Commands and latest local results (2026-10-16, Phase 13)
 
 | Purpose | Command | Result |
 |---|---|---|
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **182/182** |
-| Integration tests | `pnpm test:int` | **184/184** |
+| Unit tests | `pnpm test:unit` | **184/184** |
+| Integration tests | `pnpm test:int` | **193/193** |
 | Build | `pnpm build` | Pass |
 | Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
-| E2E | `pnpm test:e2e` | **128/128 + 1 skipped**, first try, no retries (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **131/131 + 1 skipped, first try, no retries** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 13 tests prove
+
+- **Unit `catalogue` (+2):** an exam type cannot be switched off while its levels serve the level check or study (names them); allowed otherwise.
+- **Integration `exam-config` (9):** seeded sections match the official structure (JLPT N5/N3 three, N1 two, NAT three, JFT four) in EN and JA; a section limited to another exam's level is refused (400); keys unique per exam, same key allowed across exams; key and exam fixed after creation; Support cannot write; nobody can delete sections, levels or exam types (403); per-level sections, and switched-off sections/levels/exams disappear from the public catalogue; JLPT cannot be switched off (400) and stays on; schema check: results have no links to the catalogue, and history/content links are RESTRICT (found and fixed six SET NULL links).
+- **E2E `ui/catalogue` (1 × 2 browsers):** the Mock tests page shows JLPT's two level groups with their sections, JFT's sections, the Japanese page; axe clean. **`admin-cms` (+1):** an editor renames a NAT section in the admin and a student sees the new name without a deploy (then restored); visitors cannot read sections through the CMS API but get the public catalogue.
 
 ## What the Phase 12b tests prove
 

@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
 import { changedFields } from '@/payload/hooks/auditTrail'
-import { colourProblem, ladderProblem, type LadderLevel } from '@/server/catalogue/rules'
+import {
+  colourProblem,
+  examTypeOffProblem,
+  ladderProblem,
+  type LadderLevel,
+} from '@/server/catalogue/rules'
 import { SEED_EXAM_TYPES, SEED_LEVELS } from '@/server/catalogue/seed'
 
 const level = (code: string, order: number, enabled: boolean): LadderLevel => ({
@@ -129,5 +134,22 @@ describe('seed catalogue (D-014)', () => {
       expect(item.name.en.trim()).not.toBe('')
       expect(item.name.ja.trim()).not.toBe('')
     }
+  })
+})
+
+describe('switching an exam type off (Phase 13)', () => {
+  it('is refused while its levels are used by the level check or study, naming them', () => {
+    expect(
+      examTypeOffProblem([
+        { code: 'N5', determination: true, study: true },
+        { code: 'N4', determination: false, study: true },
+        { code: 'N1', determination: false, study: false },
+      ]),
+    ).toEqual({ levels: ['N5', 'N4'] })
+  })
+
+  it('is allowed when no level depends on it', () => {
+    expect(examTypeOffProblem([{ code: '5Q', determination: false, study: false }])).toBeNull()
+    expect(examTypeOffProblem([])).toBeNull()
   })
 })
