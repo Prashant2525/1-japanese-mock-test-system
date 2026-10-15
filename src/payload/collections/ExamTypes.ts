@@ -110,7 +110,7 @@ export const ExamTypes: CollectionConfig = {
           type: 'checkbox',
           defaultValue: true,
           label: { en: 'Enabled', ja: '有効' },
-          admin: { width: '50%' },
+          admin: { width: '50%', components: { Cell: '/payload/admin/cells#YesNoCell' } },
         },
       ],
     },

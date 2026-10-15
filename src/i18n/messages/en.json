@@ -19,7 +19,8 @@
     "login": "Log in",
     "signup": "Sign up",
     "myPage": "My page",
-    "logout": "Log out"
+    "logout": "Log out",
+    "menu": "Menu"
   },
   "footer": {
     "rights": "© {year} Nihongo Mock",
@@ -31,7 +32,9 @@
     "titleStation": "N5",
     "underConstruction": "The full website is being built. You can already create an account.",
     "ctaSignup": "Create a free account",
-    "ctaLogin": "Log in"
+    "ctaLogin": "Log in",
+    "signedInLead": "Welcome back, {name}. Pick up where you left off.",
+    "ctaMyPage": "Go to my page"
   },
   "authPanel": {
     "title": "Your route to Japan starts at N5.",

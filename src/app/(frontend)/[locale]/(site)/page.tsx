@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { headers } from 'next/headers'
 
 import { Link } from '@/i18n/navigation'
+import { currentStudentForPage } from '@/server/auth/session'
 import { Button } from '@/ui/components/button'
 import { Reveal } from '@/ui/components/reveal'
 import { SkylineLayer } from '@/ui/components/skyline'
@@ -14,6 +16,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations('home')
+  const student = await currentStudentForPage(await headers())
+  const signedIn = student !== null && student.status !== 'suspended'
   return (
     <section className="on-night relative isolate overflow-hidden bg-night text-on-night">
       <div
@@ -40,15 +44,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </h1>
         </Reveal>
         <Reveal delayMs={160}>
-          <p className="mt-5 max-w-xl text-lg text-muted-on-night">{t('underConstruction')}</p>
+          <p className="mt-5 max-w-xl text-lg text-muted-on-night">
+            {signedIn ? t('signedInLead', { name: student.name }) : t('underConstruction')}
+          </p>
         </Reveal>
         <Reveal delayMs={240} className="mt-8 flex flex-wrap gap-3">
-          <Button asChild size="lg">
-            <Link href="/signup">{t('ctaSignup')}</Link>
-          </Button>
-          <Button asChild size="lg" variant="onNight">
-            <Link href="/login">{t('ctaLogin')}</Link>
-          </Button>
+          {signedIn ? (
+            // Signed in: one way forward. /app sends them to the level check or their home.
+            <Button asChild size="lg">
+              <Link href="/app">{t('ctaMyPage')}</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild size="lg">
+                <Link href="/signup">{t('ctaSignup')}</Link>
+              </Button>
+              <Button asChild size="lg" variant="onNight">
+                <Link href="/login">{t('ctaLogin')}</Link>
+              </Button>
+            </>
+          )}
         </Reveal>
       </div>
       <div className="absolute inset-x-0 bottom-8 h-2.5 bg-signal" aria-hidden="true" />

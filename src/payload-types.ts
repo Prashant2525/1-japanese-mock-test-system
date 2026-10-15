@@ -782,6 +782,10 @@ export interface LabelsSite {
      * Default — EN: “Log out” · JA: “ログアウト”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
      */
     logout?: string | null;
+    /**
+     * Default — EN: “Menu” · JA: “メニュー”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    menu?: string | null;
   };
   footer?: {
     /**
@@ -818,6 +822,14 @@ export interface LabelsSite {
      * Default — EN: “Log in” · JA: “ログイン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
      */
     ctaLogin?: string | null;
+    /**
+     * Default — EN: “Welcome back, {name}. Pick up where you left off.” · JA: “{name} さん、おかえりなさい。続きから始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    signedInLead?: string | null;
+    /**
+     * Default — EN: “Go to my page” · JA: “マイページへ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    ctaMyPage?: string | null;
   };
   authPanel?: {
     /**
@@ -1386,6 +1398,7 @@ export interface LabelsSiteSelect<T extends boolean = true> {
         signup?: T;
         myPage?: T;
         logout?: T;
+        menu?: T;
       };
   footer?:
     | T
@@ -1402,6 +1415,8 @@ export interface LabelsSiteSelect<T extends boolean = true> {
         underConstruction?: T;
         ctaSignup?: T;
         ctaLogin?: T;
+        signedInLead?: T;
+        ctaMyPage?: T;
       };
   authPanel?:
     | T

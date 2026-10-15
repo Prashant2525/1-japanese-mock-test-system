@@ -57,6 +57,22 @@ export async function studentLogin(
   await page.waitForURL(new RegExp(`/${locale}/app(/|$)`))
 }
 
+/** Logs out the way a visitor would: header button on larger screens, the Menu on phones. */
+export async function logOut(page: Page): Promise<void> {
+  const banner = page.getByRole('banner')
+  const menu = banner.getByRole('button', { name: 'Menu' })
+  if (await menu.isVisible()) await menu.click()
+  await banner.getByRole('button', { name: 'Log out' }).filter({ visible: true }).click()
+}
+
+/** Opens "My page" from the header (inline on larger screens, inside the Menu on phones). */
+export async function openMyPage(page: Page): Promise<void> {
+  const banner = page.getByRole('banner')
+  const menu = banner.getByRole('button', { name: 'Menu' })
+  if (await menu.isVisible()) await menu.click()
+  await banner.getByRole('link', { name: 'My page' }).filter({ visible: true }).click()
+}
+
 /** Flips the CMS switch for "Continue with Google" (Settings → Sign-in options). */
 export function setGoogleSignIn(state: 'on' | 'off'): void {
   execSync(`pnpm --silent exec tsx tests/e2e/e2e-admin.ts google ${state}`, { env: process.env })

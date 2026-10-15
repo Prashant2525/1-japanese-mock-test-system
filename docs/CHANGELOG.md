@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-15 — Fix: what signed-in students see (KI-30)
+
+- Home page: signed-in students see "Welcome back" and "Go to my page" instead of "Create a free account / Log in".
+- Login and sign-up pages send signed-in students to the student area (or to a safe `next` page).
+- Phones: a header Menu with "My page" and "Log out" (before, a signed-in student on a phone had no link to the student area, and no way to log out on the level-check page).
+- Admin: Levels grouped by exam type; ✓ / – instead of true/false in yes/no columns.
+- `pnpm sweep`: screenshots of every page in every user state, EN/JA, desktop and iPhone, plus where each address ended up; run and reviewed before each report. It found a doubled path (`/en/en/app`) in this fix before release.
+- Tests: unit 129, integration 120, E2E 104 + 1 skipped (new `ui/signed-in`).
+
 ## 2026-10-15 — Fix: signed-in students sent back to the login page (KI-29)
 
 - After "Continue with Google" or a link from another site, pages now recognise the signed-in student (D-075). The API rules are unchanged.
