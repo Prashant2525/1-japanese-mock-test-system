@@ -1,8 +1,8 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 12 — Study materials and media. **COMPLETE.** Next: Phase 13 — Examination configuration.
-**Exact task in progress:** none. Reference review (2026-10-16) recorded; **waiting for the owner's RV-7 answer** (deletion policy), then Phase 12b (`IMPLEMENTATION_PLAN.md`), then Phase 13. Start 12b by writing the failing tests for KI-39..KI-41.
+**Current phase / milestone:** Phase 12b — Content lifecycle corrections. **COMPLETE.** Next: Phase 13 — Examination configuration.
+**Exact task in progress:** none. Start Phase 13 (exam types, levels, sections configuration) from playbook §11; follow the D-092/D-100 lifecycle rules for every new module (delete guards, `guardLiveChanges` for anything with drafts).
 
 ## Completed (with evidence)
 
@@ -24,6 +24,11 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- **Phase 12b:** Payload's draft save (`draft: true`) only writes a version; a non-draft save with `_status: 'draft'` is "Unpublish" and changes the live doc: guard with `guardLiveChanges`. In Payload 3.90 "Unpublish" and "Delete" are in the document menu (three dots).
+- New enum values (permission keys) cannot be used in the migration that adds them: seed them in a later migration (plain SQL).
+- `filterOptions` runs during validation with the new value in `siblingData`; use the saved document (`id`) to decide what may stay.
+- pdf.js: Safari cannot `for await` a stream, so read text with `getReader()`; the worker is `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url)`.
 
 - Study media: tests upload into their own folders (integration: temp dir; E2E: `media/e2e-learning`); the dev folder is `media/learning`. Both git-ignored. An empty env value counts as unset (`||`, not `??`).
 - The `/api/v1` session check wants the browser's fetch metadata: in E2E, fetch protected files from the page (`page.evaluate(fetch)`), not with `page.request`.

@@ -199,7 +199,14 @@
       "openPdf": "PDFを開く",
       "downloadPdf": "ダウンロード",
       "pdfTitle": "PDF：{name}",
-      "audioUnsupported": "お使いのブラウザではこの音声を再生できません。"
+      "audioUnsupported": "お使いのブラウザではこの音声を再生できません。",
+      "download": "ダウンロード",
+      "pdfLoading": "PDFを読み込み中…",
+      "pdfFailed": "PDFを表示できませんでした。ページを再読み込みしてください。",
+      "pdfPages": "{count}ページ",
+      "search": "教材を検索",
+      "searchButton": "検索",
+      "clearSearch": "検索をクリア"
     },
     "mockTests": {
       "empty": "まだ公開されている模擬試験はありません。公開されるとすぐにここに表示されます。"

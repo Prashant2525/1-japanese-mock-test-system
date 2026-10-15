@@ -3,6 +3,7 @@ import type { CollectionConfig, PayloadRequest } from 'payload'
 import { activeAdmin, hasPermission, never } from '@/payload/access'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 import { auditTrail } from '@/payload/hooks/auditTrail'
+import { categoryDeleteGuard } from '@/payload/hooks/contentLifecycle'
 import { say } from '@/payload/say'
 
 const audit = auditTrail({
@@ -36,7 +37,7 @@ export const MaterialCategories: CollectionConfig = {
     read: activeAdmin,
     create: hasPermission('materials.manage'),
     update: hasPermission('materials.manage'),
-    delete: never,
+    delete: hasPermission('materials.delete'),
   },
   fields: [
     {
@@ -111,5 +112,9 @@ export const MaterialCategories: CollectionConfig = {
       ],
     },
   ],
-  hooks: { afterChange: [audit.afterChange], afterDelete: [audit.afterDelete] },
+  hooks: {
+    beforeDelete: [categoryDeleteGuard],
+    afterChange: [audit.afterChange],
+    afterDelete: [audit.afterDelete],
+  },
 }

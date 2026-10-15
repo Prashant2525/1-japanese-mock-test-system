@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-16 — Phase 12b: content lifecycle, downloads and search
+
+- Deleting now works where it is safe (D-092): unused learning media (stored file removed too), study materials, empty categories, never-published questions. Things still in use are refused with a clear "used by" message; history-bearing records stay archive-only. New permissions `materials.delete`, `media.delete`, `questions.delete` (Super Admin by default).
+- Fixed KI-41: someone without publish rights could unpublish or archive published materials and questions.
+- Learning media: Archive switch and a "Used by" panel.
+- Downloads off by default with an "Allow download" switch per attachment; PDFs now open in an in-app viewer on every device (phones see every page).
+- Study search.
+- Owner answers RV-1..RV-14 recorded (D-092..D-099): coupons, refunds and sale prices are in scope; single tests and bundles; notices; watermark; layout and admin direction.
+- Tests: unit 182/182, integration 184/184, E2E 128/128 + 1 skipped.
+
 ## 2026-10-16 — Reference review (documents only)
 
 - Inspected the owner's 24 UI reference screenshots and mapped each to our screens (`UI_SCREEN_INVENTORY.md` §7).

@@ -1,9 +1,10 @@
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import type { Access, CollectionConfig, PayloadRequest } from 'payload'
+import type { Access, CollectionConfig, PayloadRequest, Where } from 'payload'
 
-import { activeAdmin, never } from '@/payload/access'
+import { activeAdmin, hasPermission } from '@/payload/access'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 import { auditTrail } from '@/payload/hooks/auditTrail'
+import { guardLiveChanges } from '@/payload/hooks/contentLifecycle'
 import { say } from '@/payload/say'
 import { can } from '@/server/auth/permissions'
 
@@ -47,7 +48,7 @@ export const StudyMaterials: CollectionConfig = {
     read: activeAdmin,
     create: canSave,
     update: canSave,
-    delete: never,
+    delete: hasPermission('materials.delete'),
     readVersions: activeAdmin,
   },
   fields: [
@@ -176,6 +177,22 @@ export const StudyMaterials: CollectionConfig = {
               required: true,
               label: { en: 'File', ja: 'ファイル' },
               admin: { width: '50%' },
+              // Archived files cannot be picked again; files the saved material already uses stay valid.
+              filterOptions: async ({ id, req }) => {
+                const notArchived: Where = { archived: { not_equals: true } }
+                if (id === undefined) return notArchived
+                const kept = new Set<number>()
+                for (const draft of [false, true]) {
+                  const saved = await req.payload
+                    .findByID({ collection: 'study-materials', id, draft, depth: 0, req })
+                    .catch(() => null)
+                  for (const a of saved?.attachments ?? []) {
+                    const m = typeof a.media === 'object' ? a.media?.id : a.media
+                    if (typeof m === 'number') kept.add(m)
+                  }
+                }
+                return kept.size ? { or: [notArchived, { id: { in: [...kept] } }] } : notArchived
+              },
             },
             {
               name: 'title',
@@ -186,6 +203,18 @@ export const StudyMaterials: CollectionConfig = {
               admin: { width: '50%' },
             },
           ],
+        },
+        {
+          name: 'allowDownload',
+          type: 'checkbox',
+          defaultValue: false,
+          label: { en: 'Allow download', ja: 'ダウンロードを許可' },
+          admin: {
+            description: {
+              en: 'Off: students can only view or play it in the app (no download button). It deters copying; it cannot stop screenshots.',
+              ja: 'オフ：アプリ内での閲覧・再生のみ（ダウンロードボタンなし）。コピーの抑止にはなりますが、スクリーンショットは防げません。',
+            },
+          },
         },
       ],
     },
@@ -204,5 +233,9 @@ export const StudyMaterials: CollectionConfig = {
       },
     },
   ],
-  hooks: { afterChange: [audit.afterChange], afterDelete: [audit.afterDelete] },
+  hooks: {
+    beforeOperation: [guardLiveChanges('materials.publish')],
+    afterChange: [audit.afterChange],
+    afterDelete: [audit.afterDelete],
+  },
 }

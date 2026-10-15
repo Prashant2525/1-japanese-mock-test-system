@@ -38,7 +38,7 @@ test.describe('study library (Phase 12)', () => {
     const tag = info.project.name === 'chromium' ? 'c' : 'w'
     n5 = `e2e-${run}${tag}-n5`
     n4 = `e2e-${run}${tag}-n4`
-    createStudyMaterial(n5, 'N5')
+    createStudyMaterial(n5, 'N5', { download: true })
     createStudyMaterial(n4, 'N4')
   })
 
@@ -85,7 +85,28 @@ test.describe('study library (Phase 12)', () => {
       { status: 206, type: 'audio/mpeg' },
       { status: 206, type: 'application/pdf' },
     ])
+    // The PDF is drawn in the page (pdf.js), not in the browser's own viewer.
+    await expect(page.locator('[role="document"] canvas').first()).toBeVisible()
     if (info.project.name === 'chromium') await expectAccessible(page)
+
+    // Without "Allow download": no open/download links, the audio player hides its download item,
+    // and the PDF still shows in the page.
+    await open(page, `/en/app/study/${n4}`)
+    await expect(page.getByRole('link', { name: 'Open the PDF' })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Download' })).toHaveCount(0)
+    await expect(page.locator('audio')).toHaveAttribute('controlslist', 'nodownload')
+    await expect(page.locator('[role="document"] canvas').first()).toBeVisible()
+  })
+
+  test('search finds a material by its address name', async ({ page }) => {
+    await studentAt(page, 'N4')
+    await open(page, '/en/app/study')
+    await page.getByRole('searchbox', { name: 'Search materials' }).fill(n4)
+    await page.getByRole('button', { name: 'Search' }).click()
+    await expect(page).toHaveURL(new RegExp(`q=${n4}`))
+    const main = page.getByRole('main')
+    await expect(main.locator(`a[href$="/app/study/${n4}"]`)).toHaveCount(1)
+    await expect(main.locator(`a[href$="/app/study/${n5}"]`)).toHaveCount(0)
   })
 
   test('an N5 student does not see the N4 material, even by its address', async ({ page }) => {

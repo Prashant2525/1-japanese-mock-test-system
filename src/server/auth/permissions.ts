@@ -2,6 +2,7 @@
  * Permission catalogue (ARCHITECTURE §4, D-022). Roles bundle these keys; a Super Admin
  * edits roles in the CMS. Labels are bilingual for the admin panel.
  * Adding a key here is a code change (it must be enforced somewhere); assigning keys is CMS work.
+ * Delete keys (D-092) are not in any default role except Super Admin (least privilege).
  */
 export const PERMISSIONS = {
   'admins.read': { en: 'View admin accounts', ja: '管理者アカウントの閲覧' },
@@ -32,11 +33,29 @@ export const PERMISSIONS = {
     ja: '試験種別・レベル・セクションの編集',
   },
   'materials.manage': { en: 'Edit study materials', ja: '学習教材の編集' },
-  'materials.publish': { en: 'Publish study materials', ja: '学習教材の公開' },
+  'materials.publish': {
+    en: 'Publish, unpublish and archive study materials',
+    ja: '学習教材の公開・非公開・アーカイブ',
+  },
+  'materials.delete': {
+    en: 'Delete study materials and unused study categories',
+    ja: '学習教材と未使用の教材カテゴリの削除',
+  },
   'media.manage': { en: 'Upload and manage media', ja: 'メディアのアップロード・管理' },
+  'media.delete': {
+    en: 'Delete unused media files',
+    ja: '未使用のメディアファイルの削除',
+  },
   'media.upload_svg': { en: 'Upload SVG files', ja: 'SVGファイルのアップロード' },
   'questions.manage': { en: 'Edit questions', ja: '問題の編集' },
-  'questions.publish': { en: 'Publish questions', ja: '問題の公開' },
+  'questions.publish': {
+    en: 'Publish, unpublish and archive questions',
+    ja: '問題の公開・非公開・アーカイブ',
+  },
+  'questions.delete': {
+    en: 'Delete questions that were never published',
+    ja: '一度も公開されていない問題の削除',
+  },
   'questions.import': {
     en: 'Import questions from spreadsheets',
     ja: 'スプレッドシートからの問題インポート',

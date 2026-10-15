@@ -52,6 +52,7 @@
     "next-intl": "4.14.8",
     "payload": "3.90.2",
     "payload-totp": "3.0.6",
+    "pdfjs-dist": "6.3.289",
     "pino": "^9.6.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",

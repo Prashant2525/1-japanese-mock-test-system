@@ -96,6 +96,8 @@ export async function listStudyMaterialsFor(
     locale: Locale
     level?: string | null
     category?: string | null
+    /** Free-text search in the title and summary (SM-R07); only narrows the visible set. */
+    q?: string | null
     page?: number
     limit?: number
   },
@@ -106,9 +108,13 @@ export async function listStudyMaterialsFor(
   const categoryIds = categories
     .filter((c) => !options.category || c.key === options.category)
     .map((c) => c.id)
+  const q = options.q?.trim().slice(0, 100)
+  const search: Where[] = q
+    ? [{ or: [{ title: { like: q } }, { summary: { like: q } }, { slug: { like: q } }] }]
+    : []
   const found = await payload.find({
     collection: 'study-materials',
-    where: { and: visibleWhere(levelIds, categoryIds) },
+    where: { and: [...visibleWhere(levelIds, categoryIds), ...search] },
     sort: ['order', 'createdAt'],
     page: options.page ?? 1,
     limit: options.limit ?? 24,
@@ -148,6 +154,8 @@ export type StudyAttachment = {
   filename: string
   mimeType: string
   url: string
+  /** The editor allowed downloading this file (D-097); otherwise view or play in the app only. */
+  allowDownload: boolean
 }
 
 export type StudyMaterialView = {
@@ -203,6 +211,7 @@ export async function studyMaterialFor(
         filename: media!.filename!,
         mimeType: media!.mimeType!,
         url: signedMediaPath(payload.secret, media!.id, student.id),
+        allowDownload: a.allowDownload === true,
       })),
   }
 }

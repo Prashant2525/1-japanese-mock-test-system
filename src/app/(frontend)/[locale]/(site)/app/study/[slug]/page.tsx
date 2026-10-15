@@ -5,6 +5,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { isAppError } from '@/server/http/errors'
 import { studyMaterialFor, type StudyMaterialView } from '@/server/study/service'
+import { NoSave } from '@/ui/components/no-save'
+import { PdfViewer } from '@/ui/components/pdf-viewer'
 import { Reveal } from '@/ui/components/reveal'
 import { RichText } from '@/ui/components/rich-text'
 import { StationBadge } from '@/ui/components/station-badge'
@@ -19,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: t('student.nav.study'), robots: { index: false } }
 }
 
-/** One study material: text with furigana, then its images, audio and PDFs (signed, private). */
+/**
+ * One study material: text with furigana, then its images, audio and PDFs (signed, private). Files
+ * open in the app; download links appear only where the editor allowed them (D-097).
+ */
 export default async function StudyMaterialPage({ params }: Props) {
   const { locale, slug } = await params
   setRequestLocale(locale)
@@ -72,13 +77,16 @@ export default async function StudyMaterialPage({ params }: Props) {
             if (a.kind === 'image') {
               return (
                 <figure key={i} className="grid gap-2 rounded-card bg-surface p-4 shadow-card">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- private signed file, not optimisable */}
-                  <img
-                    src={a.url}
-                    alt={a.alt ?? ''}
-                    className="h-auto max-w-full rounded-input"
-                    loading="lazy"
-                  />
+                  <NoSave on={!a.allowDownload}>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- private signed file, not optimisable */}
+                    <img
+                      src={a.url}
+                      alt={a.alt ?? ''}
+                      className="h-auto max-w-full rounded-input"
+                      loading="lazy"
+                      draggable={a.allowDownload}
+                    />
+                  </NoSave>
                   {a.caption || a.title ? (
                     <figcaption className="text-sm text-muted">{a.caption ?? a.title}</figcaption>
                   ) : null}
@@ -88,10 +96,29 @@ export default async function StudyMaterialPage({ params }: Props) {
             if (a.kind === 'audio') {
               return (
                 <figure key={i} className="grid gap-2 rounded-card bg-surface p-4 shadow-card">
-                  <figcaption className="font-bold">♪ {name}</figcaption>
-                  <audio controls preload="metadata" src={a.url} className="w-full">
-                    {t('study.audioUnsupported')}
-                  </audio>
+                  <figcaption className="flex flex-wrap items-center justify-between gap-2 font-bold">
+                    <span>♪ {name}</span>
+                    {a.allowDownload ? (
+                      <a
+                        href={a.url}
+                        download={a.filename}
+                        className="text-sm underline underline-offset-4"
+                      >
+                        {t('study.download')}
+                      </a>
+                    ) : null}
+                  </figcaption>
+                  <NoSave on={!a.allowDownload}>
+                    <audio
+                      controls
+                      preload="metadata"
+                      src={a.url}
+                      className="w-full"
+                      controlsList={a.allowDownload ? undefined : 'nodownload'}
+                    >
+                      {t('study.audioUnsupported')}
+                    </audio>
+                  </NoSave>
                 </figure>
               )
             }
@@ -99,25 +126,35 @@ export default async function StudyMaterialPage({ params }: Props) {
               <figure key={i} className="grid gap-3 rounded-card bg-surface p-4 shadow-card">
                 <figcaption className="flex flex-wrap items-center justify-between gap-2 font-bold">
                   <span>▤ {name}</span>
-                  <span className="flex gap-3 text-sm">
-                    <a
-                      href={a.url}
-                      target="_blank"
-                      rel="noopener"
-                      className="underline underline-offset-4"
-                    >
-                      {t('study.openPdf')}
-                    </a>
-                    <a href={a.url} download={a.filename} className="underline underline-offset-4">
-                      {t('study.downloadPdf')}
-                    </a>
-                  </span>
+                  {a.allowDownload ? (
+                    <span className="flex gap-3 text-sm">
+                      <a
+                        href={a.url}
+                        target="_blank"
+                        rel="noopener"
+                        className="underline underline-offset-4"
+                      >
+                        {t('study.openPdf')}
+                      </a>
+                      <a
+                        href={a.url}
+                        download={a.filename}
+                        className="underline underline-offset-4"
+                      >
+                        {t('study.downloadPdf')}
+                      </a>
+                    </span>
+                  ) : null}
                 </figcaption>
-                {/* Phones (iOS especially) show only the first page in a frame: the open link is the main way there. */}
-                <iframe
+                <PdfViewer
                   src={a.url}
                   title={t('study.pdfTitle', { name })}
-                  className="hidden h-[70vh] w-full rounded-input border border-line sm:block"
+                  protect={!a.allowDownload}
+                  labels={{
+                    loading: t('study.pdfLoading'),
+                    failed: t('study.pdfFailed'),
+                    pages: t.raw('study.pdfPages') as string,
+                  }}
                 />
               </figure>
             )

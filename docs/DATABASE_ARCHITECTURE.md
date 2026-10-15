@@ -68,9 +68,9 @@ erDiagram
 | Entity | Type | Key fields | Constraints / notes |
 |---|---|---|---|
 | `material_categories` *(implemented Phase 12)* | [P] localized | key (immutable), name, symbol (e.g. 聴), order, enabled | seeded in the migration as SQL: kanji 漢, grammar 文, reading 読, listening 聴; never deleted |
-| `study_materials` *(implemented Phase 12; `archived` flag; attachments are an array of {media, title})* | [P] localized, drafts + versions | title, slug, level → `levels`, category, summary, body (Lexical + ruby), attachments → `learning_media`[], order | unique (slug); index (level, category, status); student queries filter `enabledForStudy` and level ≤ assigned |
+| `study_materials` *(implemented Phase 12; `archived` flag; attachments are an array of {media, title, allowDownload (12b, default false)}; deletable with `materials.delete`, versions go too)* | [P] localized, drafts + versions | title, slug, level → `levels`, category, summary, body (Lexical + ruby), attachments → `learning_media`[], order | unique (slug); index (level, category, status); student queries filter `enabledForStudy` and level ≤ assigned |
 | `site_media` | [P] upload, **public** | alt (localized), kind, mime, size, width/height | marketing images, logos, parallax layers |
-| `learning_media` *(implemented Phase 12; local disk until R2, D-088)* | [P] upload, **private** | alt/caption (localized), kind (`audio`/`pdf`/`image`, set by the server), mime, size, durationSec | served only through signed URLs (D-087); type/size/content checked on upload (D-086); never deleted |
+| `learning_media` *(implemented Phase 12; local disk until R2, D-088; 12b: `archived` flag, deletable only when unused — D-092)* | [P] upload, **private** | alt/caption (localized), kind (`audio`/`pdf`/`image`, set by the server), mime, size, durationSec | served only through signed URLs (D-087); type/size/content checked on upload (D-086); never deleted |
 
 ### 3.4 Question bank
 

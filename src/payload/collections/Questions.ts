@@ -1,9 +1,10 @@
 import { sql } from '@payloadcms/db-postgres'
 import type { Access, CollectionConfig, PayloadRequest } from 'payload'
 
-import { activeAdmin, never } from '@/payload/access'
+import { activeAdmin, hasPermission, never } from '@/payload/access'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 import { auditTrail } from '@/payload/hooks/auditTrail'
+import { guardLiveChanges, questionDeleteGuard } from '@/payload/hooks/contentLifecycle'
 import { say } from '@/payload/say'
 import { can } from '@/server/auth/permissions'
 
@@ -57,7 +58,7 @@ export const Questions: CollectionConfig = {
     read: activeAdmin,
     create: canSave,
     update: canSave,
-    delete: never,
+    delete: hasPermission('questions.delete'),
     readVersions: activeAdmin,
   },
   fields: [
@@ -243,6 +244,8 @@ export const Questions: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeOperation: [guardLiveChanges('questions.publish')],
+    beforeDelete: [questionDeleteGuard],
     beforeChange: [
       async ({ data, operation, req }) => {
         // A stable public ID from a database sequence (created by migration).
