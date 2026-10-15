@@ -171,7 +171,10 @@
       "ruleStop": "It stops at the first stage you don't pass. Your level is the highest stage you passed; if you don't pass {first}, you start at {first}.",
       "ruleUnlock": "When it is complete, your study materials, mock tests and results open.",
       "routeLabel": "Level-check route: {stops}",
-      "start": "Start the level check"
+      "start": "Start the level check",
+      "ready": "{count} stages, up to {minutes} minutes in total. Each stage is timed separately.",
+      "continue": "Continue the level check",
+      "inProgress": "Your level check is in progress. Continue where you left off; the timer of a started stage keeps running."
     },
     "home": {
       "levelLabel": "Your level",
@@ -188,6 +191,53 @@
     },
     "results": {
       "empty": "You don't have any results yet. Take a mock test and your score will appear here."
+    },
+    "yourLevel": {
+      "title": "Your level",
+      "lead": "Start your studies at {level}.",
+      "beginnerLead": "You start at {level}, the beginning of the route.",
+      "stagesTitle": "Your level check",
+      "passed": "Passed",
+      "notPassed": "Not passed",
+      "score": "{percent}%",
+      "goHome": "Go to my page"
     }
+  },
+  "exam": {
+    "stageLabel": "Level check · {level}",
+    "questionOf": "Question {current} of {total}",
+    "timeLeft": "Time left",
+    "timeLeftAria": "{minutes} minutes {seconds} seconds left",
+    "previous": "Previous",
+    "next": "Next",
+    "flag": "Mark for review",
+    "unflag": "Remove review mark",
+    "palette": "All questions",
+    "paletteItem": "Question {number}",
+    "answered": "answered",
+    "unanswered": "not answered",
+    "flaggedState": "marked for review",
+    "review": "Review and submit",
+    "reviewTitle": "Ready to submit this stage?",
+    "reviewBody": "You answered {answered} of {total} questions. Unanswered questions count as wrong.",
+    "reviewFlagged": "Marked for review: {count}",
+    "reviewUnanswered": "Not answered: {count}",
+    "keepWorking": "Keep working",
+    "submit": "Submit stage",
+    "saving": "Saving…",
+    "saved": "All answers saved",
+    "notSaved": "Not saved yet — retrying",
+    "timeUp": "Time is up. Your answers were submitted.",
+    "staleTitle": "This test continues in another tab",
+    "staleBody": "You opened this stage somewhere else. Continue here to take it back; the other tab will stop.",
+    "continueHere": "Continue here",
+    "loading": "Loading your test…",
+    "loadError": "We couldn't load your test. Check your connection and try again.",
+    "retry": "Try again",
+    "stagePassedTitle": "Stage {level} passed",
+    "stagePassedBody": "Well done. The next stage is {next}. Its timer starts when you press Start.",
+    "startNext": "Start {level}",
+    "stageInfo": "{questions} questions · {minutes} minutes",
+    "answerOption": "Answer {key}"
   }
 }

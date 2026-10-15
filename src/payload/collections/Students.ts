@@ -5,6 +5,7 @@ import { loginRateLimit } from '@/payload/hooks/loginRateLimit'
 import { recordAudit } from '@/server/audit/record'
 import { revokeAllSessions } from '@/server/auth/sessions'
 import { renderEmail, type Locale } from '@/server/email/templates'
+import { levelAdminEndpoints } from '@/server/level-check/admin'
 import { getEnv } from '@/server/env'
 import { ADMIN_GROUPS } from '@/payload/admin/groups'
 
@@ -88,6 +89,8 @@ export const Students: CollectionConfig = {
       },
     },
   },
+  // Level-check reset and level override (D-013); permission-checked inside.
+  endpoints: levelAdminEndpoints,
   access: {
     admin: never,
     read: permissionOrSelf('students.read', 'students'),
@@ -133,6 +136,14 @@ export const Students: CollectionConfig = {
       // Changed only by the level-check service (LD-R02, D-020); resets go through an audited action.
       access: { create: never, update: never },
       admin: { position: 'sidebar', readOnly: true },
+    },
+    {
+      name: 'levelActions',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '/payload/admin/level-actions#LevelActions' },
+      },
     },
     {
       // Set only by the level-check service (Phase 11) or an audited Super Admin override (D-013).

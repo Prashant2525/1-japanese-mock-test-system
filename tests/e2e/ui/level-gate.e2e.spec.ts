@@ -48,7 +48,7 @@ test.describe('level gate (Phase 10)', () => {
     await expect(
       page.getByRole('list', { name: /Level-check route/ }).getByRole('listitem'),
     ).toHaveText(['N5', 'N4', 'N3'])
-    await expect(page.getByRole('button', { name: 'Start the level check' })).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'Start the level check' })).toBeEnabled()
     // No study/test/results tabs before a level exists.
     await expect(page.getByRole('navigation', { name: 'Student area' })).toHaveCount(0)
 
@@ -156,7 +156,7 @@ test.describe('level gate (Phase 10)', () => {
     await newStudent(page, 'N5')
     await logOut(page)
     await expect(page).toHaveURL(/\/en\/login\?loggedOut=1$/)
-    await expect(page.getByText("You've been logged out.")).toBeVisible()
+    await expect(page.getByRole('main').getByText("You've been logged out.")).toBeVisible()
     await open(page, '/en/app')
     await expect(page).toHaveURL(/\/en\/login/)
   })

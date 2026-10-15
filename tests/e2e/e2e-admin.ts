@@ -114,6 +114,18 @@ async function main(action: string | undefined): Promise<void> {
     return
   }
 
+  // Level-check records of test students go first: the database protects these links.
+  const { sql } = await import('@payloadcms/db-postgres')
+  const testStudents = sql`SELECT id FROM students WHERE email LIKE ${'%' + E2E_UI_DOMAIN} OR email = ${E2E_STUDENT_EMAIL}`
+  await payload.db.drizzle.execute(sql`
+    DELETE FROM result_items WHERE result_id IN (SELECT id FROM results WHERE student_id IN (${testStudents}));
+  `)
+  for (const table of ['results', 'attempts', 'level_assignments', 'level_check_sessions']) {
+    await payload.db.drizzle.execute(
+      sql`DELETE FROM ${sql.identifier(table)} WHERE student_id IN (${testStudents})`,
+    )
+  }
+
   // Students created through the UI by tests (unique address per run).
   await payload.db.deleteMany({
     collection: 'students',

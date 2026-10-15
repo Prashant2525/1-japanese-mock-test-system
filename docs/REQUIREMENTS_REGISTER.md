@@ -44,17 +44,17 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 |---|---|---|---|---|
 | LD-R01 | On first login without a determined level, the student is sent straight to Level Determination. | PB §2.2, D-073 | CONFIRMED · **implemented (Phase 10)**; the check itself in Phase 11 | PB §16.2 #1. |
 | LD-R02 | Study Materials, Mock Tests and Results are denied by the server until determination completes. | PB §2.2, §4.3, D-073 | CONFIRMED · **implemented and tested (Phase 10)** | PB §16.2 #2–3: direct API calls, edited URLs, forged bodies and local-storage changes are all rejected. |
-| LD-R03 | Determination always starts at N5; no level choice or skipping (fixed invariant, not CMS-editable). | PB §2.2; D-020 | CONFIRMED | PB §16.2 #4; the CMS rejects a config whose first stage is not N5 or whose stages have gaps. |
-| LD-R04 | Launch stages N5 → N4 → N3; pass ≥ the stage threshold → next stage; stop at first failure. | D-008, D-009 | CONFIRMED | PB §16.2 #5–6; boundary tests at threshold −ε, exactly the threshold, and above it. |
-| LD-R05 | Assign the highest passed level; fail N5 → N5/Beginner; pass the highest enabled stage → that level. | PB §2.2; D-008 | CONFIRMED | Tests for every branch: fail N5, pass N5 fail N4, pass N4 fail N3, pass all three. |
-| LD-R06 | Later logins go straight to the normal interface. | PB §2.2 | CONFIRMED | PB §16.2 #8. |
-| LD-R07 | Per-stage threshold, duration and fixed question set are managed in the CMS and versioned; each attempt records the version it used. | D-009, D-010, D-011 | CONFIRMED | Changing the threshold mid-determination doesn't alter a stage already started; history shows the config version. |
-| LD-R08 | Unanswered = wrong; score compared to threshold without rounding. | D-009 | CONFIRMED | Unit tests on the scoring function. |
-| LD-R09 | Timed stages with a server deadline; interruption resumes with the original deadline; expiry auto-submits exactly once. | D-010 | CONFIRMED | Reload/close/reopen tests; concurrent finalize requests produce one result. |
-| LD-R10 | "Your level" summary screen after the final stage (CMS-managed copy); determination attempts then appear in Results history with answer review. | D-012 | CONFIRMED | E2E: final stage → summary → dashboard; Results lists determination attempts. |
-| LD-R11 | Reassessment only through an audited admin reset with a reason; level override by Super Admin only, with a reason and audit entry. | D-013 | CONFIRMED | Non-Super-Admin override is denied (403); the audit row has actor, reason, before/after. |
-| LD-R12 | N2/N1 stages can be enabled later through the CMS; levels not enabled are never shown or assigned. | D-008 | CONFIRMED | With N2 disabled, no UI or API exposes N2 as a determination outcome; enabling it in a test environment extends the sequence without code changes. |
-| LD-R13 | Server is authoritative; finalization is idempotent; the history of every stage attempt is preserved. | PB §4.3 | TECHNICAL SAFETY RULE | PB §16.2 #9–10. |
+| LD-R03 | Determination always starts at N5; no level choice or skipping (fixed invariant, not CMS-editable). | PB §2.2; D-020 | CONFIRMED · **implemented and tested (Phase 11)** | PB §16.2 #4; the CMS rejects a config whose first stage is not N5 or whose stages have gaps. |
+| LD-R04 | Launch stages N5 → N4 → N3; pass ≥ the stage threshold → next stage; stop at first failure. | D-008, D-009 | CONFIRMED · **implemented and tested (Phase 11)** | PB §16.2 #5–6; boundary tests at threshold −ε, exactly the threshold, and above it. |
+| LD-R05 | Assign the highest passed level; fail N5 → N5/Beginner; pass the highest enabled stage → that level. | PB §2.2; D-008 | CONFIRMED · **implemented and tested (Phase 11)** | Tests for every branch: fail N5, pass N5 fail N4, pass N4 fail N3, pass all three. |
+| LD-R06 | Later logins go straight to the normal interface. | PB §2.2 | CONFIRMED · **implemented and tested (Phase 11)** | PB §16.2 #8. |
+| LD-R07 | Per-stage threshold, duration and fixed question set are managed in the CMS and versioned; each attempt records the version it used. | D-009, D-010, D-011 | CONFIRMED · **implemented and tested (Phase 11)** | Changing the threshold mid-determination doesn't alter a stage already started; history shows the config version. |
+| LD-R08 | Unanswered = wrong; score compared to threshold without rounding. | D-009 | CONFIRMED · **implemented and tested (Phase 11)** | Unit tests on the scoring function. |
+| LD-R09 | Timed stages with a server deadline; interruption resumes with the original deadline; expiry auto-submits exactly once. | D-010 | CONFIRMED · **implemented and tested (Phase 11)** | Reload/close/reopen tests; concurrent finalize requests produce one result. |
+| LD-R10 | "Your level" summary screen after the final stage (CMS-managed copy); determination attempts then appear in Results history with answer review. | D-012 | CONFIRMED · **summary implemented (Phase 11); answer review in Phase 17** | E2E: final stage → summary → dashboard; Results lists determination attempts. |
+| LD-R11 | Reassessment only through an audited admin reset with a reason; level override by Super Admin only, with a reason and audit entry. | D-013 | CONFIRMED · **implemented and tested (Phase 11)** | Non-Super-Admin override is denied (403); the audit row has actor, reason, before/after. |
+| LD-R12 | N2/N1 stages can be enabled later through the CMS; levels not enabled are never shown or assigned. | D-008 | CONFIRMED · **implemented and tested (Phase 11)** | With N2 disabled, no UI or API exposes N2 as a determination outcome; enabling it in a test environment extends the sequence without code changes. |
+| LD-R13 | Server is authoritative; finalization is idempotent; the history of every stage attempt is preserved. | PB §4.3 | TECHNICAL SAFETY RULE · **implemented and tested (Phase 11)** | PB §16.2 #9–10. |
 
 ## 4. Study materials (SM)
 
@@ -86,7 +86,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 
 | ID | Requirement | Source | Status | Acceptance criteria |
 |---|---|---|---|---|
-| RS-R01 | A result is generated after every mock test and determination stage submission. | PB §2.2; D-012 | CONFIRMED | PB §16.3. |
+| RS-R01 | A result is generated after every mock test and determination stage submission. | PB §2.2; D-012 | CONFIRMED · **level-check stages: implemented (Phase 11); mock tests Phase 16** | PB §16.3. |
 | RS-R02 | Result: test name, exam type, level, totals, correct/incorrect/unanswered, marks, percentage, pass/fail, section results. | PB §2.2 | CONFIRMED | PB §16.3 #8. |
 | RS-R03 | Scoring: per-question marks; overall pass mark per test; optional per-section minimums; no negative marking. | D-017 | CONFIRMED | Unit tests: pass overall but fail a section minimum → FAIL; marks sum correctly. |
 | RS-R04 | Review: question, selected answer, correct answer, correctness, explanation, for every question. | PB §2.2 | CONFIRMED | PB §16.3 #9. |
@@ -102,7 +102,7 @@ Last updated: 2026-10-14 (Phase 1 addendum).
 | CMS-R02 | Universal module behaviour (search/filter/paginate, validation, states, confirmations, server-side permissions, audit, versioning). | PB §5.1, D-068 | CONFIRMED · **pattern implemented (Phase 9)**; versioning arrives with questions/tests | PB §16.4. |
 | CMS-R03 | CMS configurability boundary per D-020 (values/toggles/content editable; safety invariants and secrets not). | D-020 | CONFIRMED *(interpretation)* | Invariant-violating configs are rejected server-side; no secret fields appear in the CMS. |
 | CMS-R04 | Student/account management, including determination reset and level override (D-013). | PB §5.3 | CONFIRMED | LD-R11. |
-| CMS-R05 | Level determination configuration (stages, thresholds, durations, question sets, enabled levels, summary copy). | PB §5.4; D-008..D-012 | CONFIRMED | LD-R03, LD-R07, LD-R12. |
+| CMS-R05 | Level determination configuration (stages, thresholds, durations, question sets, enabled levels, summary copy). | PB §5.4; D-008..D-012 | CONFIRMED · **implemented (Phase 11); page text via UI labels** | LD-R03, LD-R07, LD-R12. |
 | CMS-R06 | Study content manager and media library. | PB §5.5, §5.12 | CONFIRMED | SM-R02..06. |
 | CMS-R07 | Exam/level catalogue manager. | PB §5.6; D-014, D-070 | CONFIRMED · **admin side implemented (Phase 9)**; sections and the student API in Phase 13 | MT-R02. |
 | CMS-R08 | Question bank with bilingual explanations, optional furigana, marks, sections, versions, preview. | PB §5.7; D-024 | CONFIRMED | Phase 14 tests. |

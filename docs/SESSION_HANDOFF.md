@@ -1,10 +1,12 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 10 — Student route gates. **COMPLETE.**
+**Current phase / milestone:** Phase 11 — Level check. **COMPLETE.**
 **Exact task in progress:** none.
 
 ## Completed (with evidence)
+
+- Phase 11 on `feature/phase-11-level-check`: unit 161/161, integration 149/149, E2E 119/119 + 1 skipped. Screenshots reviewed: intro, stage runner (desktop/iPhone, EN/JA), review dialog, between stages, Your level, admin Questions / Level check settings / published versions / student reset.
 
 - Phase 10 on `feature/phase-10-route-gates`: unit 125/125, integration 117/117, E2E 92/92 (+1 skipped). Screenshots reviewed: level check (desktop), Japanese home and header (iPhone), study empty state.
 
@@ -21,7 +23,12 @@
 
 ## Known gotchas (new this phase)
 
-- Before every report: `pnpm build && pnpm sweep`, then review `test-results/sweep/<browser>/*.png` and the `*.json` landing lists (owner requirement, D-076).
+- Browser tests and `pnpm sweep` use the `nihongo_mock_e2e` database (D-078); global setup publishes the sample level check there.
+- Payload checks relationship `filterOptions` with the caller's access: scripts that publish the level check must pass a real admin `user` (see the seed script).
+- Numeric columns come back as strings from raw SQL: cast (`::int`, `::float8`) in queries. Browser sequence numbers are millisecond timestamps.
+- Playwright empties `test-results/` each run; the sweep writes to `sweep-results/`.
+
+- Before every report: `pnpm build && pnpm sweep`, then review `sweep-results/<browser>/*.png` and the `*.json` landing lists (owner requirement, D-076).
 - E2E URL checks: compare the exact pathname (`new URL(page.url()).pathname`); a regex ending in `/en/app$` also matches `/en/en/app`.
 - Logging out in E2E: use `logOut(page)` / `openMyPage(page)` (they open the phone Menu when needed).
 

@@ -1,6 +1,6 @@
 # Test Status
 
-Last updated: 2026-10-15 (Phase 10).
+Last updated: 2026-10-15 (Phase 11).
 
 ## Environment
 
@@ -15,10 +15,16 @@ Last updated: 2026-10-15 (Phase 10).
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **129/129** |
-| Integration tests | `pnpm test:int` | **120/120** |
+| Unit tests | `pnpm test:unit` | **161/161** |
+| Integration tests | `pnpm test:int` | **149/149** |
 | Build | `pnpm build` | Pass |
-| E2E | `pnpm test:e2e` | **104/104 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **119/119 + 1 skipped** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 11 tests prove
+
+- **Unit `domain/determination` (25):** scoring (unanswered = wrong, marks, display rounding), exact pass-mark boundaries (59/60/61 of 100, 2/3 at 66.67 vs 66.66), every next-step branch (fail N5 → N5, N5 pass/N4 fail → N5, … pass all → N3, extra stages), refusing skipped/out-of-order/after-failure outcomes, deadlines and the 3 s grace. **`ruby` (3):** furigana parsing.
+- **Integration `level-check` (29):** publishing freezes a numbered version with answers and explanations, identical content makes no new version, refuses wrong stage lists/empty stages/draft or other-level questions, publish permission; starting at N5 only (a level in the body → 400), one session even under concurrent starts, the stage attempt is always the current one; correct answers never sent during an attempt; all four outcome branches end to end (student level, level history, summary, gate opens, results list); unanswered = wrong; exact boundary; no rerun after completion; repeat and 5 concurrent submits → one result and one assignment; saves (newer wins, timestamp-sized sequence numbers, takeover → 409, unknown option → 400, other student → 404, after submit → 410); original deadline on reopen; expiry auto-submit counts answers saved in time; editing a question does not change a running attempt; reset and override with reason, permissions and audit.
+- **E2E `ui/level-check` (5 × 2 browsers):** the full journey N5 passed → N4 not passed → "Your level N5" with stage scores and no second run; reload keeps answers, review marks and the deadline; a second tab takes over; calm screen without site navigation; Japanese screen; axe on the runner and result. **`admin-level-check` (2):** reset from the student record (reason required) and settings visible to an editor who cannot publish.
 
 ## What the Phase 10 tests prove
 

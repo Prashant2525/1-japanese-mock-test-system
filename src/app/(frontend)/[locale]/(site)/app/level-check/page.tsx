@@ -3,10 +3,12 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { payloadClient } from '@/server/auth/session'
 import { levelCheckStages } from '@/server/catalogue/queries'
+import { levelCheckStateFor } from '@/server/level-check/service'
 import { Alert } from '@/ui/components/alert'
 import { Button } from '@/ui/components/button'
 import { LevelRoute } from '@/ui/components/level-route'
 import { Reveal } from '@/ui/components/reveal'
+import { StartLevelCheck } from '@/ui/exam/start-level-check'
 
 import { studentPage } from '../student-page'
 
@@ -19,16 +21,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Level-check intro (LD-R01): where every student without a level lands. The stages come from the
- * CMS catalogue. Starting the check arrives in Phase 11; until then the button is disabled (KI-27).
+ * Level-check intro (LD-R01): where every student without a level lands. The stages and their
+ * colours come from the CMS; Start begins at N5 (or Continue resumes a running check).
  */
-export default async function LevelCheckIntro({ params }: { params: Promise<{ locale: string }> }) {
+export default async function LevelCheckIntro({ params }: Props) {
   const { locale } = await params
   setRequestLocale(locale)
   const student = await studentPage(locale, 'level-check')
   const t = await getTranslations()
-  const stages = await levelCheckStages(await payloadClient(), locale === 'ja' ? 'ja' : 'en')
-  const first = stages[0]?.code ?? 'N5'
+  const lang = locale === 'ja' ? 'ja' : 'en'
+  const [stops, state] = await Promise.all([
+    levelCheckStages(await payloadClient(), lang),
+    levelCheckStateFor(student),
+  ])
+  // The published stages (what the student will take); colours from the catalogue.
+  const colour = new Map(stops.map((s) => [s.code, s.lineColor]))
+  const route = (
+    state.stages.length ? state.stages.map((s) => s.levelCode) : stops.map((s) => s.code)
+  ).map((code) => ({ code, lineColor: colour.get(code) ?? '#2B6BD8' }))
+  const first = route[0]?.code ?? 'N5'
+  const totalMinutes = state.stages.reduce((sum, s) => sum + s.durationMinutes, 0)
   return (
     <div className="mx-auto grid max-w-3xl gap-8 px-4 py-12">
       <Reveal>
@@ -40,9 +52,9 @@ export default async function LevelCheckIntro({ params }: { params: Promise<{ lo
       </Reveal>
       <Reveal delayMs={80}>
         <LevelRoute
-          stops={stages}
+          stops={route}
           label={t('student.levelCheck.routeLabel', {
-            stops: stages.map((s) => s.code).join(' → '),
+            stops: route.map((s) => s.code).join(' → '),
           })}
         />
       </Reveal>
@@ -57,15 +69,39 @@ export default async function LevelCheckIntro({ params }: { params: Promise<{ lo
             <li>{t('student.levelCheck.ruleStop', { first })}</li>
             <li>{t('student.levelCheck.ruleUnlock')}</li>
           </ol>
+          {state.stages.length ? (
+            <ul className="mt-4 grid gap-1 text-sm text-muted">
+              {state.stages.map((s) => (
+                <li key={s.levelCode}>
+                  <strong className="text-ink">{s.levelCode}</strong> ·{' '}
+                  {t('exam.stageInfo', { questions: s.questionCount, minutes: s.durationMinutes })}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
       </Reveal>
       <Reveal delayMs={240}>
-        <div className="grid gap-3">
-          <Alert tone="info">{t(`app.levelCheck.${student.determinationStatus}`)}</Alert>
-          <Button size="lg" disabled className="justify-self-start">
-            {t('student.levelCheck.start')}
-          </Button>
-        </div>
+        {!state.available && state.status === 'not_started' ? (
+          <div className="grid gap-3">
+            <Alert tone="info">{t('app.levelCheck.not_started')}</Alert>
+            <Button size="lg" disabled className="justify-self-start">
+              {t('student.levelCheck.start')}
+            </Button>
+          </div>
+        ) : state.status === 'in_progress' ? (
+          <div className="grid gap-3">
+            <Alert tone="info">{t('student.levelCheck.inProgress')}</Alert>
+            <StartLevelCheck locale={locale} resume label={t('student.levelCheck.continue')} />
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            <p className="text-muted">
+              {t('student.levelCheck.ready', { count: state.stages.length, minutes: totalMinutes })}
+            </p>
+            <StartLevelCheck locale={locale} resume={false} label={t('student.levelCheck.start')} />
+          </div>
+        )}
       </Reveal>
     </div>
   )

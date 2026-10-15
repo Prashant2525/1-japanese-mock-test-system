@@ -73,6 +73,13 @@ export interface Config {
     students: Student;
     'exam-types': ExamType;
     levels: Level;
+    questions: Question;
+    'level-check-versions': LevelCheckVersion;
+    'level-check-sessions': LevelCheckSession;
+    attempts: Attempt;
+    results: Result;
+    'result-items': ResultItem;
+    'level-assignments': LevelAssignment;
     'email-templates': EmailTemplate;
     'audit-events': AuditEvent;
     'totp-attempts': TotpAttempt;
@@ -88,6 +95,13 @@ export interface Config {
     students: StudentsSelect<false> | StudentsSelect<true>;
     'exam-types': ExamTypesSelect<false> | ExamTypesSelect<true>;
     levels: LevelsSelect<false> | LevelsSelect<true>;
+    questions: QuestionsSelect<false> | QuestionsSelect<true>;
+    'level-check-versions': LevelCheckVersionsSelect<false> | LevelCheckVersionsSelect<true>;
+    'level-check-sessions': LevelCheckSessionsSelect<false> | LevelCheckSessionsSelect<true>;
+    attempts: AttemptsSelect<false> | AttemptsSelect<true>;
+    results: ResultsSelect<false> | ResultsSelect<true>;
+    'result-items': ResultItemsSelect<false> | ResultItemsSelect<true>;
+    'level-assignments': LevelAssignmentsSelect<false> | LevelAssignmentsSelect<true>;
     'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
     'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
     'totp-attempts': TotpAttemptsSelect<false> | TotpAttemptsSelect<true>;
@@ -101,16 +115,20 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ja') | ('en' | 'ja')[];
   globals: {
+    'level-check-settings': LevelCheckSetting;
     'labels-site': LabelsSite;
     'labels-accounts': LabelsAccount;
     'labels-student': LabelsStudent;
+    'labels-exam': LabelsExam;
     'labels-messages': LabelsMessage;
     'sign-in-settings': SignInSetting;
   };
   globalsSelect: {
+    'level-check-settings': LevelCheckSettingsSelect<false> | LevelCheckSettingsSelect<true>;
     'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
     'labels-student': LabelsStudentSelect<false> | LabelsStudentSelect<true>;
+    'labels-exam': LabelsExamSelect<false> | LabelsExamSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
     'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
   };
@@ -350,6 +368,192 @@ export interface ExamType {
   createdAt: string;
 }
 /**
+ * Single-answer multiple-choice questions. Publish a question before it can be used in the level check or a mock test. Questions are archived, never deleted.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "questions".
+ */
+export interface Question {
+  id: number;
+  /**
+   * Assigned automatically (e.g. Q-000123). Results and imports refer to it.
+   */
+  key?: string | null;
+  examType: number | ExamType;
+  level: number | Level;
+  /**
+   * Furigana (optional): write {漢字|かんじ} to show かんじ above 漢字.
+   */
+  stem: string;
+  options: {
+    key: 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+    text: string;
+    id?: string | null;
+  }[];
+  correctOptionKey: 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  /**
+   * Shown in answer review after the test, never during it. Switch the locale at the top to write the Japanese version.
+   */
+  explanation?: string | null;
+  marks: number;
+  rightsConfirmed?: boolean | null;
+  /**
+   * Archived questions cannot be added to new tests. Past results keep their own copy.
+   */
+  archived?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Frozen copies created each time the level check settings are published. Sessions keep the version they started with.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-versions".
+ */
+export interface LevelCheckVersion {
+  id: number;
+  versionNo: number;
+  publishedAt: string;
+  publishedBy?: (number | null) | Admin;
+  snapshot:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  checksum: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-sessions".
+ */
+export interface LevelCheckSession {
+  id: number;
+  student: number | Student;
+  configVersion: number | LevelCheckVersion;
+  status: 'in_progress' | 'completed' | 'reset';
+  currentStageIndex: number;
+  stageOutcomes?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  assignedLevel?: (number | null) | Level;
+  completedAt?: string | null;
+  resetAt?: string | null;
+  resetBy?: (number | null) | Admin;
+  resetReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attempts".
+ */
+export interface Attempt {
+  id: number;
+  student: number | Student;
+  kind: 'determination' | 'mock';
+  determinationSession?: (number | null) | LevelCheckSession;
+  stageIndex?: number | null;
+  status: 'in_progress' | 'submitted';
+  startedAt: string;
+  deadlineAt: string;
+  submittedAt?: string | null;
+  submitReason?: ('manual' | 'timeout') | null;
+  sessionId?: string | null;
+  answers?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  lastSeq?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "results".
+ */
+export interface Result {
+  id: number;
+  attempt: number | Attempt;
+  student: number | Student;
+  kind: 'determination' | 'mock';
+  examCode?: string | null;
+  levelCode?: string | null;
+  titleSnapshot?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  totalQuestions: number;
+  correct: number;
+  incorrect: number;
+  unanswered: number;
+  totalMarks: number;
+  earnedMarks: number;
+  percent: number;
+  passed: boolean;
+  thresholdPercent?: number | null;
+  scoringVersion?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "result-items".
+ */
+export interface ResultItem {
+  id: number;
+  result: number | Result;
+  order: number;
+  questionKey: string;
+  selectedOptionKey?: string | null;
+  correctOptionKey: string;
+  isCorrect: boolean;
+  marks: number;
+  earned: number;
+  flagged?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Append-only history of every level given to a student: by the level check, by a Super Admin override, or cleared by a reset (D-013).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-assignments".
+ */
+export interface LevelAssignment {
+  id: number;
+  student: number | Student;
+  level?: (number | null) | Level;
+  source: 'determination' | 'override' | 'reset';
+  session?: (number | null) | LevelCheckSession;
+  reason?: string | null;
+  actor?: (number | null) | Admin;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -458,6 +662,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'levels';
         value: number | Level;
+      } | null)
+    | ({
+        relationTo: 'questions';
+        value: number | Question;
+      } | null)
+    | ({
+        relationTo: 'level-check-versions';
+        value: number | LevelCheckVersion;
+      } | null)
+    | ({
+        relationTo: 'level-check-sessions';
+        value: number | LevelCheckSession;
+      } | null)
+    | ({
+        relationTo: 'attempts';
+        value: number | Attempt;
+      } | null)
+    | ({
+        relationTo: 'results';
+        value: number | Result;
+      } | null)
+    | ({
+        relationTo: 'result-items';
+        value: number | ResultItem;
+      } | null)
+    | ({
+        relationTo: 'level-assignments';
+        value: number | LevelAssignment;
       } | null)
     | ({
         relationTo: 'email-templates';
@@ -626,6 +858,137 @@ export interface LevelsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "questions_select".
+ */
+export interface QuestionsSelect<T extends boolean = true> {
+  key?: T;
+  examType?: T;
+  level?: T;
+  stem?: T;
+  options?:
+    | T
+    | {
+        key?: T;
+        text?: T;
+        id?: T;
+      };
+  correctOptionKey?: T;
+  explanation?: T;
+  marks?: T;
+  rightsConfirmed?: T;
+  archived?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-versions_select".
+ */
+export interface LevelCheckVersionsSelect<T extends boolean = true> {
+  versionNo?: T;
+  publishedAt?: T;
+  publishedBy?: T;
+  snapshot?: T;
+  checksum?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-sessions_select".
+ */
+export interface LevelCheckSessionsSelect<T extends boolean = true> {
+  student?: T;
+  configVersion?: T;
+  status?: T;
+  currentStageIndex?: T;
+  stageOutcomes?: T;
+  assignedLevel?: T;
+  completedAt?: T;
+  resetAt?: T;
+  resetBy?: T;
+  resetReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attempts_select".
+ */
+export interface AttemptsSelect<T extends boolean = true> {
+  student?: T;
+  kind?: T;
+  determinationSession?: T;
+  stageIndex?: T;
+  status?: T;
+  startedAt?: T;
+  deadlineAt?: T;
+  submittedAt?: T;
+  submitReason?: T;
+  sessionId?: T;
+  answers?: T;
+  lastSeq?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "results_select".
+ */
+export interface ResultsSelect<T extends boolean = true> {
+  attempt?: T;
+  student?: T;
+  kind?: T;
+  examCode?: T;
+  levelCode?: T;
+  titleSnapshot?: T;
+  totalQuestions?: T;
+  correct?: T;
+  incorrect?: T;
+  unanswered?: T;
+  totalMarks?: T;
+  earnedMarks?: T;
+  percent?: T;
+  passed?: T;
+  thresholdPercent?: T;
+  scoringVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "result-items_select".
+ */
+export interface ResultItemsSelect<T extends boolean = true> {
+  result?: T;
+  order?: T;
+  questionKey?: T;
+  selectedOptionKey?: T;
+  correctOptionKey?: T;
+  isCorrect?: T;
+  marks?: T;
+  earned?: T;
+  flagged?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-assignments_select".
+ */
+export interface LevelAssignmentsSelect<T extends boolean = true> {
+  student?: T;
+  level?: T;
+  source?: T;
+  session?: T;
+  reason?: T;
+  actor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "email-templates_select".
  */
 export interface EmailTemplatesSelect<T extends boolean = true> {
@@ -704,6 +1067,36 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Stages, pass marks, time limits and questions of the level check. Changes reach students only when you publish; each publish creates a new version.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-settings".
+ */
+export interface LevelCheckSetting {
+  id: number;
+  /**
+   * One stage per level switched on for the level check (Exam catalogue → Levels), in order from N5.
+   */
+  stages?:
+    | {
+        level: number | Level;
+        /**
+         * Pass if the score is at least this. No rounding.
+         */
+        thresholdPercent: number;
+        durationMinutes: number;
+        /**
+         * Published questions of this level. Drag to reorder.
+         */
+        questions: (number | Question)[];
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
@@ -1215,6 +1608,18 @@ export interface LabelsStudent {
        * Default — EN: “Start the level check” · JA: “レベルチェックを始める”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       start?: string | null;
+      /**
+       * Default — EN: “{count} stages, up to {minutes} minutes in total. Each stage is timed separately.” · JA: “全 {count} 段階、合計最大 {minutes} 分。各段階に制限時間があります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      ready?: string | null;
+      /**
+       * Default — EN: “Continue the level check” · JA: “レベルチェックを続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      continue?: string | null;
+      /**
+       * Default — EN: “Your level check is in progress. Continue where you left off; the timer of a started stage keeps running.” · JA: “レベルチェックの途中です。続きから再開できます。開始した段階のタイマーは止まりません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      inProgress?: string | null;
     };
     home?: {
       /**
@@ -1256,6 +1661,193 @@ export interface LabelsStudent {
        */
       empty?: string | null;
     };
+    yourLevel?: {
+      /**
+       * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      title?: string | null;
+      /**
+       * Default — EN: “Start your studies at {level}.” · JA: “{level} から学習を始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      lead?: string | null;
+      /**
+       * Default — EN: “You start at {level}, the beginning of the route.” · JA: “{level} からスタートします。ここが道のりの出発点です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      beginnerLead?: string | null;
+      /**
+       * Default — EN: “Your level check” · JA: “レベルチェックの結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      stagesTitle?: string | null;
+      /**
+       * Default — EN: “Passed” · JA: “合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      passed?: string | null;
+      /**
+       * Default — EN: “Not passed” · JA: “不合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      notPassed?: string | null;
+      /**
+       * Default — EN: “{percent}%” · JA: “{percent}%”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      score?: string | null;
+      /**
+       * Default — EN: “Go to my page” · JA: “マイページへ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      goHome?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-exam".
+ */
+export interface LabelsExam {
+  id: number;
+  exam?: {
+    /**
+     * Default — EN: “Level check · {level}” · JA: “レベルチェック・{level}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stageLabel?: string | null;
+    /**
+     * Default — EN: “Question {current} of {total}” · JA: “問題 {current} / {total}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    questionOf?: string | null;
+    /**
+     * Default — EN: “Time left” · JA: “残り時間”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeLeft?: string | null;
+    /**
+     * Default — EN: “{minutes} minutes {seconds} seconds left” · JA: “残り {minutes} 分 {seconds} 秒”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeLeftAria?: string | null;
+    /**
+     * Default — EN: “Previous” · JA: “前へ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    previous?: string | null;
+    /**
+     * Default — EN: “Next” · JA: “次へ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    next?: string | null;
+    /**
+     * Default — EN: “Mark for review” · JA: “見直しに印をつける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    flag?: string | null;
+    /**
+     * Default — EN: “Remove review mark” · JA: “見直しの印を外す”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    unflag?: string | null;
+    /**
+     * Default — EN: “All questions” · JA: “問題一覧”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    palette?: string | null;
+    /**
+     * Default — EN: “Question {number}” · JA: “問題 {number}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    paletteItem?: string | null;
+    /**
+     * Default — EN: “answered” · JA: “解答済み”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    answered?: string | null;
+    /**
+     * Default — EN: “not answered” · JA: “未解答”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    unanswered?: string | null;
+    /**
+     * Default — EN: “marked for review” · JA: “見直し”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    flaggedState?: string | null;
+    /**
+     * Default — EN: “Review and submit” · JA: “見直して提出”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    review?: string | null;
+    /**
+     * Default — EN: “Ready to submit this stage?” · JA: “この段階を提出しますか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewTitle?: string | null;
+    /**
+     * Default — EN: “You answered {answered} of {total} questions. Unanswered questions count as wrong.” · JA: “{total} 問中 {answered} 問に解答しました。未解答の問題は不正解になります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewBody?: string | null;
+    /**
+     * Default — EN: “Marked for review: {count}” · JA: “見直しの印：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewFlagged?: string | null;
+    /**
+     * Default — EN: “Not answered: {count}” · JA: “未解答：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    reviewUnanswered?: string | null;
+    /**
+     * Default — EN: “Keep working” · JA: “続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    keepWorking?: string | null;
+    /**
+     * Default — EN: “Submit stage” · JA: “段階を提出”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    submit?: string | null;
+    /**
+     * Default — EN: “Saving…” · JA: “保存中…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    saving?: string | null;
+    /**
+     * Default — EN: “All answers saved” · JA: “すべての解答を保存しました”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    saved?: string | null;
+    /**
+     * Default — EN: “Not saved yet — retrying” · JA: “まだ保存されていません — 再試行中”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    notSaved?: string | null;
+    /**
+     * Default — EN: “Time is up. Your answers were submitted.” · JA: “時間になりました。解答は提出されました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    timeUp?: string | null;
+    /**
+     * Default — EN: “This test continues in another tab” · JA: “このテストは別のタブで続いています”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    staleTitle?: string | null;
+    /**
+     * Default — EN: “You opened this stage somewhere else. Continue here to take it back; the other tab will stop.” · JA: “この段階を別の場所で開きました。ここで続けると、もう一方のタブは止まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    staleBody?: string | null;
+    /**
+     * Default — EN: “Continue here” · JA: “ここで続ける”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    continueHere?: string | null;
+    /**
+     * Default — EN: “Loading your test…” · JA: “テストを読み込んでいます…”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loading?: string | null;
+    /**
+     * Default — EN: “We couldn't load your test. Check your connection and try again.” · JA: “テストを読み込めませんでした。接続を確認して、もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    loadError?: string | null;
+    /**
+     * Default — EN: “Try again” · JA: “もう一度”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    retry?: string | null;
+    /**
+     * Default — EN: “Stage {level} passed” · JA: “{level} の段階に合格しました”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stagePassedTitle?: string | null;
+    /**
+     * Default — EN: “Well done. The next stage is {next}. Its timer starts when you press Start.” · JA: “よくできました。次の段階は {next} です。「開始」を押すとタイマーが始まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stagePassedBody?: string | null;
+    /**
+     * Default — EN: “Start {level}” · JA: “{level} を開始”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    startNext?: string | null;
+    /**
+     * Default — EN: “{questions} questions · {minutes} minutes” · JA: “{questions} 問・{minutes} 分”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    stageInfo?: string | null;
+    /**
+     * Default — EN: “Answer {key}” · JA: “解答 {key}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    answerOption?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1365,6 +1957,25 @@ export interface SignInSetting {
   googleEnabled?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "level-check-settings_select".
+ */
+export interface LevelCheckSettingsSelect<T extends boolean = true> {
+  stages?:
+    | T
+    | {
+        level?: T;
+        thresholdPercent?: T;
+        durationMinutes?: T;
+        questions?: T;
+        id?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1581,6 +2192,9 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               ruleUnlock?: T;
               routeLabel?: T;
               start?: T;
+              ready?: T;
+              continue?: T;
+              inProgress?: T;
             };
         home?:
           | T
@@ -1606,6 +2220,66 @@ export interface LabelsStudentSelect<T extends boolean = true> {
           | {
               empty?: T;
             };
+        yourLevel?:
+          | T
+          | {
+              title?: T;
+              lead?: T;
+              beginnerLead?: T;
+              stagesTitle?: T;
+              passed?: T;
+              notPassed?: T;
+              score?: T;
+              goHome?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-exam_select".
+ */
+export interface LabelsExamSelect<T extends boolean = true> {
+  exam?:
+    | T
+    | {
+        stageLabel?: T;
+        questionOf?: T;
+        timeLeft?: T;
+        timeLeftAria?: T;
+        previous?: T;
+        next?: T;
+        flag?: T;
+        unflag?: T;
+        palette?: T;
+        paletteItem?: T;
+        answered?: T;
+        unanswered?: T;
+        flaggedState?: T;
+        review?: T;
+        reviewTitle?: T;
+        reviewBody?: T;
+        reviewFlagged?: T;
+        reviewUnanswered?: T;
+        keepWorking?: T;
+        submit?: T;
+        saving?: T;
+        saved?: T;
+        notSaved?: T;
+        timeUp?: T;
+        staleTitle?: T;
+        staleBody?: T;
+        continueHere?: T;
+        loading?: T;
+        loadError?: T;
+        retry?: T;
+        stagePassedTitle?: T;
+        stagePassedBody?: T;
+        startNext?: T;
+        stageInfo?: T;
+        answerOption?: T;
       };
   updatedAt?: T;
   createdAt?: T;

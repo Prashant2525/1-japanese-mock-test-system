@@ -104,7 +104,22 @@ All answer `401` without a session and `403 ACCOUNT_DISABLED` when suspended. `L
 
 ### 4.2 Planned endpoints
 
-#### Level determination (Phases 10–11)
+#### Level determination — IMPLEMENTED (Phase 11, D-080/D-081)
+All need a student session; none accepts a level, stage or score from the client.
+| Method | Path | Result | Errors |
+|---|---|---|---|
+| GET | `/api/v1/determination` | `{ available, status, stages[{levelCode, levelName, durationMinutes, questionCount}], currentStageIndex, currentAttempt, outcomes[{levelCode, percent, passed}], assignedLevelCode, serverNow }` (finalizes an expired stage first) | 401 |
+| POST | `/api/v1/determination/start` | Body must be empty or `{}`; starts at the first stage (N5); idempotent | 400 (any field), 404 (nothing published), 409 `ALREADY_FINALIZED` |
+| POST | `/api/v1/determination/stages/current/attempt` | `{ attemptId, deadlineAt }` for the current stage (same attempt and original deadline on repeat) | 409 `STAGE_OUT_OF_ORDER` |
+| GET | `/api/v1/determination/summary` | `{ assignedLevel{code, name}, completedAt, stages[{levelCode, levelName, percent, passed}] }` | 404 |
+| GET | `/api/v1/attempts/{id}` | Own attempt: questions without answers or explanations, saved answers, `deadlineAt`, `serverNow` | 404 (not yours) |
+| POST | `/api/v1/attempts/{id}/resume` | `{ sessionId }`; this tab takes over | 410 `ATTEMPT_CLOSED` |
+| PUT | `/api/v1/attempts/{id}/answers/{questionKey}` | `{ optionKey|null, flagged, seq, sessionId }` → `{ saved }` (`false` = an older save arrived late) | 400, 409 `STALE_SESSION`, 410 `ATTEMPT_CLOSED` |
+| POST | `/api/v1/attempts/{id}/submit` | `{ resultId, percent, passed, next: {kind:'next', stageIndex} | {kind:'done', levelCode} }`; idempotent | 404 |
+
+Admin (Payload endpoints, permission-checked, audited): `POST /api/cms/students/{id}/level-check/reset {reason}` (`students.reset_determination`), `POST /api/cms/students/{id}/level/override {levelId, reason}` (`students.override_level`).
+
+#### Level determination (original plan)
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/api/v1/determination` | Current session: stages (enabled levels), current stage, status |

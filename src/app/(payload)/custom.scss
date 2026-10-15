@@ -194,3 +194,34 @@ html[data-theme='dark'] .nm-admin-logo {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+// Student sidebar: level-check actions (src/payload/admin/level-actions.tsx)
+.nm-level-actions {
+  margin-bottom: calc(var(--base) * 1);
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.4);
+    .btn {
+      margin: 0;
+    }
+  }
+  &__form {
+    display: grid;
+    gap: calc(var(--base) * 0.5);
+    select,
+    textarea {
+      width: 100%;
+      padding: calc(var(--base) * 0.4);
+      border: 1px solid var(--theme-elevation-150);
+      border-radius: var(--style-radius-s);
+      background: var(--theme-input-bg);
+      color: var(--theme-text);
+      font: inherit;
+    }
+  }
+}
+.nm-error {
+  color: var(--theme-error-500);
+  font-weight: 600;
+}

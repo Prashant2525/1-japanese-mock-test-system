@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-15 — Phase 11: the level check
+
+- Students can take the N5-first level check: start, calm timed stage screen (one question at a time, question map, mark for review, review and submit, autosave, takeover by a newer tab, auto-submit at the deadline), "Stage passed" between stages, and "Your level" with each stage's score.
+- Server engine: published level-check versions, sessions, attempts, results and items, level-assignment history; exact pass-mark comparison; idempotent, race-safe submit; expiry; no level choice or skipping.
+- Admin: Question bank (questions with furigana, EN/JA explanations, publish with rights confirmation), Level check settings (draft → publish creates a version), published versions, sessions, attempts, results and level history (read-only), and Reset / Change level on the student record with a reason.
+- `pnpm seed:sample-level-check` for local trial (sample questions, never in production).
+- Browser tests now use their own database (`nihongo_mock_e2e`).
+- Fixed during the phase: answer saves overflowed a 32-bit number (KI-35); "Start N4" showed the passed screen again; admin forms' furigana markup in lists.
+- Tests: unit 161/161, integration 149/149, E2E 119/119 + 1 skipped.
+
 ## 2026-10-15 — Fix: separate student and admin sessions (KI-32)
 
 - Students get their own session cookie (`nm_student_session`); the admin panel no longer sees a signed-in student (no authenticator setup screen for students).

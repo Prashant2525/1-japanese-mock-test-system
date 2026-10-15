@@ -31,7 +31,8 @@
     "prepare": "husky",
     "admin:create": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/create-super-admin.ts",
     "email:check": "tsx scripts/email-check.ts",
-    "sweep": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test -c playwright.sweep.config.ts"
+    "sweep": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test -c playwright.sweep.config.ts",
+    "seed:sample-level-check": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed-sample-level-check.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
@@ -64,6 +65,7 @@
     "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "^24.0.0",
+    "@types/pg": "8.20.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "dotenv": "16.4.7",
@@ -72,6 +74,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
     "otpauth": "9.5.2",
+    "pg": "8.20.0",
     "prettier": "^3.4.2",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
