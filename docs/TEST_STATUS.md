@@ -19,7 +19,11 @@ Last updated: 2026-10-15 (Phase 11).
 | Integration tests | `pnpm test:int` | **199/199** (one earlier run lost a file to a Windows worker crash, KI-36; rerun clean) |
 | Build | `pnpm build` | Pass |
 | Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
-| E2E | `pnpm test:e2e` | **135/135 + 1 skipped (full run 134; the level-check iPhone test needed a selector fix for the hidden sidebar and passed on rerun, 10/10)** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **136/136 + 2 skipped (the existing skip and the new desktop-only sidebar test on iPhone), first try** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the sidebar fix test proves (2026-10-16)
+
+- **E2E `ui/dashboard` (+1, desktop):** on Home, Study, Mock tests, Results and Profile at 1024×768, 1280×800 and 1600×1000 the sidebar starts right under the header and ends at the bottom of the page, is at least the screen height below the header on short pages, the footer (with the non-affiliation notice) sits beside it in the content column and only one footer is visible; no horizontal scroll; at 820×1180 the sidebar is hidden and the tab bar is shown. It failed on the old layout (Study page: sidebar ended 143 px above the footer).
 
 ## What the Phase 13b tests prove
 
