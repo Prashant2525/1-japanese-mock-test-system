@@ -84,6 +84,7 @@ export interface Config {
     'material-categories': MaterialCategory;
     'study-materials': StudyMaterial;
     'learning-media': LearningMedia;
+    'study-progress': StudyProgress;
     'email-templates': EmailTemplate;
     'audit-events': AuditEvent;
     'totp-attempts': TotpAttempt;
@@ -114,6 +115,7 @@ export interface Config {
     'material-categories': MaterialCategoriesSelect<false> | MaterialCategoriesSelect<true>;
     'study-materials': StudyMaterialsSelect<false> | StudyMaterialsSelect<true>;
     'learning-media': LearningMediaSelect<false> | LearningMediaSelect<true>;
+    'study-progress': StudyProgressSelect<false> | StudyProgressSelect<true>;
     'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
     'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
     'totp-attempts': TotpAttemptsSelect<false> | TotpAttemptsSelect<true>;
@@ -131,6 +133,7 @@ export interface Config {
     'labels-site': LabelsSite;
     'labels-accounts': LabelsAccount;
     'labels-student': LabelsStudent;
+    'labels-dashboard': LabelsDashboard;
     'labels-exam': LabelsExam;
     'labels-messages': LabelsMessage;
     'sign-in-settings': SignInSetting;
@@ -140,6 +143,7 @@ export interface Config {
     'labels-site': LabelsSiteSelect<false> | LabelsSiteSelect<true>;
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
     'labels-student': LabelsStudentSelect<false> | LabelsStudentSelect<true>;
+    'labels-dashboard': LabelsDashboardSelect<false> | LabelsDashboardSelect<true>;
     'labels-exam': LabelsExamSelect<false> | LabelsExamSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
     'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
@@ -391,7 +395,7 @@ export interface ExamType {
   createdAt: string;
 }
 /**
- * The sections of each exam, in order (for example Vocabulary, Grammar・Reading, Listening). Leave “Levels” empty when a section applies to every level of the exam. Sections are never deleted: switch “Enabled” off instead.
+ * The sections of each exam, in order (for example Vocabulary, Grammar・Reading, Listening). Leave “Levels” empty when a section applies to every level of the exam (the list then shows “<No Levels>”). Sections are never deleted: switch “Enabled” off instead.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "exam-sections".
@@ -711,6 +715,22 @@ export interface LearningMedia {
   focalY?: number | null;
 }
 /**
+ * Which materials each student has opened and marked as studied. Recorded by the app; read-only.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-progress".
+ */
+export interface StudyProgress {
+  id: number;
+  student: number | Student;
+  material: number | StudyMaterial;
+  firstOpenedAt: string;
+  lastOpenedAt: string;
+  studiedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Use only these variables. verify_email: {{appName}} {{name}} · reset_password: {{appName}} {{name}} {{expiresInMinutes}} · admin_reset_password: {{appName}} {{name}} {{expiresInMinutes}} · contact_notification: {{appName}} {{name}} {{email}} {{message}} · order_receipt: {{appName}} {{name}} {{orderNo}} {{amount}}
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -863,6 +883,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'learning-media';
         value: number | LearningMedia;
+      } | null)
+    | ({
+        relationTo: 'study-progress';
+        value: number | StudyProgress;
       } | null)
     | ({
         relationTo: 'email-templates';
@@ -1235,6 +1259,19 @@ export interface LearningMediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-progress_select".
+ */
+export interface StudyProgressSelect<T extends boolean = true> {
+  student?: T;
+  material?: T;
+  firstOpenedAt?: T;
+  lastOpenedAt?: T;
+  studiedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1815,6 +1852,14 @@ export interface LabelsStudent {
        * Default — EN: “Results” · JA: “結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       results?: string | null;
+      /**
+       * Default — EN: “Profile” · JA: “プロフィール”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      profile?: string | null;
+      /**
+       * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      yourLevel?: string | null;
     };
     levelCheck?: {
       /**
@@ -1869,28 +1914,6 @@ export interface LabelsStudent {
        * Default — EN: “Your level check is in progress. Continue where you left off; the timer of a started stage keeps running.” · JA: “レベルチェックの途中です。続きから再開できます。開始した段階のタイマーは止まりません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       inProgress?: string | null;
-    };
-    home?: {
-      /**
-       * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
-       */
-      levelLabel?: string | null;
-      /**
-       * Default — EN: “Where to next?” · JA: “次は何をしますか？”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
-       */
-      continueTitle?: string | null;
-      /**
-       * Default — EN: “Materials for your level and the levels below it.” · JA: “あなたのレベルとそれ以下のレベルの教材です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
-       */
-      studyBody?: string | null;
-      /**
-       * Default — EN: “Practise under real exam conditions at any level.” · JA: “本番と同じ条件で、どのレベルでも練習できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
-       */
-      mockTestsBody?: string | null;
-      /**
-       * Default — EN: “Your scores and answer reviews.” · JA: “スコアと解答の振り返りです。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
-       */
-      resultsBody?: string | null;
     };
     study?: {
       /**
@@ -1985,6 +2008,30 @@ export interface LabelsStudent {
        * Default — EN: “Clear search” · JA: “検索をクリア”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       clearSearch?: string | null;
+      /**
+       * Default — EN: “Your progress” · JA: “学習の記録”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      progressTitle?: string | null;
+      /**
+       * Default — EN: “Finished this material? Mark it as studied. Opening a page does not count.” · JA: “この教材を学び終えたら「学習済みにする」を押してください。ページを開いただけでは記録されません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      progressHelp?: string | null;
+      /**
+       * Default — EN: “Mark as studied” · JA: “学習済みにする”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      markStudied?: string | null;
+      /**
+       * Default — EN: “Studied” · JA: “学習済み”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      studied?: string | null;
+      /**
+       * Default — EN: “Undo” · JA: “取り消す”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      undoStudied?: string | null;
+      /**
+       * Default — EN: “That did not save. Please try again.” · JA: “保存できませんでした。もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      progressFailed?: string | null;
     };
     mockTests?: {
       /**
@@ -2017,6 +2064,42 @@ export interface LabelsStudent {
        * Default — EN: “You don't have any results yet. Take a mock test and your score will appear here.” · JA: “まだ結果はありません。模擬試験を受けると、ここにスコアが表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
        */
       empty?: string | null;
+      /**
+       * Default — EN: “Every result you have, newest first. Answer reviews arrive with mock tests.” · JA: “これまでの結果を新しい順に表示します。解答の振り返りは模擬試験とともに追加されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      intro?: string | null;
+      /**
+       * Default — EN: “Test” · JA: “テスト”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      colTest?: string | null;
+      /**
+       * Default — EN: “Score” · JA: “得点”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      colScore?: string | null;
+      /**
+       * Default — EN: “Outcome” · JA: “結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      colOutcome?: string | null;
+      /**
+       * Default — EN: “Date” · JA: “日付”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      colDate?: string | null;
+      /**
+       * Default — EN: “Level check · {level} stage” · JA: “レベルチェック・{level}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      levelCheckStage?: string | null;
+      /**
+       * Default — EN: “{percent}%” · JA: “{percent}%”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      percent?: string | null;
+      /**
+       * Default — EN: “Passed” · JA: “合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      passed?: string | null;
+      /**
+       * Default — EN: “Not passed” · JA: “不合格”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      notPassed?: string | null;
     };
     yourLevel?: {
       /**
@@ -2052,6 +2135,241 @@ export interface LabelsStudent {
        */
       goHome?: string | null;
     };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-dashboard".
+ */
+export interface LabelsDashboard {
+  id: number;
+  dashboard?: {
+    /**
+     * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelLabel?: string | null;
+    /**
+     * Default — EN: “Your learning space” · JA: “学習スペース”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    eyebrow?: string | null;
+    /**
+     * Default — EN: “Welcome back, {name}” · JA: “{name}さん、おかえりなさい”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    greeting?: string | null;
+    /**
+     * Default — EN: “Pick up where you left off, or start something new at your level.” · JA: “前回の続きから、またはあなたのレベルの新しい教材から始めましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    lead?: string | null;
+    /**
+     * Default — EN: “Continue: {title}” · JA: “続きから：{title}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    continueCta?: string | null;
+    /**
+     * Default — EN: “Start: {title}” · JA: “始める：{title}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    startCta?: string | null;
+    /**
+     * Default — EN: “Open the study library” · JA: “学習教材を開く”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    libraryCta?: string | null;
+    /**
+     * Default — EN: “Explore mock tests” · JA: “模擬試験を見る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    testsCta?: string | null;
+    /**
+     * Default — EN: “Set by the level check” · JA: “レベルチェックで判定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelByCheck?: string | null;
+    /**
+     * Default — EN: “Set by our team” · JA: “スタッフが設定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelByStaff?: string | null;
+    /**
+     * Default — EN: “Your figures” · JA: “あなたの数字”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statsLabel?: string | null;
+    /**
+     * Default — EN: “Materials studied” · JA: “学習済みの教材”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statStudied?: string | null;
+    /**
+     * Default — EN: “{done} / {total}” · JA: “{done} / {total}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    ofTotal?: string | null;
+    /**
+     * Default — EN: “Marked as studied, out of the materials open to you.” · JA: “利用できる教材のうち、学習済みにしたものの数です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statStudiedHelp?: string | null;
+    /**
+     * Default — EN: “Last studied” · JA: “最後に学習した日”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statLastStudied?: string | null;
+    /**
+     * Default — EN: “Not yet” · JA: “まだありません”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    notYet?: string | null;
+    /**
+     * Default — EN: “The last time you marked a material as studied.” · JA: “最後に教材を学習済みにした日です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statLastStudiedHelp?: string | null;
+    /**
+     * Default — EN: “Level check stages passed” · JA: “合格したレベルチェックの段階”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statLevelCheck?: string | null;
+    /**
+     * Default — EN: “Completed on {date}.” · JA: “{date}に完了しました。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    statLevelCheckHelp?: string | null;
+    /**
+     * Default — EN: “Study progress up to {level}” · JA: “{level}までの学習の進み具合”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    progressTitle?: string | null;
+    /**
+     * Default — EN: “Materials you have marked as studied, by category, at your level and the levels below it.” · JA: “あなたのレベルとそれより下のレベルの教材のうち、学習済みにしたものをカテゴリ別に表示します。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    progressHelp?: string | null;
+    /**
+     * Default — EN: “No study materials have been published for your level yet.” · JA: “あなたのレベルの学習教材はまだ公開されていません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    noMaterials?: string | null;
+    /**
+     * Default — EN: “This shows your progress in Nihongo Mock, not an exam result or a prediction.” · JA: “これはNihongo Mockでの学習の記録であり、試験結果や合否の予測ではありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    progressNote?: string | null;
+    /**
+     * Default — EN: “Study next” · JA: “次に学ぶ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    nextTitle?: string | null;
+    /**
+     * Default — EN: “Continue where you left off” · JA: “前回の続き”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    continueTag?: string | null;
+    /**
+     * Default — EN: “You have marked every material open to you as studied. New ones will appear here.” · JA: “利用できる教材はすべて学習済みです。新しい教材が追加されるとここに表示されます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    allStudied?: string | null;
+    /**
+     * Default — EN: “All study materials” · JA: “すべての学習教材”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    libraryLink?: string | null;
+    /**
+     * Default — EN: “Mock tests” · JA: “模擬試験”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    testsTitle?: string | null;
+    /**
+     * Default — EN: “Tests appear as soon as they are published. These are the exams you will be able to practise.” · JA: “模擬試験は公開されしだい表示されます。練習できる試験は次のとおりです。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    testsHelp?: string | null;
+    /**
+     * Default — EN: “See the exams” · JA: “試験を見る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    testsLink?: string | null;
+    /**
+     * Default — EN: “Levels: {count}” · JA: “レベル：{count}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelsCount?: string | null;
+    /**
+     * Default — EN: “Recent results” · JA: “最近の結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    recentTitle?: string | null;
+    /**
+     * Default — EN: “All results” · JA: “すべての結果”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    recentLink?: string | null;
+  };
+  profile?: {
+    /**
+     * Default — EN: “Student profile” · JA: “受講者プロフィール”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    eyebrow?: string | null;
+    /**
+     * Default — EN: “Your profile” · JA: “プロフィール”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    title?: string | null;
+    /**
+     * Default — EN: “Account details” · JA: “アカウント情報”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    accountTitle?: string | null;
+    /**
+     * Default — EN: “Name” · JA: “名前”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    name?: string | null;
+    /**
+     * Default — EN: “Email” · JA: “メールアドレス”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    email?: string | null;
+    /**
+     * Default — EN: “Language” · JA: “表示言語”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    language?: string | null;
+    /**
+     * Default — EN: “Joined” · JA: “登録日”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    joined?: string | null;
+    /**
+     * Default — EN: “Sign-in methods” · JA: “ログイン方法”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    signIn?: string | null;
+    /**
+     * Default — EN: “Email and password” · JA: “メールアドレスとパスワード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    signInEmail?: string | null;
+    /**
+     * Default — EN: “Email and password, Google” · JA: “メールアドレスとパスワード、Google”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    signInEmailGoogle?: string | null;
+    /**
+     * Default — EN: “Your level” · JA: “あなたのレベル”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelTitle?: string | null;
+    /**
+     * Default — EN: “{how}, {date}” · JA: “{how}（{date}）”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelSet?: string | null;
+    /**
+     * Default — EN: “Your level is set by the level check, starting from N5. It cannot be changed here.” · JA: “レベルはN5から始まるレベルチェックで決まります。ここでは変更できません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelFixed?: string | null;
+    /**
+     * Default — EN: “See your level check result” · JA: “レベルチェックの結果を見る”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    levelResult?: string | null;
+    /**
+     * Default — EN: “Set by the level check” · JA: “レベルチェックで判定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    sourceCheck?: string | null;
+    /**
+     * Default — EN: “Set by our team” · JA: “スタッフが設定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    sourceStaff?: string | null;
+    /**
+     * Default — EN: “Level check reset” · JA: “レベルチェックをリセット”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    sourceReset?: string | null;
+    /**
+     * Default — EN: “Level history” · JA: “レベルの履歴”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    historyTitle?: string | null;
+    /**
+     * Default — EN: “Sign-in and security” · JA: “ログインとセキュリティ”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    securityTitle?: string | null;
+    /**
+     * Default — EN: “Password” · JA: “パスワード”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    password?: string | null;
+    /**
+     * Default — EN: “We email you a link to choose a new password.” · JA: “新しいパスワードを設定するためのリンクをメールでお送りします。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordHelp?: string | null;
+    /**
+     * Default — EN: “Change password” · JA: “パスワードを変更”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    passwordAction?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2535,6 +2853,8 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               study?: T;
               mockTests?: T;
               results?: T;
+              profile?: T;
+              yourLevel?: T;
             };
         levelCheck?:
           | T
@@ -2552,15 +2872,6 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               ready?: T;
               continue?: T;
               inProgress?: T;
-            };
-        home?:
-          | T
-          | {
-              levelLabel?: T;
-              continueTitle?: T;
-              studyBody?: T;
-              mockTestsBody?: T;
-              resultsBody?: T;
             };
         study?:
           | T
@@ -2588,6 +2899,12 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               search?: T;
               searchButton?: T;
               clearSearch?: T;
+              progressTitle?: T;
+              progressHelp?: T;
+              markStudied?: T;
+              studied?: T;
+              undoStudied?: T;
+              progressFailed?: T;
             };
         mockTests?:
           | T
@@ -2603,6 +2920,15 @@ export interface LabelsStudentSelect<T extends boolean = true> {
           | T
           | {
               empty?: T;
+              intro?: T;
+              colTest?: T;
+              colScore?: T;
+              colOutcome?: T;
+              colDate?: T;
+              levelCheckStage?: T;
+              percent?: T;
+              passed?: T;
+              notPassed?: T;
             };
         yourLevel?:
           | T
@@ -2616,6 +2942,78 @@ export interface LabelsStudentSelect<T extends boolean = true> {
               score?: T;
               goHome?: T;
             };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-dashboard_select".
+ */
+export interface LabelsDashboardSelect<T extends boolean = true> {
+  dashboard?:
+    | T
+    | {
+        levelLabel?: T;
+        eyebrow?: T;
+        greeting?: T;
+        lead?: T;
+        continueCta?: T;
+        startCta?: T;
+        libraryCta?: T;
+        testsCta?: T;
+        levelByCheck?: T;
+        levelByStaff?: T;
+        statsLabel?: T;
+        statStudied?: T;
+        ofTotal?: T;
+        statStudiedHelp?: T;
+        statLastStudied?: T;
+        notYet?: T;
+        statLastStudiedHelp?: T;
+        statLevelCheck?: T;
+        statLevelCheckHelp?: T;
+        progressTitle?: T;
+        progressHelp?: T;
+        noMaterials?: T;
+        progressNote?: T;
+        nextTitle?: T;
+        continueTag?: T;
+        allStudied?: T;
+        libraryLink?: T;
+        testsTitle?: T;
+        testsHelp?: T;
+        testsLink?: T;
+        levelsCount?: T;
+        recentTitle?: T;
+        recentLink?: T;
+      };
+  profile?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        accountTitle?: T;
+        name?: T;
+        email?: T;
+        language?: T;
+        joined?: T;
+        signIn?: T;
+        signInEmail?: T;
+        signInEmailGoogle?: T;
+        levelTitle?: T;
+        levelSet?: T;
+        levelFixed?: T;
+        levelResult?: T;
+        sourceCheck?: T;
+        sourceStaff?: T;
+        sourceReset?: T;
+        historyTitle?: T;
+        securityTitle?: T;
+        password?: T;
+        passwordHelp?: T;
+        passwordAction?: T;
       };
   updatedAt?: T;
   createdAt?: T;

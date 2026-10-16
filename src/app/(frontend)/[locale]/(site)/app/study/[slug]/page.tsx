@@ -4,7 +4,9 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
 import { isAppError } from '@/server/http/errors'
+import { recordOpen, studiedAtFor } from '@/server/study/progress'
 import { studyMaterialFor, type StudyMaterialView } from '@/server/study/service'
+import { MarkStudied } from '@/ui/components/mark-studied'
 import { NoSave } from '@/ui/components/no-save'
 import { PdfViewer } from '@/ui/components/pdf-viewer'
 import { Reveal } from '@/ui/components/reveal'
@@ -38,6 +40,9 @@ export default async function StudyMaterialPage({ params }: Props) {
     if (isAppError(err) && err.code === 'NOT_FOUND') notFound()
     throw err
   }
+  // "Last opened" feeds "Continue studying" on the dashboard; opening is not studying (RV-12).
+  await recordOpen(student.id, material.id)
+  const studiedAt = await studiedAtFor(student.id, material.id)
 
   return (
     <article className="mx-auto grid max-w-3xl gap-6 px-4 py-12">
@@ -161,6 +166,26 @@ export default async function StudyMaterialPage({ params }: Props) {
           })}
         </section>
       ) : null}
+
+      <section
+        aria-labelledby="progress"
+        className="grid gap-3 rounded-card border border-line bg-surface p-5"
+      >
+        <h2 id="progress" className="font-bold">
+          {t('study.progressTitle')}
+        </h2>
+        <p className="text-sm text-muted">{t('study.progressHelp')}</p>
+        <MarkStudied
+          slug={material.slug}
+          initialStudiedAt={studiedAt}
+          labels={{
+            mark: t('study.markStudied'),
+            done: t('study.studied'),
+            undo: t('study.undoStudied'),
+            failed: t('study.progressFailed'),
+          }}
+        />
+      </section>
     </article>
   )
 }

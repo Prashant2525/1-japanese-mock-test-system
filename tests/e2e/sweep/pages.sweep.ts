@@ -28,6 +28,9 @@ const STUDENT = [
   '/en/app/mock-tests',
   '/en/app/results',
   '/en/app/your-level',
+  '/en/app/profile',
+  '/ja/app/profile',
+  '/ja/app',
   '/ja/app/level-check/stage',
   '/en/app/level-check/stage',
 ]

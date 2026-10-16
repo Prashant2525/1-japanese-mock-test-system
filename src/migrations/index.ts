@@ -17,6 +17,9 @@ import * as migration_20261015_201500_super_admin_delete_permissions from './202
 import * as migration_20261015_211508_exam_sections from './20261015_211508_exam_sections'
 import * as migration_20261015_212439_mock_tests_catalogue_labels from './20261015_212439_mock_tests_catalogue_labels'
 import * as migration_20261015_213000_catalogue_fk_restrict from './20261015_213000_catalogue_fk_restrict'
+import * as migration_20261016_080641_study_progress from './20261016_080641_study_progress'
+import * as migration_20261016_082216_dashboard_labels_add from './20261016_082216_dashboard_labels_add'
+import * as migration_20261016_082229_old_home_labels_drop from './20261016_082229_old_home_labels_drop'
 
 export const migrations = [
   {
@@ -113,5 +116,20 @@ export const migrations = [
     up: migration_20261015_213000_catalogue_fk_restrict.up,
     down: migration_20261015_213000_catalogue_fk_restrict.down,
     name: '20261015_213000_catalogue_fk_restrict',
+  },
+  {
+    up: migration_20261016_080641_study_progress.up,
+    down: migration_20261016_080641_study_progress.down,
+    name: '20261016_080641_study_progress',
+  },
+  {
+    up: migration_20261016_082216_dashboard_labels_add.up,
+    down: migration_20261016_082216_dashboard_labels_add.down,
+    name: '20261016_082216_dashboard_labels_add',
+  },
+  {
+    up: migration_20261016_082229_old_home_labels_drop.up,
+    down: migration_20261016_082229_old_home_labels_drop.down,
+    name: '20261016_082229_old_home_labels_drop',
   },
 ]

@@ -1,8 +1,8 @@
 # Session Handoff
 
 **Session date:** 2026-10-15
-**Current phase / milestone:** Phase 13 — Examination configuration. **COMPLETE.** Next: Phase 13b — Student shell (D-106).
-**Exact task in progress:** none. Start Phase 13b (`IMPLEMENTATION_PLAN.md`): student layout with desktop sidebar + phone bottom tab bar, profile page, dashboard home from real data; keep exam screens unchanged; then Phase 14 (question bank: questions get a section from `exam-sections`).
+**Current phase / milestone:** Phase 13b — Student shell and dashboard. **COMPLETE.** Next: Phase 14 — Question bank.
+**Exact task in progress:** none. Start Phase 14 (question bank and import/export, playbook §11.15): questions get a section from `exam-sections`, rich text/media, versions, CSV/XLSX import with preview. If the owner answers DASH-1..DASH-5, add the approved dashboard items first (data already recorded).
 
 ## Completed (with evidence)
 
@@ -24,6 +24,9 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- **Phase 13b:** each CMS label global must stay under 80 labels (PostgreSQL argument limit): give a big screen its own namespace + group in `src/i18n/label-groups.ts`. When a label global both gains and loses columns, `migrate:create` asks "created or renamed?" interactively (and CI's drift check would hang) — generate one migration with only additions, then one with only removals.
+- `getByText(..., { exact: true })` misses text next to a decorative mark ("✓Studied"); assert on the control instead.
 
 - **Phase 13:** Payload relationships default to ON DELETE SET NULL; history/content links to the catalogue were switched to RESTRICT by migration (the config still says set null, so no drift). Tests that create catalogue records must remove them (sections → levels → exam) — `tests/int/exam-config.int.spec.ts` shows how.
 - Payload `join` fields (exam type → sections) need no column and no migration.
