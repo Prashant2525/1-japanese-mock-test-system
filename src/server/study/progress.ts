@@ -85,10 +85,11 @@ export async function setStudied(
   const res = await (
     await db()
   ).execute(sql`
-    INSERT INTO study_progress (student_id, material_id, first_opened_at, last_opened_at, studied_at, updated_at, created_at)
-    VALUES (${student.id}, ${material.id}, now(), now(), ${studied ? sql`now()` : sql`NULL`}, now(), now())
+    INSERT INTO study_progress (student_id, material_id, first_opened_at, last_opened_at, studied_at, first_studied_at, updated_at, created_at)
+    VALUES (${student.id}, ${material.id}, now(), now(), ${studied ? sql`now()` : sql`NULL`}, ${studied ? sql`now()` : sql`NULL`}, now(), now())
     ON CONFLICT (student_id, material_id)
     DO UPDATE SET studied_at = ${studied ? sql`COALESCE(study_progress.studied_at, now())` : sql`NULL`},
+      first_studied_at = ${studied ? sql`COALESCE(study_progress.first_studied_at, now())` : sql`study_progress.first_studied_at`},
       updated_at = now()
     RETURNING studied_at`)
   const at = (res.rows[0] as { studied_at?: Date | string | null } | undefined)?.studied_at

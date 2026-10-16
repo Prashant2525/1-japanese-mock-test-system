@@ -239,15 +239,15 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
   DROP TABLE "_study_materials_v_locales" CASCADE;
   DROP TABLE "learning_media" CASCADE;
   DROP TABLE "learning_media_locales" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_material_categories_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_material_categories_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_study_materials_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_study_materials_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_learning_media_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_learning_media_fk";
   
-  DROP INDEX "payload_locked_documents_rels_material_categories_id_idx";
-  DROP INDEX "payload_locked_documents_rels_study_materials_id_idx";
-  DROP INDEX "payload_locked_documents_rels_learning_media_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_material_categories_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_study_materials_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_learning_media_id_idx";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "material_categories_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "study_materials_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "learning_media_id";

@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 13b — Student shell and dashboard: COMPLETE**; sidebar height fixed (KI-48). Next: **Phase 13c — dashboard extras** (streaks, weekly chart, daily goal, milestones, study calendar; D-110, D-111), then Phase 14.
+Current phase / milestone: **Phase 13c — Dashboard extras: COMPLETE** (2026-10-16; sidebar fix KI-48 in a separate PR). Next: **Phase 14 — Question bank and import/export.**
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `fix/student-sidebar-height` (PR to `main`).
+Last verified commit: branch `feature/phase-13c-dashboard-extras` (stacked on `fix/student-sidebar-height`; PRs to `main`).
 
 ## Work status
 
@@ -27,6 +27,13 @@ Last verified commit: branch `fix/student-sidebar-height` (PR to `main`).
   - The admin panel uses Payload's own design (by plan).
   - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Phase 13c (2026-10-16)
+
+- Streaks, daily goal, study calendar with private plans, weekly chart, milestones (D-110, D-111, D-113). Rollback migrations fixed (KI-49).
+- Tests: unit 202/202, integration 205/205, E2E 138/138 + 2 skipped (full run, first try); after two later fixes (empty states; text typed before the plan box finished loading) the dashboard tests passed again (7/7 + 1 skipped) and the calendar test 6/6 on repeat; sweep reviewed.
+- **Code:** `src/domain/study-days.ts`, `src/server/student/{activity,plans}.ts`, `src/payload/collections/StudyPlans.ts`, `Students.dailyGoal`, `StudyProgress.firstStudiedAt`, `src/app/api/v1/me/{goal,plans}`, `src/ui/components/{week-chart,study-calendar,study-planner}.tsx`, dashboard page; label namespace `progress` (group "UI labels: streaks, calendar & milestones").
+- **Database:** migrations `20261016_101815_dashboard_extras` (plans table, goal, first-studied backfill), `20261016_102812_progress_labels`.
 
 ## Phase 13b (2026-10-16)
 

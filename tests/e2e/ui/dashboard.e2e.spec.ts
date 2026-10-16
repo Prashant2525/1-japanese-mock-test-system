@@ -50,7 +50,8 @@ test.describe('student dashboard and shell (Phase 13b)', () => {
     const studied = figures.getByRole('listitem').filter({ hasText: 'Materials studied' })
     const before = (await studied.locator('p').nth(1).textContent())!.trim()
     expect(before).toMatch(/^0 \/ \d+$/)
-    await expect(figures.getByText('Not yet')).toBeVisible()
+    const streak = figures.getByRole('listitem').filter({ hasText: 'Current streak' })
+    await expect(streak.getByText('0 days', { exact: true })).toBeVisible()
     await expectNoHorizontalScroll(page)
     if (info.project.name === 'chromium') await expectAccessible(page)
 
@@ -63,7 +64,15 @@ test.describe('student dashboard and shell (Phase 13b)', () => {
 
     await open(page, '/en/app')
     await expect(studied.locator('p').nth(1)).toHaveText(before.replace(/^0 /, '1 '))
-    await expect(figures.getByText('Not yet')).toHaveCount(0)
+    // Today is now a study day: a one-day streak, today's goal met, a dot on today in the calendar.
+    await expect(streak.getByText('1 day', { exact: true })).toBeVisible()
+    await expect(figures.getByText('Goal reached today. Well done!')).toBeVisible()
+    await expect(page.getByRole('link', { name: /Today, studied: 1 actions/ })).toBeVisible()
+    await expect(
+      page
+        .getByRole('region', { name: 'This week' })
+        .getByRole('img', { name: /: 1 study actions$/ }),
+    ).toHaveCount(1)
   })
 
   test('profile, results and the Japanese dashboard', async ({ page }, info) => {
@@ -152,5 +161,49 @@ test.describe('student dashboard and shell (Phase 13b)', () => {
     await open(page, '/en/app')
     await expect(page.locator('[data-student-shell] > aside')).toBeHidden()
     await expect(page.getByRole('navigation', { name: 'Student area' })).toBeVisible()
+  })
+
+  test('the calendar keeps private study plans, and the daily goal can be changed', async ({
+    page,
+  }, info) => {
+    const email = uiEmail('dash-plans')
+    const password = uiPassword()
+    createConfirmedStudent(email, password)
+    setStudentLevel(email, 'N5')
+    await studentLogin(page, 'en', email, password)
+    await open(page, '/en/app')
+
+    // Goal: change it to 3 and it is saved on the server.
+    const figures = page.getByRole('region', { name: 'Your figures' })
+    await figures.getByLabel('Goal').selectOption('3')
+    await expect(figures.getByText('0 / 3')).toBeVisible()
+    await page.reload()
+    await expect(figures.getByLabel('Goal')).toHaveValue('3')
+
+    // Plans on today's calendar day: add, tick, remove.
+    const calendar = page.getByRole('region', { name: 'Study calendar' })
+    const dayPanel = calendar.getByRole('region', { name: /^Plans for / })
+    await dayPanel.getByLabel('New plan').fill('Grammar: は and が')
+    await dayPanel.getByRole('button', { name: 'Add plan' }).click()
+    const item = dayPanel.getByRole('listitem').filter({ hasText: 'Grammar: は and が' })
+    await expect(item).toBeVisible()
+    await expect(calendar.getByRole('link', { name: /Today.*plans: 1/ })).toBeVisible()
+    const saved = page.waitForResponse(
+      (r) => r.url().includes('/api/v1/me/plans/') && r.request().method() === 'PATCH',
+    )
+    await item.getByRole('checkbox').check()
+    await expect(item.getByRole('checkbox')).toBeChecked()
+    expect((await saved).status()).toBe(200)
+    await page.reload()
+    await expect(
+      dayPanel.getByRole('listitem').filter({ hasText: 'Grammar' }).getByRole('checkbox'),
+    ).toBeChecked()
+    await dayPanel.getByRole('button', { name: /Remove/ }).click()
+    await expect(dayPanel.getByText('No plans for this day yet.')).toBeVisible()
+
+    // Month navigation keeps working without leaving the dashboard.
+    await calendar.getByRole('link', { name: 'Next month' }).click()
+    await expect(page).toHaveURL(/\?month=\d{4}-\d{2}/)
+    if (info.project.name === 'chromium') await expectAccessible(page)
   })
 })

@@ -420,27 +420,27 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
   DROP TABLE "_level_check_settings_v_version_stages" CASCADE;
   DROP TABLE "_level_check_settings_v" CASCADE;
   DROP TABLE "_level_check_settings_v_rels" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_questions_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_questions_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_level_check_versions_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_level_check_versions_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_level_check_sessions_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_level_check_sessions_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_attempts_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_attempts_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_results_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_results_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_result_items_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_result_items_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_level_assignments_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_level_assignments_fk";
   
-  DROP INDEX "payload_locked_documents_rels_questions_id_idx";
-  DROP INDEX "payload_locked_documents_rels_level_check_versions_id_idx";
-  DROP INDEX "payload_locked_documents_rels_level_check_sessions_id_idx";
-  DROP INDEX "payload_locked_documents_rels_attempts_id_idx";
-  DROP INDEX "payload_locked_documents_rels_results_id_idx";
-  DROP INDEX "payload_locked_documents_rels_result_items_id_idx";
-  DROP INDEX "payload_locked_documents_rels_level_assignments_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_questions_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_level_check_versions_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_level_check_sessions_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_attempts_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_results_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_result_items_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_level_assignments_id_idx";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "questions_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "level_check_versions_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "level_check_sessions_id";

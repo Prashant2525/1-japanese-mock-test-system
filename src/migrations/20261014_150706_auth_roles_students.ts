@@ -161,21 +161,21 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "audit_events" CASCADE;
   DROP TABLE "email_templates" CASCADE;
   DROP TABLE "email_templates_locales" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_roles_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_roles_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_students_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_students_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_audit_events_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_audit_events_fk";
   
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_email_templates_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_email_templates_fk";
   
-  ALTER TABLE "payload_preferences_rels" DROP CONSTRAINT "payload_preferences_rels_students_fk";
+  ALTER TABLE "payload_preferences_rels" DROP CONSTRAINT IF EXISTS "payload_preferences_rels_students_fk";
   
-  DROP INDEX "payload_locked_documents_rels_roles_id_idx";
-  DROP INDEX "payload_locked_documents_rels_students_id_idx";
-  DROP INDEX "payload_locked_documents_rels_audit_events_id_idx";
-  DROP INDEX "payload_locked_documents_rels_email_templates_id_idx";
-  DROP INDEX "payload_preferences_rels_students_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_roles_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_students_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_audit_events_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_email_templates_id_idx";
+  DROP INDEX IF EXISTS "payload_preferences_rels_students_id_idx";
   ALTER TABLE "admins" DROP COLUMN "status";
   ALTER TABLE "admins" DROP COLUMN "preferred_locale";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "roles_id";

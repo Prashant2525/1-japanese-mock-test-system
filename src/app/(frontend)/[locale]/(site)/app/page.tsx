@@ -4,22 +4,34 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { Link } from '@/i18n/navigation'
 import { payloadClient } from '@/server/auth/session'
 import { examCatalogue, levelById } from '@/server/catalogue/queries'
+import { monthOf, parseMonth } from '@/domain/study-days'
 import { levelCheckSummaryOrNull } from '@/server/level-check/service'
+import { activityFor } from '@/server/student/activity'
+import { plansFor } from '@/server/student/plans'
 import { resultsFor } from '@/server/student/areas'
 import { studyDashboardFor, type DashboardMaterial } from '@/server/study/progress'
 import { ResultsTable } from '@/ui/components/results-table'
 import { Reveal } from '@/ui/components/reveal'
 import { StationBadge } from '@/ui/components/station-badge'
+import { calendarRange, StudyCalendar } from '@/ui/components/study-calendar'
+import { GoalPicker } from '@/ui/components/study-planner'
+import { WeekChart } from '@/ui/components/week-chart'
 
 import { studentPage } from './student-page'
 
-type Props = { params: Promise<{ locale: string }> }
+type Props = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ month?: string; day?: string }>
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale })
   return { title: t('student.nav.home'), robots: { index: false } }
 }
+
+/** Milestone keys (`streak-7`) → label keys (`streak7`, CMS-safe names). */
+const milestoneLabel = (key: string) => key.replace(/-(\w)/g, (_, c: string) => c.toUpperCase())
 
 function Bar({ percent }: { percent: number }) {
   return (
@@ -33,29 +45,45 @@ function Bar({ percent }: { percent: number }) {
 }
 
 /**
- * Student home dashboard (D-106, STU-R01; open only once a level is assigned, LD-R01). Every
+ * Student home dashboard (D-106, D-108, D-110, D-111, STU-R01; open only once a level is assigned, LD-R01). Every
  * figure comes from the student's own records: their level and level check, study progress they
  * recorded with "Mark as studied" (RV-12), the CMS catalogue and their results. Nothing is
  * estimated, and nothing here claims exam readiness.
  */
-export default async function StudentHome({ params }: Props) {
+export default async function StudentHome({ params, searchParams }: Props) {
   const { locale: raw } = await params
   setRequestLocale(raw)
   const locale = raw === 'ja' ? 'ja' : 'en'
   const student = await studentPage(raw, 'home')
   const t = await getTranslations('dashboard')
   const ts = await getTranslations('student')
+  const tp = await getTranslations('progress')
+  const query = await searchParams
   const format = await getFormatter()
   const payload = await payloadClient()
   const levelId =
     typeof student.assignedLevel === 'object' ? student.assignedLevel?.id : student.assignedLevel
-  const [level, summary, study, results, exams] = await Promise.all([
+  const [level, summary, study, results, exams, activity] = await Promise.all([
     levelId ? levelById(payload, levelId, locale) : null,
     levelCheckSummaryOrNull(student),
     studyDashboardFor(student, locale),
     resultsFor(student, 1, 3),
     examCatalogue(payload, locale),
+    activityFor(student.id),
   ])
+  // Calendar month and selected day come from the address; anything invalid falls back to today.
+  const month = parseMonth(query.month, monthOf(activity.today))
+  const day =
+    query.day && /^\d{4}-\d{2}-\d{2}$/.test(query.day) && monthOf(query.day) === month
+      ? query.day
+      : monthOf(activity.today) === month
+        ? activity.today
+        : `${month}-01`
+  const plans = await plansFor(student.id, `${month}-01`, `${month}-31`)
+  const range = calendarRange(activity.today)
+  const goalPercent = Math.min(100, Math.round((activity.todayMaterials / activity.goal) * 100))
+  const earned = activity.milestones.filter((m) => m.earnedOn)
+  const upcoming = activity.milestones.filter((m) => !m.earnedOn).slice(0, 3)
   const date = (iso: string) => format.dateTime(new Date(iso), { dateStyle: 'medium' })
   const next: DashboardMaterial | null = study.continue ?? study.recommended[0] ?? null
   const passedStages = summary?.stages.filter((s) => s.passed).length ?? 0
@@ -133,20 +161,50 @@ export default async function StudentHome({ params }: Props) {
       {/* 2. Key figures (real counts only) */}
       <Reveal delayMs={60}>
         <section aria-label={t('statsLabel')}>
-          <ul className="grid gap-4 sm:grid-cols-3">
+          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <li className={card}>
+              <p className="text-sm text-muted">{tp('streak')}</p>
+              <p className="mt-1 text-3xl font-black tabular-nums">
+                {tp('days', { count: activity.streak.current })}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                {activity.streak.longest === 0
+                  ? tp('streakStart')
+                  : activity.streak.current && !activity.streak.studiedToday
+                    ? tp('streakKeep')
+                    : tp('streakLongest', { count: activity.streak.longest })}
+              </p>
+            </li>
+            <li className={card}>
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-sm text-muted">{tp('goalToday')}</p>
+                <GoalPicker goal={activity.goal} label={tp('goalChange')} />
+              </div>
+              <p className="mt-1 text-3xl font-black tabular-nums">
+                {t('ofTotal', {
+                  done: Math.min(activity.todayMaterials, activity.goal),
+                  total: activity.goal,
+                })}
+              </p>
+              <span
+                aria-hidden="true"
+                className="mt-2 block h-2 overflow-hidden rounded-full bg-line"
+              >
+                <span
+                  className="block h-full rounded-full bg-signal transition-[width] duration-700 ease-standard motion-reduce:transition-none"
+                  style={{ width: `${goalPercent}%` }}
+                />
+              </span>
+              <p className="mt-1 text-xs text-muted">
+                {activity.todayMaterials >= activity.goal ? tp('goalMet') : tp('goalHelp')}
+              </p>
+            </li>
             <li className={card}>
               <p className="text-sm text-muted">{t('statStudied')}</p>
               <p className="mt-1 text-3xl font-black tabular-nums">
                 {t('ofTotal', { done: study.total.studied, total: study.total.available })}
               </p>
               <p className="mt-1 text-xs text-muted">{t('statStudiedHelp')}</p>
-            </li>
-            <li className={card}>
-              <p className="text-sm text-muted">{t('statLastStudied')}</p>
-              <p className="mt-1 text-3xl font-black">
-                {study.lastStudiedAt ? date(study.lastStudiedAt) : t('notYet')}
-              </p>
-              <p className="mt-1 text-xs text-muted">{t('statLastStudiedHelp')}</p>
             </li>
             <li className={card}>
               <p className="text-sm text-muted">{t('statLevelCheck')}</p>
@@ -162,6 +220,131 @@ export default async function StudentHome({ params }: Props) {
           </ul>
         </section>
       </Reveal>
+
+      {/* 3. Calendar and plans · this week · milestones */}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <Reveal delayMs={80}>
+          <section
+            id="calendar"
+            aria-labelledby="calendar-title"
+            className={`${card} grid gap-4 scroll-mt-6`}
+          >
+            <div>
+              <h2 id="calendar-title" className="text-xl font-bold">
+                {tp('calendarTitle')}
+              </h2>
+              <p className="mt-1 text-sm text-muted">{tp('calendarHelp')}</p>
+            </div>
+            <StudyCalendar
+              month={month}
+              day={day}
+              today={activity.today}
+              actionsPerDay={activity.actionsPerDay}
+              plans={plans}
+              canAddFrom={range.from}
+              canAddTo={range.to}
+              labels={{
+                previous: tp('previousMonth'),
+                next: tp('nextMonth'),
+                today: tp('today'),
+                studied: tp.raw('dayStudied') as string,
+                planned: tp.raw('dayPlanned') as string,
+                dayPlans: tp.raw('dayPlans') as string,
+                legendStudied: tp('legendStudied'),
+                legendPlanned: tp('legendPlanned'),
+                editor: {
+                  add: tp('planAdd'),
+                  placeholder: tp('planPlaceholder'),
+                  noteLabel: tp('planNote'),
+                  done: tp('planDone'),
+                  remove: tp('planRemove'),
+                  empty: tp('planEmpty'),
+                  failed: tp('planFailed'),
+                  full: tp('planFull'),
+                },
+              }}
+            />
+          </section>
+        </Reveal>
+
+        <div className="grid content-start gap-8">
+          <Reveal delayMs={120}>
+            <section aria-labelledby="week" className={`${card} grid gap-4`}>
+              <div>
+                <h2 id="week" className="text-xl font-bold">
+                  {tp('weekTitle')}
+                </h2>
+                <p className="mt-1 text-sm text-muted">{tp('weekHelp')}</p>
+              </div>
+              {activity.week.every((d) => d.count === 0) ? (
+                <p className="rounded-input border border-dashed border-line p-5 text-center text-sm text-muted">
+                  {tp('weekEmpty')}
+                </p>
+              ) : null}
+              <WeekChart
+                week={activity.week}
+                today={activity.today}
+                labels={{
+                  day: tp('weekDay'),
+                  actions: tp('weekActions'),
+                  tooltip: tp.raw('weekTooltip') as string,
+                  today: tp('today'),
+                }}
+              />
+            </section>
+          </Reveal>
+          <Reveal delayMs={160}>
+            <section aria-labelledby="milestones" className={`${card} grid gap-4`}>
+              <h2 id="milestones" className="text-xl font-bold">
+                {tp('milestonesTitle')}
+              </h2>
+              {earned.length ? (
+                <ul className="flex flex-wrap gap-2">
+                  {earned.map((m) => (
+                    <li
+                      key={m.key}
+                      className="inline-flex items-center gap-2 rounded-full border border-success/40 bg-success/10 py-1 pr-3 pl-1.5 text-xs font-bold"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="grid size-6 place-items-center rounded-full bg-surface text-success"
+                      >
+                        ✓
+                      </span>
+                      {tp(`milestone.${milestoneLabel(m.key)}`)}
+                      <span className="font-normal text-muted">
+                        {date(`${m.earnedOn}T06:00:00Z`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted">{tp('milestonesNone')}</p>
+              )}
+              {upcoming.length ? (
+                <div className="grid gap-3">
+                  <h3 className="text-sm font-bold text-muted">{tp('milestonesNext')}</h3>
+                  <ul className="grid gap-3">
+                    {upcoming.map((m) => (
+                      <li key={m.key} className="grid gap-1.5">
+                        <span className="flex justify-between gap-3 text-sm">
+                          <span className="font-bold">
+                            {tp(`milestone.${milestoneLabel(m.key)}`)}
+                          </span>
+                          <span className="text-muted tabular-nums">
+                            {t('ofTotal', { done: m.value, total: m.target })}
+                          </span>
+                        </span>
+                        <Bar percent={Math.round((m.value / m.target) * 100)} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </section>
+          </Reveal>
+        </div>
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         {/* 3. Progress by category at the student's levels */}

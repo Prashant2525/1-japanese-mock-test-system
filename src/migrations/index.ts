@@ -20,6 +20,9 @@ import * as migration_20261015_213000_catalogue_fk_restrict from './20261015_213
 import * as migration_20261016_080641_study_progress from './20261016_080641_study_progress'
 import * as migration_20261016_082216_dashboard_labels_add from './20261016_082216_dashboard_labels_add'
 import * as migration_20261016_082229_old_home_labels_drop from './20261016_082229_old_home_labels_drop'
+import * as migration_20261016_101815_dashboard_extras from './20261016_101815_dashboard_extras'
+import * as migration_20261016_102812_progress_labels from './20261016_102812_progress_labels'
+import * as migration_20261016_110314_progress_empty_labels from './20261016_110314_progress_empty_labels'
 
 export const migrations = [
   {
@@ -131,5 +134,20 @@ export const migrations = [
     up: migration_20261016_082229_old_home_labels_drop.up,
     down: migration_20261016_082229_old_home_labels_drop.down,
     name: '20261016_082229_old_home_labels_drop',
+  },
+  {
+    up: migration_20261016_101815_dashboard_extras.up,
+    down: migration_20261016_101815_dashboard_extras.down,
+    name: '20261016_101815_dashboard_extras',
+  },
+  {
+    up: migration_20261016_102812_progress_labels.up,
+    down: migration_20261016_102812_progress_labels.down,
+    name: '20261016_102812_progress_labels',
+  },
+  {
+    up: migration_20261016_110314_progress_empty_labels.up,
+    down: migration_20261016_110314_progress_empty_labels.down,
+    name: '20261016_110314_progress_empty_labels',
   },
 ]

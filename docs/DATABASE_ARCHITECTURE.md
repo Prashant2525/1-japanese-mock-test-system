@@ -72,7 +72,9 @@ erDiagram
 | `study_materials` *(implemented Phase 12; `archived` flag; attachments are an array of {media, title, allowDownload (12b, default false)}; deletable with `materials.delete`, versions go too)* | [P] localized, drafts + versions | title, slug, level → `levels`, category, summary, body (Lexical + ruby), attachments → `learning_media`[], order | unique (slug); index (level, category, status); student queries filter `enabledForStudy` and level ≤ assigned |
 | `site_media` | [P] upload, **public** | alt (localized), kind, mime, size, width/height | marketing images, logos, parallax layers |
 | `learning_media` *(implemented Phase 12; local disk until R2, D-088; 12b: `archived` flag, deletable only when unused — D-092)* | [P] upload, **private** | alt/caption (localized), kind (`audio`/`pdf`/`image`, set by the server), mime, size, durationSec | served only through signed URLs (D-087); type/size/content checked on upload (D-086); never deleted |
-| `study_progress` *(implemented Phase 13b, D-107)* | [P-ro] | student → `students` (CASCADE), material → `study_materials` (CASCADE), firstOpenedAt, lastOpenedAt, studiedAt | unique (student, material); written only by the study service (upserts); no time-on-page data
+| `study_progress` *(implemented Phase 13b, D-107)* | [P-ro] | student → `students` (CASCADE), material → `study_materials` (CASCADE), firstOpenedAt, lastOpenedAt, studiedAt, firstStudiedAt (13c: set once, never cleared) | unique (student, material); written only by the study service (upserts); no time-on-page data
+| `study_plans` *(implemented Phase 13c, D-113)* | [T] private | student → `students` (CASCADE), date (Nepal `YYYY-MM-DD`), note ≤ 80, done | index (student, date); hidden from the admin, all CMS access closed; ≤ 5 per day enforced by the service
+| `students.daily_goal` *(Phase 13c)* | column | 1–5, default 1 | set by the student (DASH-3)
 
 ### 3.4 Question bank
 
