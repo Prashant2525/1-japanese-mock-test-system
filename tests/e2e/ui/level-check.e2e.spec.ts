@@ -68,7 +68,9 @@ test.describe('the level check (Phase 11)', () => {
 
     await expect(page).toHaveURL(/\/en\/app\/your-level$/)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your level')
-    await expect(page.getByRole('main').getByText('N5', { exact: true }).first()).toBeVisible()
+    await expect(
+      page.getByRole('main').getByText('N5', { exact: true }).filter({ visible: true }).first(),
+    ).toBeVisible()
     const stages = page.getByRole('region', { name: 'Your level check' })
     await expect(stages.getByRole('listitem')).toHaveCount(2)
     await expect(stages.getByRole('listitem').nth(0)).toContainText('100%')

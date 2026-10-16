@@ -24,6 +24,11 @@ export const LABEL_GROUPS = [
     namespaces: ['student'],
   },
   {
+    slug: 'labels-dashboard',
+    label: { en: 'UI labels: home & profile', ja: 'UIラベル：ホーム・プロフィール' },
+    namespaces: ['dashboard', 'profile'],
+  },
+  {
     slug: 'labels-exam',
     label: { en: 'UI labels: test screen', ja: 'UIラベル：試験画面' },
     namespaces: ['exam'],

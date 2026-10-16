@@ -8,18 +8,24 @@ Last updated: 2026-10-15 (Phase 11).
 - Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
 - CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands and latest local results (2026-10-16, Phase 13)
+## Commands and latest local results (2026-10-16, Phase 13b)
 
 | Purpose | Command | Result |
 |---|---|---|
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **184/184** |
-| Integration tests | `pnpm test:int` | **193/193** |
+| Unit tests | `pnpm test:unit` | **190/190** |
+| Integration tests | `pnpm test:int` | **199/199** (one earlier run lost a file to a Windows worker crash, KI-36; rerun clean) |
 | Build | `pnpm build` | Pass |
 | Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
-| E2E | `pnpm test:e2e` | **131/131 + 1 skipped, first try, no retries** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **135/135 + 1 skipped (full run 134; the level-check iPhone test needed a selector fix for the hidden sidebar and passed on rerun, 10/10)** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 13b tests prove
+
+- **Unit `domain/study-progress` (6):** rounding down (100 % only when all done), only explicit "studied" counts and only for visible materials (a hidden one does not count, not even for "last studied"), continue = latest opened not studied, recommendation order (own level, lower levels, category, display order), no repeats, limit, new-student defaults.
+- **Integration `dashboard` (6):** mark/unmark through the real route, idempotent (first time kept); a higher-level material 404, no level 403, extra fields 400; opening is not studying; figures move only after "Mark as studied"; own level suggested first; archiving a studied material removes it from the count at once; one student's progress never appears for another; deleting a material removes its progress rows; profile reports Google as yes/no and never contains the Google ID.
+- **E2E `ui/dashboard` (2 × 2 browsers):** greeting, the visible navigation (sidebar on desktop, tab bar on iPhone) with Home current, real "0 / n" and "Not yet"; marking a material studied survives reload and turns the dashboard into "1 / n"; profile (sign-in methods, level note, change-password link), results empty state, Japanese dashboard and navigation; axe clean; no horizontal scroll.
 
 ## What the Phase 13 tests prove
 

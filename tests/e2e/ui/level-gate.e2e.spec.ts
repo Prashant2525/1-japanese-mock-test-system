@@ -91,9 +91,11 @@ test.describe('level gate (Phase 10)', () => {
   }) => {
     await newStudent(page, 'N4')
     await expect(page).toHaveURL(/\/en\/app$/)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome, UI Student')
-    await expect(page.getByText('Your level', { exact: true })).toBeVisible()
-    await expect(page.getByRole('main').getByText('N4', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome back, UI Student')
+    // The welcome card shows the level (the sidebar shows it too on desktop).
+    const welcome = page.getByRole('region', { name: 'Welcome back, UI Student' })
+    await expect(welcome.getByText('Your level', { exact: true })).toBeVisible()
+    await expect(welcome.getByText('N4', { exact: true })).toBeVisible()
     const tabs = page.getByRole('navigation', { name: 'Student area' })
     await tabs.getByRole('link', { name: 'Study' }).click()
     await expect(page).toHaveURL(/\/en\/app\/study$/)
@@ -131,7 +133,9 @@ test.describe('level gate (Phase 10)', () => {
     await expectAccessible(page)
     setStudentLevel(email, 'N4')
     await open(page, '/ja/app')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('UI Student さん、ようこそ')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'UI Studentさん、おかえりなさい',
+    )
     await expectAccessible(page)
   })
 

@@ -5,7 +5,7 @@ Owner decisions that block or shape later phases. Answer by ID (e.g. "MT-4: acce
 **Priority key:** **P1** blocks the next phase · **P2** needed by Phases 3–5 · **P3** needed later (phase named).
 "Suggested default" values are **PROPOSED - APPROVAL REQUIRED** until accepted.
 
-Last updated: 2026-10-16 (Phase 13: EX-1 added).
+Last updated: 2026-10-16 (Phase 13b: DASH-1..DASH-5 added).
 
 ---
 
@@ -13,6 +13,11 @@ Last updated: 2026-10-16 (Phase 13: EX-1 added).
 
 | ID | Pri | Question | Needed by | Suggested default | Owner response |
 |---|---|---|---|---|---|
+| DASH-1 | P2 | **Study days and streak.** Proposed definition: a *study day* is a calendar day in Nepal time (Asia/Kathmandu) on which the student marked at least one material as studied or finished a test or level-check stage. Opening pages does not count. *Current streak* = consecutive study days ending today or yesterday; *longest streak* = the best run ever. A missed day resets the streak; no "freeze" days. Uses data we already record. | Next dashboard step | Approve as defined. | |
+| DASH-2 | P2 | **Weekly activity chart:** seven bars (Nepal days) counting study actions (materials studied + tests finished) — not minutes. | With DASH-1 | Approve with DASH-1. | |
+| DASH-3 | P3 | **Study time and a daily goal in minutes** need new tracking in the browser (count only while the tab is visible and the student interacts; stop after ~2 minutes idle; cap per page). It is an estimate and adds a privacy notice. Alternative without new tracking: a daily goal in *actions* (e.g. study 1–5 materials a day, chosen by the student). | Later | Use the action-based goal; defer minutes. | |
+| DASH-4 | P3 | **Milestones/achievements** computed from existing records (first material studied, a category finished at your level, level check completed, 7-day streak) — no points, nothing for repeated low-value actions. | Phase 24 | Approve for Phase 24. | |
+| DASH-5 | P3 | **Leaderboard** is on the out-of-scope list (rule 14). If you want one: opt-in only, first name + initial, ranked by weekly study actions (no time, no emails), with a private personal-best view for everyone else. | Only if approved | Not at launch. | |
 | EX-1 | P3 | **Exam sections:** the defaults were seeded from the official guides (D-103). For NAT-TEST I could confirm the 5Q layout (文字・語彙 / 文法・読解 / 聴解) but not whether 1Q/2Q combine sections as JLPT N1/N2 do. Please check Admin → Exam catalogue → Exam sections and correct anything (all editable). | Phase 15 (mock-test builder) | Keep the seeded sections; NAT uses the same three for every level until you change it. | |
 | PAY-3b | P3 | Merchant onboarding: which registered business (name/PAN) will own the eSewa, Khalti and connectIPS merchant accounts? | Phase 20 (live) | Use the provider sandboxes until then. | Owner 2026-10-16: "For now use test sandbox and later i will provide the details" |
 | CON-1b | P3 | Please share a sample of existing question content (any format), if any exists, to shape the import template. | Phase 14 | — | |

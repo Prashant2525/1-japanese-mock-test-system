@@ -159,7 +159,9 @@
       "home": "Home",
       "study": "Study",
       "mockTests": "Mock tests",
-      "results": "Results"
+      "results": "Results",
+      "profile": "Profile",
+      "yourLevel": "Your level"
     },
     "levelCheck": {
       "eyebrow": "Step 1",
@@ -175,13 +177,6 @@
       "ready": "{count} stages, up to {minutes} minutes in total. Each stage is timed separately.",
       "continue": "Continue the level check",
       "inProgress": "Your level check is in progress. Continue where you left off; the timer of a started stage keeps running."
-    },
-    "home": {
-      "levelLabel": "Your level",
-      "continueTitle": "Where to next?",
-      "studyBody": "Materials for your level and the levels below it.",
-      "mockTestsBody": "Practise under real exam conditions at any level.",
-      "resultsBody": "Your scores and answer reviews."
     },
     "study": {
       "empty": "No study materials have been published yet. They'll appear here as soon as they are.",
@@ -206,7 +201,13 @@
       "pdfPages": "Pages: {count}",
       "search": "Search materials",
       "searchButton": "Search",
-      "clearSearch": "Clear search"
+      "clearSearch": "Clear search",
+      "progressTitle": "Your progress",
+      "progressHelp": "Finished this material? Mark it as studied. Opening a page does not count.",
+      "markStudied": "Mark as studied",
+      "studied": "Studied",
+      "undoStudied": "Undo",
+      "progressFailed": "That did not save. Please try again."
     },
     "mockTests": {
       "empty": "No mock tests have been published yet. They'll appear here as soon as they are.",
@@ -217,7 +218,16 @@
       "noSections": "Sections will be announced."
     },
     "results": {
-      "empty": "You don't have any results yet. Take a mock test and your score will appear here."
+      "empty": "You don't have any results yet. Take a mock test and your score will appear here.",
+      "intro": "Every result you have, newest first. Answer reviews arrive with mock tests.",
+      "colTest": "Test",
+      "colScore": "Score",
+      "colOutcome": "Outcome",
+      "colDate": "Date",
+      "levelCheckStage": "Level check · {level} stage",
+      "percent": "{percent}%",
+      "passed": "Passed",
+      "notPassed": "Not passed"
     },
     "yourLevel": {
       "title": "Your level",
@@ -229,6 +239,65 @@
       "score": "{percent}%",
       "goHome": "Go to my page"
     }
+  },
+  "dashboard": {
+    "levelLabel": "Your level",
+    "eyebrow": "Your learning space",
+    "greeting": "Welcome back, {name}",
+    "lead": "Pick up where you left off, or start something new at your level.",
+    "continueCta": "Continue: {title}",
+    "startCta": "Start: {title}",
+    "libraryCta": "Open the study library",
+    "testsCta": "Explore mock tests",
+    "levelByCheck": "Set by the level check",
+    "levelByStaff": "Set by our team",
+    "statsLabel": "Your figures",
+    "statStudied": "Materials studied",
+    "ofTotal": "{done} / {total}",
+    "statStudiedHelp": "Marked as studied, out of the materials open to you.",
+    "statLastStudied": "Last studied",
+    "notYet": "Not yet",
+    "statLastStudiedHelp": "The last time you marked a material as studied.",
+    "statLevelCheck": "Level check stages passed",
+    "statLevelCheckHelp": "Completed on {date}.",
+    "progressTitle": "Study progress up to {level}",
+    "progressHelp": "Materials you have marked as studied, by category, at your level and the levels below it.",
+    "noMaterials": "No study materials have been published for your level yet.",
+    "progressNote": "This shows your progress in Nihongo Mock, not an exam result or a prediction.",
+    "nextTitle": "Study next",
+    "continueTag": "Continue where you left off",
+    "allStudied": "You have marked every material open to you as studied. New ones will appear here.",
+    "libraryLink": "All study materials",
+    "testsTitle": "Mock tests",
+    "testsHelp": "Tests appear as soon as they are published. These are the exams you will be able to practise.",
+    "testsLink": "See the exams",
+    "levelsCount": "Levels: {count}",
+    "recentTitle": "Recent results",
+    "recentLink": "All results"
+  },
+  "profile": {
+    "eyebrow": "Student profile",
+    "title": "Your profile",
+    "accountTitle": "Account details",
+    "name": "Name",
+    "email": "Email",
+    "language": "Language",
+    "joined": "Joined",
+    "signIn": "Sign-in methods",
+    "signInEmail": "Email and password",
+    "signInEmailGoogle": "Email and password, Google",
+    "levelTitle": "Your level",
+    "levelSet": "{how}, {date}",
+    "levelFixed": "Your level is set by the level check, starting from N5. It cannot be changed here.",
+    "levelResult": "See your level check result",
+    "sourceCheck": "Set by the level check",
+    "sourceStaff": "Set by our team",
+    "sourceReset": "Level check reset",
+    "historyTitle": "Level history",
+    "securityTitle": "Sign-in and security",
+    "password": "Password",
+    "passwordHelp": "We email you a link to choose a new password.",
+    "passwordAction": "Change password"
   },
   "exam": {
     "stageLabel": "Level check · {level}",

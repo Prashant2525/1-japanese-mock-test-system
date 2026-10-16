@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-16 — Phase 13b: student shell, dashboard and profile
+
+- New student layout: sidebar on desktop (with your level), bottom tab bar on phones; exam screens unchanged.
+- Home is now a dashboard from real data: welcome with level, next step, materials studied, last studied, level-check stages passed, progress by category (explained), what to study next, exams to practise, recent results — with honest empty states.
+- "Mark as studied" on every material (undo possible); "Continue where you left off" (study progress, RV-12, brought forward).
+- Profile page (account, sign-in methods, level and history, change password) and a Results page that lists real results (it wrongly said "no results" before).
+- Streaks, weekly chart, study time, goals, achievements and leaderboards proposed for approval (DASH-1..DASH-5), not built.
+- Tests: unit 190/190, integration 199/199, E2E 135/135 + 1 skipped (full run 134; the level-check iPhone test needed a selector fix for the hidden sidebar and passed on rerun, 10/10).
+
 ## 2026-10-16 — Phase 13: examination configuration
 
 - Exam sections in the CMS (Exam catalogue → Exam sections): per exam, optionally per level, EN/JA, ordered, on/off; seeded from the official JLPT, JFT-Basic and NAT-TEST structures; shown on each exam type's page.

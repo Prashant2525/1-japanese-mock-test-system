@@ -33,7 +33,15 @@ export async function listResults(
   page = 1,
   limit = 20,
 ): Promise<Page<ResultListItem>> {
-  const student = await requireStudentWithLevel(headers)
+  return resultsFor(await requireStudentWithLevel(headers), page, limit)
+}
+
+/** The same list for a page that has already passed the level gate (`studentPage`). */
+export async function resultsFor(
+  student: { id: number },
+  page = 1,
+  limit = 20,
+): Promise<Page<ResultListItem>> {
   const payload = await payloadClient()
   const found = await payload.find({
     collection: 'results',

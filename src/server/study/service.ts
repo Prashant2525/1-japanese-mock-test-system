@@ -23,7 +23,7 @@ const idOf = (v: unknown): number | null =>
       ? null
       : Number(v)
 
-async function eligibility(payload: Payload, student: Student, locale: Locale) {
+export async function eligibility(payload: Payload, student: Student, locale: Locale) {
   const levels = await payload.find({
     collection: 'levels',
     where: { 'examType.code': { equals: 'JLPT' } },
@@ -59,7 +59,7 @@ async function eligibility(payload: Payload, student: Student, locale: Locale) {
 }
 
 /** The base rule every student query starts from. */
-function visibleWhere(levelIds: number[], categoryIds: number[]): Where[] {
+export function visibleWhere(levelIds: number[], categoryIds: number[]): Where[] {
   return [
     { _status: { equals: 'published' } },
     { archived: { not_equals: true } },
@@ -79,12 +79,12 @@ export type StudyListItem = {
   media: { image: number; audio: number; pdf: number }
 }
 
-const levelOption = (l: Level): StudyLevelOption => ({
+export const levelOption = (l: Level): StudyLevelOption => ({
   code: l.code,
   name: l.name,
   badgeColor: l.badgeColor,
 })
-const categoryOption = (c: MaterialCategory): StudyCategoryOption => ({
+export const categoryOption = (c: MaterialCategory): StudyCategoryOption => ({
   key: c.key,
   name: c.name,
   symbol: c.symbol ?? null,
@@ -159,6 +159,7 @@ export type StudyAttachment = {
 }
 
 export type StudyMaterialView = {
+  id: number
   slug: string
   title: string
   summary: string | null
@@ -194,6 +195,7 @@ export async function studyMaterialFor(
   const m = found.docs[0]
   if (!m) throw new AppError('NOT_FOUND')
   return {
+    id: m.id,
     slug: m.slug,
     title: m.title,
     summary: m.summary ?? null,

@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 13 — Examination configuration: COMPLETE** (2026-10-16). Next: **Phase 13b — Student shell** (sidebar, bottom tab bar, profile, dashboard layout; D-106).
+Current phase / milestone: **Phase 13b — Student shell and dashboard: COMPLETE** (2026-10-16). Next: **Phase 14 — Question bank and import/export** (dashboard extras wait for DASH-1..DASH-5).
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-13-exam-config` (PR to `main`).
+Last verified commit: branch `feature/phase-13b-student-shell` (PR to `main`).
 
 ## Work status
 
@@ -27,6 +27,13 @@ Last verified commit: branch `feature/phase-13-exam-config` (PR to `main`).
   - The admin panel uses Payload's own design (by plan).
   - Study files live on local disk until the owner creates Cloudflare R2 keys (KI-37, release blocker).
 - **Remaining:** Phases 9–28.
+
+## Phase 13b (2026-10-16)
+
+- Student shell (sidebar / tab bar), dashboard from real data (D-108), profile and real results list (D-109), study progress with "Mark as studied" (D-107). Proposals DASH-1..DASH-5 await the owner.
+- Tests: unit 190/190, integration 199/199, E2E 135/135 + 1 skipped (full run 134; the level-check iPhone test needed a selector fix for the hidden sidebar and passed on rerun, 10/10); sweep reviewed.
+- **Code:** `src/domain/study-progress.ts`, `src/server/study/progress.ts`, `src/server/student/profile.ts`, `src/payload/collections/StudyProgress.ts`, `src/app/api/v1/study/materials/[slug]/progress/route.ts`, `src/ui/components/{student-nav,mark-studied,results-table}.tsx`, student layout, home, profile, results and material pages; label namespaces `dashboard`, `profile` (`src/i18n/label-groups.ts`).
+- **Database:** migrations `20261016_080641_study_progress`, `20261016_082216_dashboard_labels_add`, `20261016_082229_old_home_labels_drop` (added and dropped separately so the schema tools never ask whether a column was renamed).
 
 ## Phase 13 (2026-10-16)
 

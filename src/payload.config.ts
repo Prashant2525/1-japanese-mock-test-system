@@ -27,6 +27,7 @@ import { Levels } from './payload/collections/Levels'
 import { MaterialCategories } from './payload/collections/MaterialCategories'
 import { Questions } from './payload/collections/Questions'
 import { StudyMaterials } from './payload/collections/StudyMaterials'
+import { StudyProgress } from './payload/collections/StudyProgress'
 import { Roles } from './payload/collections/Roles'
 import { Students } from './payload/collections/Students'
 import { can } from './server/auth/permissions'
@@ -91,6 +92,7 @@ export default buildConfig({
     MaterialCategories,
     StudyMaterials,
     LearningMedia,
+    StudyProgress,
     EmailTemplates,
     AuditEvents,
   ],
