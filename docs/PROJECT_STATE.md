@@ -1,8 +1,8 @@
 # Project State
 
-Current phase / milestone: **Phase 13b — Student shell and dashboard: COMPLETE** (2026-10-16). Next: **Phase 14 — Question bank and import/export** (dashboard extras wait for DASH-1..DASH-5).
+Current phase / milestone: **Phase 13b — Student shell and dashboard: COMPLETE**; sidebar height fixed (KI-48). Next: **Phase 13c — dashboard extras** (streaks, weekly chart, daily goal, milestones, study calendar; D-110, D-111), then Phase 14.
 Overall status: **IN PROGRESS** (backend, auth and the first student-facing pages exist; no exam features yet)
-Last verified commit: branch `feature/phase-13b-student-shell` (PR to `main`).
+Last verified commit: branch `fix/student-sidebar-height` (PR to `main`).
 
 ## Work status
 

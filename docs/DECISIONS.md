@@ -248,6 +248,14 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-108 | **Dashboard content (STU-R01):** welcome with level and how it was set, one primary next step (continue / start / library) plus mock tests; three real figures (materials studied x / y, last studied date, level-check stages passed); progress by category with the calculation explained and "not an exam result" note; study next (continue + recommendations); exams you will be able to practise (catalogue); recent results. Empty states everywhere; no sample data; no exam-readiness claims. Notices join when that module exists (D-096); score trends and weak areas when mock-test results exist (Phase 17). | STU-R01, owner 2026-10-16 |
 | D-109 | **Shell and pages:** sidebar (level badge on top, Home, Study, Mock tests, Results, Profile) on screens ≥1024 px, sticky bottom tab bar below; exam screens unchanged. Profile (read-only account details, sign-in methods as yes/no, how the level was set and its history without staff notes, "Change password" via the reset email). Results page now lists the student's real results (level-check stages) instead of the placeholder; answer review stays in Phase 17. Dashboard and profile wording live in their own label namespaces (`dashboard`, `profile` → CMS global "UI labels: home & profile") to keep each label global under the database limit. | D-098, D-106 |
 
+## Dashboard extras and layout fix (2026-10-16)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-110 | **Approved dashboard extras (Phase 13c):** study days and current/longest streak exactly as DASH-1 defines them; a 7-day activity chart of study actions (DASH-2); a daily goal counted in materials, chosen by the student (DASH-3 default — no minute tracking); milestones computed from existing records, no points (DASH-4, built now rather than Phase 24); **no leaderboard at launch** (DASH-5 default). | DASH-1..DASH-5 |
+| D-111 | **Study calendar (owner request):** a month calendar on the dashboard showing study days and the student's own study plans (a short note on a date, add/tick/remove), today and the streak; plans are private to the student. | Owner 2026-10-16 |
+| D-112 | **Student shell height (fix):** `main` becomes a flex column when it holds the student shell (`has-[>[data-student-shell]]`), the shell grows to fill it, and the shell shows the footer in its content column (the full-width footer is hidden there). The sidebar column therefore always runs from the header to the bottom of the page — the bottom of the screen on short pages. Public pages keep normal flow. | Owner 2026-10-16 (bug) |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

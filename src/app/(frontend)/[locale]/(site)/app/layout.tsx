@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { currentStudentForPage, payloadClient } from '@/server/auth/session'
 import { levelById } from '@/server/catalogue/queries'
 import { hasDeterminedLevel } from '@/server/student/gate'
+import { SiteFooter } from '@/ui/components/site-chrome'
 import { StudentSidebar, StudentTabBar, type StudentNavItem } from '@/ui/components/student-nav'
 
 /**
@@ -38,10 +39,12 @@ export default async function StudentLayout({
     { href: '/app/profile', label: t('profile'), icon: 'profile' },
   ]
   return (
-    <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+    // Grows to fill `main` (see the site layout), so the sidebar column is never shorter than the screen.
+    <div data-student-shell className="flex-1 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
       <StudentSidebar label={t('area')} items={items} level={level} levelLabel={t('yourLevel')} />
-      <div className="min-w-0">
-        {children}
+      <div className="flex min-w-0 flex-col">
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
         <StudentTabBar label={t('area')} items={items} />
       </div>
     </div>

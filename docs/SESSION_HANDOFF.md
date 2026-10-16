@@ -2,7 +2,7 @@
 
 **Session date:** 2026-10-15
 **Current phase / milestone:** Phase 13b — Student shell and dashboard. **COMPLETE.** Next: Phase 14 — Question bank.
-**Exact task in progress:** none. Start Phase 14 (question bank and import/export, playbook §11.15): questions get a section from `exam-sections`, rich text/media, versions, CSV/XLSX import with preview. If the owner answers DASH-1..DASH-5, add the approved dashboard items first (data already recorded).
+**Exact task in progress:** none. Next: Phase 13c — dashboard extras per D-110/D-111 (study days and streaks from `study_progress.studied_at` + results, Nepal days; 7-day chart; daily goal in materials; milestones; month calendar with private study plans). Then Phase 14 (question bank).
 
 ## Completed (with evidence)
 

@@ -100,4 +100,57 @@ test.describe('student dashboard and shell (Phase 13b)', () => {
         .getByRole('link', { name: 'プロフィール' }),
     ).toBeVisible()
   })
+
+  test('the sidebar fills the height on every student page and screen size', async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== 'chromium', 'the sidebar is the desktop/tablet navigation')
+    const email = uiEmail('dash-sidebar')
+    const password = uiPassword()
+    createConfirmedStudent(email, password)
+    setStudentLevel(email, 'N5')
+    await studentLogin(page, 'en', email, password)
+    const pages = [
+      '/en/app',
+      '/en/app/study',
+      '/en/app/mock-tests',
+      '/en/app/results',
+      '/en/app/profile',
+    ]
+    for (const size of [
+      { width: 1024, height: 768 },
+      { width: 1280, height: 800 },
+      { width: 1600, height: 1000 },
+    ]) {
+      await page.setViewportSize(size)
+      for (const path of pages) {
+        await open(page, path)
+        const sidebar = await page.locator('[data-student-shell] > aside').boundingBox()
+        const header = await page.getByRole('banner').boundingBox()
+        const footer = await page.locator('[data-student-shell] footer').boundingBox()
+        const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight)
+        expect(sidebar, path).not.toBeNull()
+        // From right under the header to the very bottom of the page, never stopping halfway…
+        expect(Math.abs(sidebar!.y - (header!.y + header!.height)), path).toBeLessThan(2)
+        expect(Math.abs(sidebar!.y + sidebar!.height - pageHeight), path).toBeLessThan(2)
+        // …so on a short page it fills the screen below the header.
+        expect(sidebar!.height, path).toBeGreaterThanOrEqual(size.height - header!.height - 1)
+        // The footer sits in the content column, beside the sidebar, at the bottom.
+        expect(footer!.x, path).toBeGreaterThanOrEqual(sidebar!.x + sidebar!.width - 1)
+        expect(Math.abs(footer!.y + footer!.height - pageHeight), path).toBeLessThan(2)
+        await expect(
+          page
+            .locator('[data-student-shell] footer')
+            .getByText(/not affiliated with the organisers/),
+        ).toBeVisible()
+        await expect(page.locator('body footer').filter({ visible: true })).toHaveCount(1)
+        await expectNoHorizontalScroll(page)
+      }
+    }
+    // Tablet portrait and phones use the bottom tab bar instead.
+    await page.setViewportSize({ width: 820, height: 1180 })
+    await open(page, '/en/app')
+    await expect(page.locator('[data-student-shell] > aside')).toBeHidden()
+    await expect(page.getByRole('navigation', { name: 'Student area' })).toBeVisible()
+  })
 })

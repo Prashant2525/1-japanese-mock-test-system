@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-16 — Fix: student sidebar height
+
+- The navy sidebar now always runs from the header to the bottom of the page on every student page (it stopped halfway on short pages). The footer moved into the content column of the student area. Root cause and test: KI-48, D-112.
+- Recorded the owner's DASH answers (D-110) and the calendar request (D-111) for Phase 13c.
+
 ## 2026-10-16 — Phase 13b: student shell, dashboard and profile
 
 - New student layout: sidebar on desktop (with your level), bottom tab bar on phones; exam screens unchanged.
