@@ -2,7 +2,7 @@
 
 **Session date:** 2026-10-15
 **Current phase / milestone:** Phase 13b — Student shell and dashboard. **COMPLETE.** Next: Phase 14 — Question bank.
-**Exact task in progress:** none. Next: Phase 13c — dashboard extras per D-110/D-111 (study days and streaks from `study_progress.studied_at` + results, Nepal days; 7-day chart; daily goal in materials; milestones; month calendar with private study plans). Then Phase 14 (question bank).
+**Exact task in progress:** none. Next: Phase 14 (question bank and import/export, playbook §11.15): questions get a section from `exam-sections`, rich text/media, versions, CSV/XLSX import with preview. Mock-test results (Phase 16) must also count as study actions (`activityFor` already counts every `results` row).
 
 ## Completed (with evidence)
 
@@ -24,6 +24,11 @@
 `pnpm db:up` → `pnpm migrate` → `pnpm dev` → http://localhost:3000 (redirects to /en). Tests: `pnpm test:unit`, `pnpm test:int`, `pnpm build && pnpm test:e2e`. Add `E2E_SERVER_LOGS=1` to see the app server's log during E2E.
 
 ## Known gotchas (new this phase)
+
+- **Phase 13c:** never run `payload migrate:reset` (broken upstream, KI-49); use `migrate:down`. After `migrate:create`, check the generated *down* uses `DROP CONSTRAINT/INDEX IF EXISTS` (fix it if not).
+- Making a field `required` with a default changes the generated create types for every caller — prefer optional + `defaultValue` for fields existing code does not set.
+- Plural wording: use ICU in both languages (`{count, plural, one {# day} other {# days}}` / `{count, plural, other {#日}}`); the label test then sees no bare `{count}` on either side.
+- Optimistic UI (plan ticks): tests must wait for the API response before reloading.
 
 - **Phase 13b:** each CMS label global must stay under 80 labels (PostgreSQL argument limit): give a big screen its own namespace + group in `src/i18n/label-groups.ts`. When a label global both gains and loses columns, `migrate:create` asks "created or renamed?" interactively (and CI's drift check would hang) — generate one migration with only additions, then one with only removals.
 - `getByText(..., { exact: true })` misses text next to a decorative mark ("✓Studied"); assert on the control instead.

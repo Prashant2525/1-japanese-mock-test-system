@@ -64,6 +64,14 @@ export const StudyProgress: CollectionConfig = {
       admin: { date: { pickerAppearance: 'dayAndTime' } },
     },
     {
+      // The first time it was marked as studied; never cleared, so re-marking never counts again
+      // as a study action (streaks, goals and milestones, D-110).
+      name: 'firstStudiedAt',
+      type: 'date',
+      label: { en: 'First marked as studied', ja: '初めて学習済みにした日時' },
+      admin: { date: { pickerAppearance: 'dayAndTime' } },
+    },
+    {
       name: 'studiedAt',
       type: 'date',
       label: { en: 'Marked as studied', ja: '学習済みにした日時' },

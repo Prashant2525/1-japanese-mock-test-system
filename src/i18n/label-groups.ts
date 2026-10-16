@@ -29,6 +29,14 @@ export const LABEL_GROUPS = [
     namespaces: ['dashboard', 'profile'],
   },
   {
+    slug: 'labels-progress',
+    label: {
+      en: 'UI labels: streaks, calendar & milestones',
+      ja: 'UIラベル：連続学習・カレンダー・マイルストーン',
+    },
+    namespaces: ['progress'],
+  },
+  {
     slug: 'labels-exam',
     label: { en: 'UI labels: test screen', ja: 'UIラベル：試験画面' },
     namespaces: ['exam'],

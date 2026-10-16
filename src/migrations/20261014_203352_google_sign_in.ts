@@ -25,7 +25,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   await db.execute(sql`
    ALTER TABLE "sign_in_settings" DISABLE ROW LEVEL SECURITY;
   DROP TABLE "sign_in_settings" CASCADE;
-  DROP INDEX "students_google_sub_idx";
+  DROP INDEX IF EXISTS "students_google_sub_idx";
   ALTER TABLE "students" DROP COLUMN "google_sub";
   ALTER TABLE "labels_accounts_locales" DROP COLUMN "auth_google_continue";
   ALTER TABLE "labels_accounts_locales" DROP COLUMN "auth_google_or";

@@ -112,6 +112,17 @@ export const Students: CollectionConfig = {
       ],
     },
     {
+      // Daily goal in materials (D-110, DASH-3): chosen by the student on the dashboard.
+      name: 'dailyGoal',
+      type: 'number',
+      defaultValue: 1,
+      min: 1,
+      max: 5,
+      label: { en: 'Daily goal (materials)', ja: '1日の目標（教材数）' },
+      access: { update: fieldPermission('students.update') },
+      admin: { position: 'sidebar' },
+    },
+    {
       name: 'status',
       type: 'select',
       required: true,

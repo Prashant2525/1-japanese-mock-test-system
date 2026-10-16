@@ -8,18 +8,24 @@ Last updated: 2026-10-15 (Phase 11).
 - Integration tests run with `EMAIL_TRANSPORT=memory` (emails captured for assertions) and `TRUST_PROXY=true` (per-IP limits exercised).
 - CI: GitHub Actions `ubuntu-latest`, Postgres 17 service (password-free, ephemeral), per-run random `PAYLOAD_SECRET`.
 
-## Commands and latest local results (2026-10-16, Phase 13b)
+## Commands and latest local results (2026-10-16, Phase 13c)
 
 | Purpose | Command | Result |
 |---|---|---|
 | Lint | `pnpm lint` | 0 problems |
 | Type-check | `pnpm typecheck` | Pass |
 | Formatting | `pnpm format:check` | Pass |
-| Unit tests | `pnpm test:unit` | **190/190** |
-| Integration tests | `pnpm test:int` | **199/199** (one earlier run lost a file to a Windows worker crash, KI-36; rerun clean) |
+| Unit tests | `pnpm test:unit` | **202/202** |
+| Integration tests | `pnpm test:int` | **205/205** |
 | Build | `pnpm build` | Pass |
 | Schema drift | `payload migrate:create ci_drift_check --skip-empty` | No drift |
-| E2E | `pnpm test:e2e` | **136/136 + 2 skipped (the existing skip and the new desktop-only sidebar test on iPhone), first try** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+| E2E | `pnpm test:e2e` | **138/138 + 2 skipped (full run, first try); after two later fixes (empty states; text typed before the plan box finished loading) the dashboard tests passed again (7/7 + 1 skipped) and the calendar test 6/6 on repeat** (desktop Chrome + iPhone 13 WebKit for `tests/e2e/ui`; own production server on port 3100) |
+
+## What the Phase 13c tests prove
+
+- **Unit `domain/study-days` (12):** the Nepal day turns at 18:15 UTC (and across the year); streak rules (none, consecutive, alive until today ends, a gap resets, longest kept, duplicates/order/future ignored, across months and years); the day a streak length was first reached; the last seven days (zero-filled, oldest first); milestones and the first day a goal was met; the month grid starts on Sunday; month parameters are validated.
+- **Integration `activity` (6):** daily goal 1–5 (0, 6, 2.5 and "3" refused; no level 403); a material counts once (unmark + re-mark adds nothing); three earlier Nepal days make a streak that stays alive until today ends and is gone two days later with the longest kept and the 3-day milestone dated; one student never sees another's activity; plans: create (note trimmed), another student cannot see/tick/remove them (404), tick and remove for the owner, impossible/out-of-range dates, empty/long notes, extra fields and a sixth plan per day refused, no level 403; plans are closed to CMS requests even for a Super Admin.
+- **E2E `ui/dashboard` (+1 × 2 browsers, first test extended):** "0 days" → "1 day" streak, goal reached and today's calendar dot after marking a material; the weekly chart shows one action; goal changed to 3 and kept after reload; a plan added, ticked (kept after reload) and removed; next month by link; axe clean.
 
 ## What the sidebar fix test proves (2026-10-16)
 

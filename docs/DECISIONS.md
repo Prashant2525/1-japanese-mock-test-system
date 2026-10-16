@@ -256,6 +256,12 @@ Owner: "Continue with your suggestions and recommendation" → approves STACK-1 
 | D-111 | **Study calendar (owner request):** a month calendar on the dashboard showing study days and the student's own study plans (a short note on a date, add/tick/remove), today and the streak; plans are private to the student. | Owner 2026-10-16 |
 | D-112 | **Student shell height (fix):** `main` becomes a flex column when it holds the student shell (`has-[>[data-student-shell]]`), the shell grows to fill it, and the shell shows the footer in its content column (the full-width footer is hidden there). The sidebar column therefore always runs from the header to the bottom of the page — the bottom of the screen on short pages. Public pages keep normal flow. | Owner 2026-10-16 (bug) |
 
+## Phase 13c — dashboard extras (2026-10-16)
+
+| ID | Decision | Source |
+|---|---|---|
+| D-113 | **How D-110/D-111 are built:** a *study action* is the first time a material is marked as studied (`study_progress.first_studied_at`, set once and never cleared — unmarking and re-marking cannot farm streaks) or a finished level-check stage/test (`results`); grouped by Nepal day (UTC+05:45). Pure rules in `src/domain/study-days.ts` (streaks, last seven days, milestones, goal met, month grid starting Sunday). Daily goal = `students.dailyGoal` 1–5 (student sets it on the dashboard; `PUT /api/v1/me/goal`). Study plans = `study-plans` (student, Nepal date, note ≤ 80, done), private: hidden from the admin and closed to every CMS request; the student's own API only (`/api/v1/me/plans`), a month back to a year ahead, five per day. Calendar months/days are links (`/app?month=&day=`), works without JavaScript; ticks show at once and revert if refused. Weekly chart follows the chart rules (single series, ≤ 24 px columns, rounded tops, values on today and the busiest day only, tooltip on hover/focus, hidden table). Plural wording uses ICU (`{count, plural, …}`) in both languages. Milestones: first material, 10/25/50 materials, level check, 3/7/30-day streaks, daily goal reached. | D-110, D-111 |
+
 ## Rejected / parked alternatives
 
 | Alternative | Status | Reason |

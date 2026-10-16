@@ -85,6 +85,7 @@ export interface Config {
     'study-materials': StudyMaterial;
     'learning-media': LearningMedia;
     'study-progress': StudyProgress;
+    'study-plans': StudyPlan;
     'email-templates': EmailTemplate;
     'audit-events': AuditEvent;
     'totp-attempts': TotpAttempt;
@@ -116,6 +117,7 @@ export interface Config {
     'study-materials': StudyMaterialsSelect<false> | StudyMaterialsSelect<true>;
     'learning-media': LearningMediaSelect<false> | LearningMediaSelect<true>;
     'study-progress': StudyProgressSelect<false> | StudyProgressSelect<true>;
+    'study-plans': StudyPlansSelect<false> | StudyPlansSelect<true>;
     'email-templates': EmailTemplatesSelect<false> | EmailTemplatesSelect<true>;
     'audit-events': AuditEventsSelect<false> | AuditEventsSelect<true>;
     'totp-attempts': TotpAttemptsSelect<false> | TotpAttemptsSelect<true>;
@@ -134,6 +136,7 @@ export interface Config {
     'labels-accounts': LabelsAccount;
     'labels-student': LabelsStudent;
     'labels-dashboard': LabelsDashboard;
+    'labels-progress': LabelsProgress;
     'labels-exam': LabelsExam;
     'labels-messages': LabelsMessage;
     'sign-in-settings': SignInSetting;
@@ -144,6 +147,7 @@ export interface Config {
     'labels-accounts': LabelsAccountsSelect<false> | LabelsAccountsSelect<true>;
     'labels-student': LabelsStudentSelect<false> | LabelsStudentSelect<true>;
     'labels-dashboard': LabelsDashboardSelect<false> | LabelsDashboardSelect<true>;
+    'labels-progress': LabelsProgressSelect<false> | LabelsProgressSelect<true>;
     'labels-exam': LabelsExamSelect<false> | LabelsExamSelect<true>;
     'labels-messages': LabelsMessagesSelect<false> | LabelsMessagesSelect<true>;
     'sign-in-settings': SignInSettingsSelect<false> | SignInSettingsSelect<true>;
@@ -291,6 +295,7 @@ export interface Student {
   id: number;
   name: string;
   preferredLocale: 'en' | 'ja';
+  dailyGoal?: number | null;
   status: 'active' | 'suspended';
   determinationStatus: 'not_started' | 'in_progress' | 'completed';
   assignedLevel?: (number | null) | Level;
@@ -726,7 +731,21 @@ export interface StudyProgress {
   material: number | StudyMaterial;
   firstOpenedAt: string;
   lastOpenedAt: string;
+  firstStudiedAt?: string | null;
   studiedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-plans".
+ */
+export interface StudyPlan {
+  id: number;
+  student: number | Student;
+  date: string;
+  note: string;
+  done?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -889,6 +908,10 @@ export interface PayloadLockedDocument {
         value: number | StudyProgress;
       } | null)
     | ({
+        relationTo: 'study-plans';
+        value: number | StudyPlan;
+      } | null)
+    | ({
         relationTo: 'email-templates';
         value: number | EmailTemplate;
       } | null)
@@ -996,6 +1019,7 @@ export interface RolesSelect<T extends boolean = true> {
 export interface StudentsSelect<T extends boolean = true> {
   name?: T;
   preferredLocale?: T;
+  dailyGoal?: T;
   status?: T;
   determinationStatus?: T;
   assignedLevel?: T;
@@ -1269,7 +1293,20 @@ export interface StudyProgressSelect<T extends boolean = true> {
   material?: T;
   firstOpenedAt?: T;
   lastOpenedAt?: T;
+  firstStudiedAt?: T;
   studiedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "study-plans_select".
+ */
+export interface StudyPlansSelect<T extends boolean = true> {
+  student?: T;
+  date?: T;
+  note?: T;
+  done?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2378,6 +2415,201 @@ export interface LabelsDashboard {
  * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
  *
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-progress".
+ */
+export interface LabelsProgress {
+  id: number;
+  progress?: {
+    /**
+     * Default — EN: “Current streak” · JA: “連続学習日数”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    streak?: string | null;
+    /**
+     * Default — EN: “{count, plural, one {# day} other {# days}}” · JA: “{count, plural, other {#日}}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    days?: string | null;
+    /**
+     * Default — EN: “Study today to keep it going.” · JA: “今日も学習して記録を伸ばしましょう。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    streakKeep?: string | null;
+    /**
+     * Default — EN: “Longest: {count, plural, one {# day} other {# days}}” · JA: “最長：{count, plural, other {#日}}”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    streakLongest?: string | null;
+    /**
+     * Default — EN: “Today's goal” · JA: “今日の目標”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    goalToday?: string | null;
+    /**
+     * Default — EN: “Goal” · JA: “目標”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    goalChange?: string | null;
+    /**
+     * Default — EN: “Goal reached today. Well done!” · JA: “今日の目標を達成しました。よくがんばりました！”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    goalMet?: string | null;
+    /**
+     * Default — EN: “Materials marked as studied today (Nepal time).” · JA: “今日（ネパール時間）学習済みにした教材の数です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    goalHelp?: string | null;
+    /**
+     * Default — EN: “Study calendar” · JA: “学習カレンダー”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    calendarTitle?: string | null;
+    /**
+     * Default — EN: “Your study days and your own plans. Pick a day to add a plan.” · JA: “学習した日とあなたの予定です。日付を選んで予定を追加できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    calendarHelp?: string | null;
+    /**
+     * Default — EN: “Previous month” · JA: “前の月”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    previousMonth?: string | null;
+    /**
+     * Default — EN: “Next month” · JA: “次の月”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    nextMonth?: string | null;
+    /**
+     * Default — EN: “Today” · JA: “今日”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    today?: string | null;
+    /**
+     * Default — EN: “studied: {count} actions” · JA: “学習：{count}件”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    dayStudied?: string | null;
+    /**
+     * Default — EN: “plans: {count}” · JA: “予定：{count}件”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    dayPlanned?: string | null;
+    /**
+     * Default — EN: “Plans for {date}” · JA: “{date}の予定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    dayPlans?: string | null;
+    /**
+     * Default — EN: “Study day” · JA: “学習した日”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    legendStudied?: string | null;
+    /**
+     * Default — EN: “Plan” · JA: “予定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    legendPlanned?: string | null;
+    /**
+     * Default — EN: “Add plan” · JA: “予定を追加”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planAdd?: string | null;
+    /**
+     * Default — EN: “e.g. Grammar: は and が” · JA: “例：文法「は」と「が」”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planPlaceholder?: string | null;
+    /**
+     * Default — EN: “New plan” · JA: “新しい予定”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planNote?: string | null;
+    /**
+     * Default — EN: “Done” · JA: “完了”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planDone?: string | null;
+    /**
+     * Default — EN: “Remove” · JA: “削除”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planRemove?: string | null;
+    /**
+     * Default — EN: “No plans for this day yet.” · JA: “この日の予定はまだありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planEmpty?: string | null;
+    /**
+     * Default — EN: “That did not save. Please try again.” · JA: “保存できませんでした。もう一度お試しください。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planFailed?: string | null;
+    /**
+     * Default — EN: “This day already has five plans.” · JA: “この日はすでに予定が5件あります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    planFull?: string | null;
+    /**
+     * Default — EN: “This week” · JA: “今週”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekTitle?: string | null;
+    /**
+     * Default — EN: “Study actions per day: materials marked as studied for the first time and finished tests.” · JA: “1日の学習件数：初めて学習済みにした教材と、終えたテストの数です。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekHelp?: string | null;
+    /**
+     * Default — EN: “Day” · JA: “日付”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekDay?: string | null;
+    /**
+     * Default — EN: “Study actions” · JA: “学習件数”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekActions?: string | null;
+    /**
+     * Default — EN: “{day}: {count} study actions” · JA: “{day}：学習{count}件”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekTooltip?: string | null;
+    /**
+     * Default — EN: “Milestones” · JA: “マイルストーン”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    milestonesTitle?: string | null;
+    /**
+     * Default — EN: “Your first milestone is one "Mark as studied" away.” · JA: “「学習済みにする」を押すと最初のマイルストーンを達成できます。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    milestonesNone?: string | null;
+    /**
+     * Default — EN: “Next up” · JA: “次の目標”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    milestonesNext?: string | null;
+    milestone?: {
+      /**
+       * Default — EN: “First material studied” · JA: “初めての教材を学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      firstMaterial?: string | null;
+      /**
+       * Default — EN: “10 materials studied” · JA: “教材10件を学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      materials10?: string | null;
+      /**
+       * Default — EN: “25 materials studied” · JA: “教材25件を学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      materials25?: string | null;
+      /**
+       * Default — EN: “50 materials studied” · JA: “教材50件を学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      materials50?: string | null;
+      /**
+       * Default — EN: “Level check completed” · JA: “レベルチェック完了”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      levelCheck?: string | null;
+      /**
+       * Default — EN: “3-day streak” · JA: “3日連続学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      streak3?: string | null;
+      /**
+       * Default — EN: “7-day streak” · JA: “7日連続学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      streak7?: string | null;
+      /**
+       * Default — EN: “30-day streak” · JA: “30日連続学習”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      streak30?: string | null;
+      /**
+       * Default — EN: “Daily goal reached” · JA: “1日の目標を達成”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+       */
+      goalMet?: string | null;
+    };
+    /**
+     * Default — EN: “Mark a material as studied to start a streak.” · JA: “教材を学習済みにすると連続記録が始まります。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    streakStart?: string | null;
+    /**
+     * Default — EN: “No study actions this week yet.” · JA: “今週の学習はまだありません。”. Leave empty to keep the default. Keep {placeholders} exactly as they are.
+     */
+    weekEmpty?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Buttons, headings and messages on the website. Switch the language at the top to edit Japanese. Empty fields use the built-in text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "labels-exam".
  */
 export interface LabelsExam {
@@ -3014,6 +3246,68 @@ export interface LabelsDashboardSelect<T extends boolean = true> {
         password?: T;
         passwordHelp?: T;
         passwordAction?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "labels-progress_select".
+ */
+export interface LabelsProgressSelect<T extends boolean = true> {
+  progress?:
+    | T
+    | {
+        streak?: T;
+        days?: T;
+        streakKeep?: T;
+        streakLongest?: T;
+        goalToday?: T;
+        goalChange?: T;
+        goalMet?: T;
+        goalHelp?: T;
+        calendarTitle?: T;
+        calendarHelp?: T;
+        previousMonth?: T;
+        nextMonth?: T;
+        today?: T;
+        dayStudied?: T;
+        dayPlanned?: T;
+        dayPlans?: T;
+        legendStudied?: T;
+        legendPlanned?: T;
+        planAdd?: T;
+        planPlaceholder?: T;
+        planNote?: T;
+        planDone?: T;
+        planRemove?: T;
+        planEmpty?: T;
+        planFailed?: T;
+        planFull?: T;
+        weekTitle?: T;
+        weekHelp?: T;
+        weekDay?: T;
+        weekActions?: T;
+        weekTooltip?: T;
+        milestonesTitle?: T;
+        milestonesNone?: T;
+        milestonesNext?: T;
+        milestone?:
+          | T
+          | {
+              firstMaterial?: T;
+              materials10?: T;
+              materials25?: T;
+              materials50?: T;
+              levelCheck?: T;
+              streak3?: T;
+              streak7?: T;
+              streak30?: T;
+              goalMet?: T;
+            };
+        streakStart?: T;
+        weekEmpty?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -58,9 +58,9 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
   ALTER TABLE "labels_student_locales" DISABLE ROW LEVEL SECURITY;
   DROP TABLE "labels_student" CASCADE;
   DROP TABLE "labels_student_locales" CASCADE;
-  ALTER TABLE "students" DROP CONSTRAINT "students_assigned_level_id_levels_id_fk";
+  ALTER TABLE "students" DROP CONSTRAINT IF EXISTS "students_assigned_level_id_levels_id_fk";
   
-  DROP INDEX "students_assigned_level_idx";
+  DROP INDEX IF EXISTS "students_assigned_level_idx";
   ALTER TABLE "students" DROP COLUMN "assigned_level_id";
   ALTER TABLE "students" DROP COLUMN "assigned_at";
   ALTER TABLE "labels_messages_locales" DROP COLUMN "errors_level_not_determined";`)

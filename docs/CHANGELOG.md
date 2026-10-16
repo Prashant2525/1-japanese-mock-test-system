@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-16 — Phase 13c: streaks, daily goal, study calendar and milestones
+
+- Dashboard: current and longest study streak, today's goal (1–5 materials, chosen by the student), a study calendar with the student's own plans (add, tick, remove), this week's activity chart and milestones — all from real study actions in Nepal time; no minute tracking, no leaderboard (DASH-3/5 defaults).
+- A material counts as a study action only the first time it is marked studied, so toggling cannot farm streaks.
+- Fixed: every database rollback with new tables failed (Payload-generated); documented that `payload migrate:reset` itself is broken upstream (KI-49).
+- Tests: unit 202/202, integration 205/205, E2E 138/138 + 2 skipped (full run, first try); after two later fixes (empty states; text typed before the plan box finished loading) the dashboard tests passed again (7/7 + 1 skipped) and the calendar test 6/6 on repeat.
+
 ## 2026-10-16 — Fix: student sidebar height
 
 - The navy sidebar now always runs from the header to the bottom of the page on every student page (it stopped halfway on short pages). The footer moved into the content column of the student area. Root cause and test: KI-48, D-112.
